@@ -79,20 +79,6 @@ h1,h2,h3,h4{font-family:var(--disp);font-weight:400;letter-spacing:.01em}
 #s-draw{align-items:center;justify-content:center;padding:24px;text-align:center}
 .draw-wrap{display:flex;flex-direction:column;align-items:center;gap:20px;max-width:520px}
 .draw-wrap h2{font-size:clamp(26px,5vw,38px)}
-.dice-row{display:flex;gap:44px;justify-content:center;margin:12px 0}
-.die-box{display:flex;flex-direction:column;align-items:center;gap:16px;font-weight:700;font-size:18px}
-.die-scene{perspective:700px;width:84px;height:84px}
-.die{width:84px;height:84px;position:relative;transform-style:preserve-3d;transition:transform 1.9s cubic-bezier(.15,.8,.2,1)}
-.die .f{position:absolute;inset:0;background:linear-gradient(145deg,#fffdf4,#e9e0c8);border:2px solid #b9ad88;border-radius:14px;display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);padding:12px;backface-visibility:hidden}
-.die .f i{width:15px;height:15px;border-radius:50%;background:#1b2a36;place-self:center}
-.die .f b{display:block}
-.die .front{transform:translateZ(42px)}
-.die .back{transform:rotateY(180deg) translateZ(42px)}
-.die .right{transform:rotateY(90deg) translateZ(42px)}
-.die .left{transform:rotateY(-90deg) translateZ(42px)}
-.die .top{transform:rotateX(90deg) translateZ(42px)}
-.die .bottom{transform:rotateX(-90deg) translateZ(42px)}
-.drawmsg{min-height:50px;font-size:19px;font-weight:600;color:var(--chalk)}
 
 /* Juego */
 #s-game{padding:10px 12px calc(12px + env(safe-area-inset-bottom));gap:8px;max-width:1120px;margin:0 auto;width:100%}
@@ -142,7 +128,7 @@ h1,h2,h3,h4{font-family:var(--disp);font-weight:400;letter-spacing:.01em}
 #net{transform-box:fill-box;transform-origin:center}
 #net.ripple{animation:netshake .5s ease-out}
 @keyframes netshake{0%{transform:scale(1)}25%{transform:scale(1.05,1.08)}55%{transform:scale(.98,.97)}100%{transform:scale(1)}}
-.scene-tag{position:absolute;top:10px;left:50%;transform:translateX(-50%);background:rgba(8,20,30,.78);border:2px solid rgba(255,255,255,.2);border-radius:999px;padding:5px 16px;font-weight:700;font-size:16px;white-space:nowrap;z-index:3;opacity:0;transition:opacity .25s;max-width:94%;overflow:hidden;text-overflow:ellipsis}
+.scene-tag{position:absolute;top:56px;left:50%;transform:translateX(-50%);background:rgba(8,20,30,.78);border:2px solid rgba(255,255,255,.2);border-radius:999px;padding:5px 16px;font-weight:700;font-size:16px;white-space:nowrap;z-index:3;opacity:0;transition:opacity .25s;max-width:94%;overflow:hidden;text-overflow:ellipsis}
 .scene-tag.on{opacity:1}
 .tracker{position:absolute;top:8px;left:8px;z-index:3;background:rgba(8,20,30,.72);border:2px solid rgba(255,255,255,.16);border-radius:12px;padding:6px 10px;display:flex;flex-direction:column;gap:5px}
 .trow{display:flex;align-items:center;gap:6px;font-weight:700;font-size:14px}
@@ -283,6 +269,56 @@ h1,h2,h3,h4{font-family:var(--disp);font-weight:400;letter-spacing:.01em}
 @keyframes flipin{from{transform:translateY(-10px) scale(1.9) rotateY(90deg)}to{transform:translateY(-10px) scale(1.9) rotateY(0)}}
 #deckRes{font-family:var(--disp);font-size:24px;min-height:34px;margin-top:6px}
 
+
+/* Armar jugador */
+#s-setup{align-items:center;justify-content:center;padding:24px}
+.setup-wrap{display:flex;flex-direction:column;gap:20px;width:min(540px,100%)}
+.setup-wrap h2{font-size:clamp(26px,5vw,38px);text-align:center}
+.field{display:flex;flex-direction:column;gap:6px;font-weight:700;font-size:17px}
+.field input{font:inherit;font-weight:600;font-size:22px;padding:12px 14px;border-radius:12px;border:2px solid rgba(255,255,255,.25);background:#0b2230;color:var(--chalk)}
+.field input:focus-visible{outline:3px solid var(--sol);outline-offset:2px}
+fieldset.kits{border:0;padding:0;min-width:0}
+fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
+#kitList{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.kit{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 6px;border-radius:14px;background:var(--panel-2);border:2px solid rgba(255,255,255,.16);font-weight:600;font-size:14px;text-align:center;line-height:1.15;transition:border-color .12s,background .12s}
+.kit:hover{border-color:rgba(255,255,255,.4)}
+.kit[aria-checked="true"]{border-color:var(--sol);box-shadow:0 0 0 3px rgba(246,180,14,.35);background:#1b4560}
+.kit:focus-visible{outline:3px solid var(--sol);outline-offset:2px}
+
+/* Moneda */
+.draw-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;max-width:520px}
+.coin-stage{position:relative;height:230px;width:200px}
+.toss{position:absolute;bottom:34px;left:50%;margin-left:-55px;width:110px;height:110px;perspective:700px}
+.toss.go{animation:toss 1.9s cubic-bezier(.3,.6,.5,1)}
+@keyframes toss{0%{transform:translateY(0)}45%{transform:translateY(-130px)}100%{transform:translateY(0)}}
+.coin{width:110px;height:110px;position:relative;transform-style:preserve-3d;transition:transform 1.9s cubic-bezier(.2,.7,.3,1)}
+.cf{position:absolute;inset:0;border-radius:50%;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:grid;place-items:center;border:5px solid;box-shadow:inset 0 0 0 4px rgba(255,255,255,.18),0 4px 12px rgba(0,0,0,.4)}
+.cf svg{width:68%;height:68%}
+.cf.sol{background:radial-gradient(circle at 35% 30%,#ffe58a,#f1b81c 55%,#b8830a);border-color:#9a6b05}
+.cf.luna{transform:rotateX(180deg);background:radial-gradient(circle at 35% 30%,#f7fafc,#c3ccd4 55%,#8793a0);border-color:#6c7885}
+.coin-shadow{position:absolute;bottom:14px;left:50%;width:76px;height:12px;margin-left:-38px;border-radius:50%;background:rgba(0,0,0,.45)}
+.coin-btns{display:flex;gap:12px;justify-content:center}
+.coin-btns .btn{display:flex;align-items:center;gap:10px}
+.coin-btns .btn svg{width:30px;height:30px}
+.drawmsg{min-height:52px;font-size:19px;font-weight:600;color:var(--chalk);text-align:center}
+
+/* Rol: pateás o atajás */
+.role{position:absolute;top:8px;right:8px;z-index:4;display:none;flex-direction:column;align-items:center;line-height:1.1;border-radius:12px;padding:6px 14px;border:2px solid transparent;box-shadow:0 3px 10px rgba(0,0,0,.35)}
+.role.kick{display:flex;background:var(--sol);color:#2a1d00;border-color:#ffd25a}
+.role.keep{display:flex;background:var(--celeste);color:#06223a;border-color:#c4e2f8}
+.role b{font-family:var(--disp);font-weight:400;font-size:clamp(15px,2.6vw,21px)}
+.role span{font-size:13px;font-weight:700}
+#v-pen.you-kick{box-shadow:inset 0 0 0 4px var(--sol)}
+#v-pen.you-keep{box-shadow:inset 0 0 0 4px var(--celeste)}
+#ballRing,#kpRing{display:none;fill:none;stroke-width:3.5}
+.you-kick #ballRing{display:block;stroke:var(--sol);animation:ringp 1s infinite}
+.you-keep #kpRing{display:block;stroke:var(--celeste);animation:ringp 1s infinite}
+@keyframes ringp{50%{opacity:.3}}
+.kc{fill:var(--kc,#14181c)}
+.trow .tn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bside .bname{max-width:7.5em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dirbtn .ic{font-size:15px;line-height:1;font-family:system-ui,sans-serif;opacity:.9}
+
 @media (max-width:640px){
   :root{--cw:clamp(46px,13vw,60px)}
   .brand{display:none}
@@ -308,8 +344,11 @@ h1,h2,h3,h4{font-family:var(--disp);font-weight:400;letter-spacing:.01em}
   .dcard{--cw:40px}
   .dcard .dlb{font-size:9px}
   .slots{bottom:4px;padding:0 4px}
-  .scene-tag{font-size:12px;top:4px}
-  .dice-row{gap:28px}
+  .scene-tag{font-size:11px;top:62px}
+  .role{padding:4px 10px}
+  .role span{font-size:11px}
+  #kitList{gap:6px}
+  .kit{font-size:12px;padding:8px 4px}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
@@ -334,16 +373,29 @@ h1,h2,h3,h4{font-family:var(--disp);font-weight:400;letter-spacing:.01em}
   </div>
 </section>
 
-<!-- Sorteo -->
+<!-- Armar jugador -->
+<section id="s-setup" class="screen">
+  <div class="setup-wrap">
+    <h2>Armá tu jugador</h2>
+    <label class="field"><span>Tu apodo</span><input id="nick" maxlength="12" autocomplete="off" placeholder="Escribí tu apodo"></label>
+    <fieldset class="kits"><legend>Elegí el buzo de tu arquero</legend><div id="kitList" role="radiogroup" aria-label="Buzo del arquero"></div></fieldset>
+    <button class="btn primary big" id="setupGo" type="button">Empezar</button>
+  </div>
+</section>
+
+<!-- Sorteo con moneda -->
 <section id="s-draw" class="screen">
   <div class="draw-wrap">
     <h2 id="drawTitle">¿Quién patea primero?</h2>
-    <div class="dice-row">
-      <div class="die-box"><div class="die-scene"><div class="die" id="dieYou"></div></div><span>Vos</span></div>
-      <div class="die-box"><div class="die-scene"><div class="die" id="dieCpu"></div></div><span>Compu</span></div>
+    <div class="coin-stage">
+      <div class="toss" id="toss"><div class="coin" id="coin"><div class="cf sol" id="faceSol"></div><div class="cf luna" id="faceLuna"></div></div></div>
+      <div class="coin-shadow"></div>
     </div>
-    <p id="drawMsg" class="drawmsg">Gana el número más alto.</p>
-    <button class="btn primary big" id="drawBtn" type="button">Tirar el dado</button>
+    <p id="drawMsg" class="drawmsg">Elegí un lado de la moneda.</p>
+    <div class="coin-btns" id="coinBtns">
+      <button class="btn big" type="button" data-side="sol" id="btnSol"></button>
+      <button class="btn big" type="button" data-side="luna" id="btnLuna"></button>
+    </div>
   </div>
 </section>
 
@@ -352,7 +404,7 @@ h1,h2,h3,h4{font-family:var(--disp);font-weight:400;letter-spacing:.01em}
   <div class="topbar">
     <div class="board" aria-label="Marcador">
       <div class="bside you">
-        <span class="bname">Vos</span>
+        <span class="bname" id="nameYou">Vos</span>
         <div class="tiles" id="tiles-you"><span class="tile">0</span><span class="tile">0</span></div>
         <div class="bbar"><i id="bar-you"></i></div>
       </div>
@@ -425,10 +477,14 @@ h1,h2,h3,h4{font-family:var(--disp);font-weight:400;letter-spacing:.01em}
               <circle cx="-35" cy="-42" r="7" fill="#e8892b"/>
               <circle cx="35" cy="-42" r="7" fill="#e8892b"/>
               <circle cx="0" cy="-36" r="9" fill="#e9c9a5"/>
-              <path d="M-9 -38 Q0 -48 9 -38" fill="#2a1d12"/>
+              <path class="kc" d="M-9.5 -37 Q0 -53 9.5 -37 Z"/>
+              <rect class="kc" x="-10.5" y="-38.5" width="21" height="3.2" rx="1.6"/>
             </g>
+            <ellipse id="kpRing" cx="0" cy="46" rx="27" ry="7"/>
+            <text id="kpName" x="0" y="-60" text-anchor="middle" font-size="12" font-weight="600" fill="#fff" fill-opacity=".74" stroke="#000" stroke-opacity=".4" stroke-width="3" paint-order="stroke"></text>
           </g>
           <g id="ball" style="transform:translate(320px,322px) scale(1)">
+            <circle id="ballRing" r="23"/>
             <ellipse cx="0" cy="14" rx="12" ry="3.5" fill="#000" opacity=".3"/>
             <g id="ballIn">
               <circle r="13" fill="#fff" stroke="#1b2a36" stroke-width="1.6"/>
@@ -437,9 +493,10 @@ h1,h2,h3,h4{font-family:var(--disp);font-weight:400;letter-spacing:.01em}
             </g>
           </g>
         </svg>
+        <div class="role" id="roleBadge"></div>
         <div class="scene-tag" id="sceneTag"></div>
         <div class="tracker" id="tracker" aria-label="Penales de la ronda">
-          <div class="trow" id="tr-you"><span class="tn">Vos</span><i></i><i></i><i></i></div>
+          <div class="trow" id="tr-you"><span class="tn" id="trYouName">Vos</span><i></i><i></i><i></i></div>
           <div class="trow" id="tr-cpu"><span class="tn">Compu</span><i></i><i></i><i></i></div>
         </div>
         <div class="slots" id="slots">
@@ -458,7 +515,7 @@ h1,h2,h3,h4{font-family:var(--disp);font-weight:400;letter-spacing:.01em}
           <div class="bazas" id="bazas"></div>
           <div class="t-info" id="tInfo"></div>
         </div>
-        <div class="seat" id="seatYou"><div class="bubble" id="bubYou"></div><div class="hand" id="myHand"></div><span class="who">Vos</span></div>
+        <div class="seat" id="seatYou"><div class="bubble" id="bubYou"></div><div class="hand" id="myHand"></div><span class="who" id="seatYouName">Vos</span></div>
       </div>
     </div>
   </main>
@@ -564,7 +621,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,REDUCED?Math.min(ms,120):ms));
 const rnd=n=>Math.floor(Math.random()*n);
 const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;};
 const other=p=>p==='you'?'cpu':'you';
-const Who=p=>p==='you'?'Vos':'Compu';
+const Who=p=>p==='you'?G.nick:'Compu';
 const wh=p=>p==='you'?'vos':'Compu';
 const sum=a=>a.reduce((x,y)=>x+y,0);
 const el=(tag,cls,html)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e;};
@@ -597,7 +654,7 @@ const SFX={
   deal(){noise(.07,.05,2800,.7);},
   flip(){noise(.09,.05,1800,.7);},
   click(){tone(540,.05,'square',.025);},
-  dice(){for(let i=0;i<9;i++)tone(300+rnd(300),.04,'square',.025,i*.16);},
+  coin(){tone(2300,.5,'sine',.035);tone(3450,.4,'sine',.02,.02);tone(2100,.3,'sine',.03,1.7);noise(.1,.05,4000,1,1.75);},
   whistle(){tone(2600,.28,'sine',.06,0,60);tone(2700,.22,'sine',.05,.3,-80);},
   goal(){noise(1.4,.09,900,.6,0,2600);[523,659,784,1047].forEach((f,i)=>tone(f,.18,'triangle',.06,.05+i*.1));},
   save(){noise(.25,.1,300,1,0,120);tone(180,.2,'triangle',.08,0,-60);},
@@ -716,7 +773,7 @@ const G={
   used:{you:{off:false,def:false},cpu:{off:false,def:false}},
   hist:{kick:[],keep:[]},
   rs:{you:emptyCats(),cpu:emptyCats()},tot:{you:emptyCats(),cpu:emptyCats()},
-  log:[],kc:{you:0,cpu:0}
+  log:[],kc:{you:0,cpu:0},nick:'Vos',kit:null,cpuKit:null
 };
 
 /* ============ UI ============ */
@@ -796,13 +853,14 @@ function markSpecials(types){
 function markHand(on){
   $$('#myHand .card').forEach(e=>{e.classList.toggle('playable',on);if(on)e.tabIndex=0;else e.removeAttribute('tabindex');});
 }
-function pickDirs({count,avail,msg}){
+function pickDirs({count,avail,msg,role}){
   return new Promise(res=>{
     setMsg(msg);
     const box=$('#btns');box.innerHTML='';const sel=[];
+    const ic=role==='kick'?'⚽ Patear':'🧤 Tirarte';
     const confirm=el('button','btn primary','Confirmar');confirm.type='button';confirm.disabled=true;
     ['L','C','R'].forEach(d=>{
-      const b=el('button','btn dirbtn',`<span class="ar">${DIRS[d].ar}</span>${DIRS[d].label}`);b.type='button';
+      const b=el('button','btn dirbtn',`<span class="ic">${ic}</span><span class="ar">${DIRS[d].ar}</span>${DIRS[d].label}`);b.type='button';
       if(!avail.includes(d))b.disabled=true;
       b.onclick=()=>{
         SFX.click();
@@ -859,43 +917,85 @@ function drawSp(){
   if(!G.spDeck.length&&G.spDiscard.length){G.spDeck=shuffle(G.spDiscard.splice(0));}
   return G.spDeck.pop()||null;
 }
-/* ============ Sorteo con dados ============ */
-const DIEPIPS={1:[5],2:[1,9],3:[1,5,9],4:[1,3,7,9],5:[1,3,5,7,9],6:[1,3,4,6,7,9]};
-const DIEBASE={1:[0,0],6:[0,180],3:[0,-90],4:[0,90],5:[-90,0],2:[90,0]};
-function buildDie(d){
-  d.innerHTML='';
-  [[1,'front'],[6,'back'],[3,'right'],[4,'left'],[5,'top'],[2,'bottom']].forEach(([v,cls])=>{
-    const f=el('div','f '+cls);
-    for(let i=1;i<=9;i++)f.appendChild(document.createElement(DIEPIPS[v].includes(i)?'i':'b'));
-    d.appendChild(f);
+
+/* ============ Jugador: apodo y buzo del arquero ============ */
+const KITS=[
+  {id:'rojo',name:'Buzo rojo y gorra negra',jersey:'#d23b35',cap:'#14181c'},
+  {id:'azul',name:'Buzo azul y gorra roja',jersey:'#2f6fb8',cap:'#d23b35'},
+  {id:'blanco',name:'Buzo blanco y gorra verde',jersey:'#f3efe3',cap:'#2f9a4a'}
+];
+G.kit=KITS[0];G.cpuKit=KITS[1];
+function keeperSVG(j,c){
+  return `<svg viewBox="-46 -64 92 116" width="72" height="90" aria-hidden="true"><rect x="-11" y="14" width="8" height="30" rx="3" fill="#f3efe3"/><rect x="3" y="14" width="8" height="30" rx="3" fill="#f3efe3"/><rect x="-12" y="40" width="10" height="6" rx="2" fill="#1b2a36"/><rect x="2" y="40" width="10" height="6" rx="2" fill="#1b2a36"/><rect x="-15" y="4" width="30" height="16" rx="5" fill="#1b2a36"/><rect x="-15" y="-26" width="30" height="34" rx="9" fill="${j}" stroke="#000" stroke-opacity=".35"/><path d="M-13 -20L-33 -39M13 -20L33 -39" stroke="${j}" stroke-width="9" stroke-linecap="round" fill="none"/><circle cx="-35" cy="-42" r="7" fill="#e8892b"/><circle cx="35" cy="-42" r="7" fill="#e8892b"/><circle cy="-36" r="9" fill="#e9c9a5"/><path d="M-9.5 -37Q0 -53 9.5 -37Z" fill="${c}"/><rect x="-10.5" y="-38.5" width="21" height="3.2" rx="1.6" fill="${c}"/></svg>`;
+}
+function cleanNick(s){return (s||'').replace(/[^\p{L}\p{N} _.\-]/gu,'').replace(/\s+/g,' ').trim().slice(0,12);}
+function applyNick(){
+  ['#nameYou','#trYouName','#seatYouName'].forEach(s=>{$(s).textContent=G.nick;});
+}
+function applyKit(defender){
+  const k=defender==='you'?G.kit:G.cpuKit,g=$('#kpIn');
+  g.style.setProperty('--kj',k.jersey);g.style.setProperty('--kc',k.cap);
+  $('#kpName').textContent=defender==='you'?G.nick:'Compu';
+}
+function setupPlayer(){
+  return new Promise(res=>{
+    show('s-setup');
+    const list=$('#kitList');list.innerHTML='';
+    let sel=G.kit;
+    KITS.forEach(k=>{
+      const b=el('button','kit',keeperSVG(k.jersey,k.cap)+`<span>${k.name}</span>`);
+      b.type='button';b.setAttribute('role','radio');b.setAttribute('aria-checked',k===sel?'true':'false');
+      b.onclick=()=>{sel=k;$$('.kit',list).forEach(x=>x.setAttribute('aria-checked',x===b?'true':'false'));SFX.click();};
+      list.appendChild(b);
+    });
+    const inp=$('#nick');
+    const go=()=>{
+      G.nick=cleanNick(inp.value)||'Vos';
+      G.kit=sel;
+      const rest=KITS.filter(k=>k!==sel);G.cpuKit=rest[rnd(rest.length)];
+      applyNick();res();
+    };
+    $('#setupGo').onclick=go;
+    inp.onkeydown=e=>{if(e.key==='Enter')go();};
+    setTimeout(()=>inp.focus(),50);
   });
-  d._x=0;d._y=0;
 }
-function rollDie(d,v){
-  const b=DIEBASE[v];
-  d._x=(Math.floor(d._x/360)+3+rnd(2))*360+b[0];
-  d._y=(Math.floor(d._y/360)+3+rnd(2))*360+b[1];
-  d.style.transform=`rotateX(${d._x}deg) rotateY(${d._y}deg)`;
+/* ============ Sorteo con moneda (Sol o Luna) ============ */
+function sunSVG(){
+  let r='';
+  for(let i=0;i<16;i++){
+    const a=i*Math.PI/8,l=i%2?36:42,x1=Math.cos(a)*24,y1=Math.sin(a)*24,x2=Math.cos(a)*l,y2=Math.sin(a)*l;
+    r+=`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}"/>`;
+  }
+  return `<svg viewBox="-48 -48 96 96" aria-hidden="true"><g stroke="#8a5a00" stroke-width="3.4" stroke-linecap="round">${r}</g><circle r="19" fill="#ffd45a" stroke="#8a5a00" stroke-width="3.4"/><circle cx="-6.5" cy="-4" r="2.2" fill="#8a5a00"/><circle cx="6.5" cy="-4" r="2.2" fill="#8a5a00"/><path d="M-8 6Q0 13 8 6" fill="none" stroke="#8a5a00" stroke-width="2.6" stroke-linecap="round"/></svg>`;
 }
-function waitClick(btn){return new Promise(r=>{btn.disabled=false;btn.onclick=()=>{btn.disabled=true;r();};});}
+function moonSVG(fill='#46535f',stroke='#2f3a44'){
+  return `<svg viewBox="-48 -48 96 96" aria-hidden="true"><path d="M10 -38A38 38 0 1 0 10 38A29 29 0 1 1 10 -38Z" fill="${fill}" stroke="${stroke}" stroke-width="2.4" stroke-linejoin="round"/><circle cx="-16" cy="-6" r="3.2" fill="${stroke}" opacity=".5"/><circle cx="-9" cy="14" r="2.2" fill="${stroke}" opacity=".5"/></svg>`;
+}
 async function sorteo(){
   show('s-draw');
-  const dy=$('#dieYou'),dc=$('#dieCpu'),btn=$('#drawBtn'),msg=$('#drawMsg');
-  buildDie(dy);buildDie(dc);
+  const coin=$('#coin'),toss=$('#toss'),msg=$('#drawMsg'),btns=$$('#coinBtns .btn');
+  $('#faceSol').innerHTML=sunSVG();$('#faceLuna').innerHTML=moonSVG();
+  $('#btnSol').innerHTML=sunSVG()+'<span>Sol</span>';
+  $('#btnLuna').innerHTML=moonSVG('#e3e9ee','#8793a0')+'<span>Luna</span>';
+  coin._x=0;coin.style.transition='none';coin.style.transform='rotateX(0deg)';void coin.offsetWidth;coin.style.transition='';
   async function tirar(title,okText){
-    $('#drawTitle').textContent=title;msg.textContent='Gana el número más alto.';btn.textContent='Tirar el dado';
-    for(;;){
-      await waitClick(btn);
-      const a=1+rnd(6),b=1+rnd(6);
-      SFX.dice();rollDie(dy,a);rollDie(dc,b);
-      msg.textContent='…';
-      await sleep(2100);
-      if(a===b){msg.textContent=`Sacaron los dos ${a}. Se tira de nuevo.`;btn.textContent='Tirar de nuevo';await sleep(600);continue;}
-      const w=a>b?'you':'cpu';
-      msg.textContent=`Sacaste ${a} y Compu sacó ${b}. ${okText(w)}`;
-      await sleep(1700);
-      return w;
-    }
+    $('#drawTitle').textContent=title;
+    msg.textContent='Elegí un lado de la moneda. Si acertás, ganás el sorteo.';
+    const side=await new Promise(r=>{
+      btns.forEach(b=>{b.disabled=false;b.onclick=()=>{btns.forEach(x=>{x.disabled=true;});SFX.click();r(b.dataset.side);};});
+    });
+    const res=Math.random()<.5?'sol':'luna';
+    coin._x=(Math.floor(coin._x/360)+5+rnd(2))*360+(res==='luna'?180:0);
+    toss.classList.remove('go');void toss.offsetWidth;toss.classList.add('go');
+    coin.style.transform=`rotateX(${coin._x}deg)`;
+    SFX.coin();
+    msg.textContent='La moneda está en el aire…';
+    await sleep(2300);
+    const w=side===res?'you':'cpu';
+    msg.textContent=`Salió ${res==='sol'?'Sol':'Luna'} y elegiste ${side==='sol'?'Sol':'Luna'}. ${okText(w)}`;
+    await sleep(1900);
+    return w;
   }
   G.kick1=await tirar('¿Quién patea primero?',w=>w==='you'?'Pateás primero vos.':'Patea primero Compu.');
   G.mano1=await tirar('¿Quién es mano en el Truco?',w=>w==='you'?'Sos mano en la primera ronda.':'Compu es mano en la primera ronda.');
@@ -927,10 +1027,18 @@ function sceneReset(defender){
   $('#ballIn').style.transform='rotate(0deg)';
   $('#kp').style.transform='translate(320px,212px)';
   $('#kpIn').style.transform='rotate(0deg)';
-  $('#kpIn').style.setProperty('--kj',defender==='you'?'#74acdf':'#f6b40e');
+  applyKit(defender);
   sceneZones({});sceneTag('');
   $('#crowd').classList.remove('cheer','shake');$('#net').classList.remove('ripple');
   void $('#scene').getBoundingClientRect();
+}
+function setRole(kicker){
+  const v=$('#v-pen'),r=$('#roleBadge');
+  v.classList.toggle('you-kick',kicker==='you');v.classList.toggle('you-keep',kicker==='cpu');
+  if(!kicker){r.className='role';r.innerHTML='';return;}
+  const k=kicker==='you';
+  r.className='role '+(k?'kick':'keep');
+  r.innerHTML=k?'<b>⚽ Pateás vos</b><span>Compu ataja</span>':'<b>🧤 Atajás vos</b><span>Compu patea</span>';
 }
 function sceneZones({covered=[],blocked=[]}){
   $$('#zones .zone').forEach(z=>{
@@ -1081,7 +1189,7 @@ async function revealDirs(kicker,defender,kickDir,keepDirs){
 }
 async function kickAttempt({kicker,defender,value,label,kind,doubled}){
   const cat=kind==='extra'?'cartas':'pen';
-  showView('pen');sceneReset(defender);
+  showView('pen');sceneReset(defender);setRole(kicker);
   narrate(`${label}. ${kicker==='you'?'Pateás vos y ataja Compu.':'Patea Compu y atajás vos.'}`);
   await sleep(500);
   const mode=await defenseWindow(defender,kicker,doubled);
@@ -1089,9 +1197,9 @@ async function kickAttempt({kicker,defender,value,label,kind,doubled}){
   if(mode==='hinchada'){sceneZones({blocked:['C']});sceneTag('El Peso de la Hinchada: sin tiro al centro');crowdShake();}
   if(mode==='experto')sceneTag('Arquero Experto: cubre dos lados');
   let kickDir,keepDirs;
-  if(kicker==='you')kickDir=(await pickDirs({count:1,avail,msg:'Elegí hacia dónde patear. Compu no ve tu elección.'}))[0];
+  if(kicker==='you')kickDir=(await pickDirs({count:1,avail,msg:'Pateás vos: elegí hacia dónde patear. Compu no ve tu elección.',role:'kick'}))[0];
   else kickDir=cpuKickDir(avail);
-  if(defender==='you')keepDirs=await pickDirs({count:mode==='experto'?2:1,avail,msg:mode==='experto'?'Elegí las dos direcciones que cubrís.':'Elegí hacia dónde tirarte.'});
+  if(defender==='you')keepDirs=await pickDirs({count:mode==='experto'?2:1,avail,role:'keep',msg:mode==='experto'?'Atajás vos: elegí las dos direcciones que cubrís.':'Atajás vos: elegí hacia dónde tirarte.'});
   else keepDirs=cpuKeepDirs(avail,mode==='experto'?2:1);
   await revealDirs(kicker,defender,kickDir,keepDirs);
   if(kicker==='you')G.hist.kick.push(kickDir);
@@ -1123,7 +1231,7 @@ async function playExtra(pl){
 async function playLibre(pl){
   const rival=other(pl);
   await useSpecial(pl,'libre');
-  showView('pen');sceneReset(rival);
+  showView('pen');sceneReset(rival);setRole(pl);
   narrate(`Tiro libre ${pl==='you'?'para vos':'para Compu'}.`);
   const r=await drawDeck('libre');
   const kd=['L','R'][rnd(2)];
@@ -1151,7 +1259,7 @@ async function playLibre(pl){
 }
 async function normalPenalty(i,kicker){
   const defender=other(kicker);
-  showView('pen');sceneReset(defender);trackerCur(kicker);
+  showView('pen');sceneReset(defender);setRole(kicker);trackerCur(kicker);
   narrate(`Penal ${i+1} de 6. ${kicker==='you'?'Pateás vos.':'Patea Compu.'}`);
   await sleep(700);
   let doubled=false;
@@ -1163,7 +1271,7 @@ async function normalPenalty(i,kicker){
         if(r.special==='doble'){await useSpecial('you','doble');doubled=true;}
         else if(r.special==='extra'){await playExtra('you');}
         else if(r.special==='libre'){await playLibre('you');}
-        showView('pen');sceneReset(defender);trackerCur(kicker);
+        showView('pen');sceneReset(defender);setRole(kicker);trackerCur(kicker);
       }
     }
   }else if(!G.used.cpu.off){
@@ -1174,7 +1282,7 @@ async function normalPenalty(i,kicker){
       if(o.length&&Math.random()<(full?.14:.07)){
         const t=o[rnd(o.length)];
         if(t==='extra')await playExtra('cpu');else await playLibre('cpu');
-        showView('pen');sceneReset(defender);trackerCur(kicker);
+        showView('pen');sceneReset(defender);setRole(kicker);trackerCur(kicker);
       }
     }
   }
@@ -1582,7 +1690,7 @@ async function recap(){
   let note='';
   if(!win&&Math.max(a,b)>=30)note='<p>Hay empate en 30 o más. Se juega otra ronda hasta que haya diferencia.</p>';
   $('#recapBody').innerHTML=
-    `<table><tr><th>Puntos de la ronda</th><th class="y">Vos</th><th class="c">Compu</th></tr>`+
+    `<table><tr><th>Puntos de la ronda</th><th class="y">${G.nick}</th><th class="c">Compu</th></tr>`+
     CAT_ROWS.map(([n,k])=>`<tr><td>${n}</td><td>${rs.you[k]}</td><td>${rs.cpu[k]}</td></tr>`).join('')+
     `<tr><th>Total de la ronda</th><th>${t('you')}</th><th>${t('cpu')}</th></tr>`+
     `<tr><th>Marcador</th><th class="y">${a}</th><th class="c">${b}</th></tr></table>${note}`;
@@ -1600,7 +1708,7 @@ async function playRound(){
   G.mano=G.round===1?G.mano1:other(G.mano);
   $('#roundLbl').textContent='Ronda '+G.round;
   renderSpecials();trackerReset();
-  setPhase('pen');showView('pen');sceneReset(G.kickFirst==='you'?'cpu':'you');
+  setPhase('pen');showView('pen');sceneReset(G.kickFirst==='you'?'cpu':'you');setRole(null);
   bigText('Ronda '+G.round,'info');
   narrate(`Ronda ${G.round}. ${G.kickFirst==='you'?'Pateás primero vos':'Patea primero Compu'} y ${G.mano==='you'?'sos mano':'Compu es mano'} en el Truco.`);
   await sleep(1600);
@@ -1611,7 +1719,7 @@ async function playRound(){
   setPhase('truco');
   await trucoPhase();
   await pauseWindow();
-  setPhase('rep');showView('pen');sceneReset(G.kickFirst==='you'?'cpu':'you');
+  setPhase('rep');showView('pen');sceneReset(G.kickFirst==='you'?'cpu':'you');setRole(null);
   await resupply();
   await recap();
 }
@@ -1619,9 +1727,9 @@ async function playRound(){
 async function endGame(winner){
   const a=G.score.you,b=G.score.cpu,w=winner==='you';
   $('#endTitle').textContent=w?'¡Ganaste el partido!':'Ganó Compu';
-  $('#endSub').textContent=`Resultado final: Vos ${a}, Compu ${b}. Se jugaron ${G.round} ${G.round===1?'ronda':'rondas'}.`;
+  $('#endSub').textContent=`Resultado final: ${G.nick} ${a}, Compu ${b}. Se jugaron ${G.round} ${G.round===1?'ronda':'rondas'}.`;
   $('#endBody').innerHTML=
-    `<table><tr><th>Puntos por origen</th><th class="y">Vos</th><th class="c">Compu</th></tr>`+
+    `<table><tr><th>Puntos por origen</th><th class="y">${G.nick}</th><th class="c">Compu</th></tr>`+
     CAT_ROWS.map(([n,k])=>`<tr><td>${n}</td><td>${G.tot.you[k]}</td><td>${G.tot.cpu[k]}</td></tr>`).join('')+`</table>`;
   $('#ovEnd').classList.add('show');
   if(w){SFX.win();confetti(120);}else SFX.lose();
@@ -1635,6 +1743,7 @@ async function startGame(){
     G.spDeck=shuffle(Object.keys(SP).flatMap(k=>Array(SP[k].n).fill(k)));
     G.hand.you=[G.spDeck.pop(),G.spDeck.pop(),G.spDeck.pop()];
     G.hand.cpu=[G.spDeck.pop(),G.spDeck.pop(),G.spDeck.pop()];
+    await setupPlayer();
     await sorteo();
     show('s-game');
     renderScore('you',true);renderScore('cpu',true);renderSpecials();
