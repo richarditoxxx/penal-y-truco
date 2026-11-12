@@ -253,23 +253,6 @@ h1,h2,h3,h4{font-family:var(--disp);font-weight:400;letter-spacing:.01em}
 .conf{position:fixed;top:-16px;width:9px;height:14px;z-index:65;pointer-events:none;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
 
-/* Mazo VAR / Tiro libre */
-.deckbox{background:var(--panel);border:2px solid rgba(255,255,255,.2);border-radius:20px;padding:20px 24px;text-align:center;min-width:min(420px,94vw)}
-.deckbox h3{font-size:22px;margin-bottom:10px}
-.deckstage{position:relative;height:210px;margin:6px auto;width:min(340px,86vw)}
-.mini{position:absolute;left:50%;top:50%;width:62px;height:92px;margin:-46px 0 0 -31px;border-radius:8px;border:3px solid #f3efe3;background:repeating-linear-gradient(45deg,#2e6eaa 0 6px,#74acdf 6px 12px);box-shadow:0 3px 8px rgba(0,0,0,.4);transform:translateX(calc((var(--i) - 4.5)*14px)) rotate(calc((var(--i) - 4.5)*3deg));transition:transform .5s cubic-bezier(.2,.8,.2,1)}
-.deckstage.shuffling .mini{animation:shuf .32s ease-in-out infinite alternate;animation-delay:calc(var(--i)*30ms)}
-@keyframes shuf{from{transform:translateX(calc((var(--i) - 4.5)*14px)) rotate(calc((var(--i) - 4.5)*3deg))}to{transform:translateX(calc((4.5 - var(--i))*12px)) translateY(calc((var(--i) - 4.5)*3px)) rotate(calc((4.5 - var(--i))*4deg))}}
-.mini.picked{z-index:5;transform:translateY(-10px) scale(1.9);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
-.mini.shown{background:linear-gradient(165deg,#fcf7e8,#efe3c3);border-color:#86764f;display:grid;place-items:center;animation:flipin .45s ease-out}
-.mini .mf{font-family:var(--disp);font-size:11px;line-height:1.1;text-align:center;padding:2px}
-.mini .mf.ok{color:#1d7a2b}
-.mini .mf.bad{color:#b3261e}
-.mini .mf.warn{color:#b86e00}
-@keyframes flipin{from{transform:translateY(-10px) scale(1.9) rotateY(90deg)}to{transform:translateY(-10px) scale(1.9) rotateY(0)}}
-#deckRes{font-family:var(--disp);font-size:24px;min-height:34px;margin-top:6px}
-
-
 /* Armar jugador */
 #s-setup{align-items:center;justify-content:center;padding:24px}
 .setup-wrap{display:flex;flex-direction:column;gap:20px;width:min(540px,100%)}
@@ -287,16 +270,10 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
 
 /* Moneda */
 .draw-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;max-width:520px}
-.coin-stage{position:relative;height:230px;width:200px}
-.toss{position:absolute;bottom:34px;left:50%;margin-left:-55px;width:110px;height:110px;perspective:700px}
-.toss.go{animation:toss 1.9s cubic-bezier(.3,.6,.5,1)}
-@keyframes toss{0%{transform:translateY(0)}45%{transform:translateY(-130px)}100%{transform:translateY(0)}}
-.coin{width:110px;height:110px;position:relative;transform-style:preserve-3d;transition:transform 1.9s cubic-bezier(.2,.7,.3,1)}
 .cf{position:absolute;inset:0;border-radius:50%;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:grid;place-items:center;border:5px solid;box-shadow:inset 0 0 0 4px rgba(255,255,255,.18),0 4px 12px rgba(0,0,0,.4)}
 .cf svg{width:68%;height:68%}
 .cf.sol{background:radial-gradient(circle at 35% 30%,#ffe58a,#f1b81c 55%,#b8830a);border-color:#9a6b05}
 .cf.luna{transform:rotateX(180deg);background:radial-gradient(circle at 35% 30%,#f7fafc,#c3ccd4 55%,#8793a0);border-color:#6c7885}
-.coin-shadow{position:absolute;bottom:14px;left:50%;width:76px;height:12px;margin-left:-38px;border-radius:50%;background:rgba(0,0,0,.45)}
 .coin-btns{display:flex;gap:12px;justify-content:center}
 .coin-btns .btn{display:flex;align-items:center;gap:10px}
 .coin-btns .btn svg{width:30px;height:30px}
@@ -319,6 +296,74 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
 .bside .bname{max-width:7.5em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dirbtn .ic{font-size:15px;line-height:1;font-family:system-ui,sans-serif;opacity:.9}
 
+
+/* Sorteo con árbitro */
+.draw-wrap{max-width:780px;width:100%}
+.sorteo{position:relative;width:100%;aspect-ratio:16/9;border-radius:18px;overflow:hidden;border:2px solid rgba(255,255,255,.15);background:#08161f}
+#sorteoSvg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.rbubble{position:absolute;left:50%;top:3%;transform:translateX(-50%) scale(.9);background:#fff;color:#13212b;padding:9px 18px;border-radius:18px;font-weight:700;font-size:clamp(13px,2.4vw,19px);line-height:1.2;max-width:70%;text-align:center;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;box-shadow:0 4px 14px rgba(0,0,0,.4);z-index:3}
+.rbubble::after{content:"";position:absolute;left:50%;bottom:-9px;margin-left:-9px;border:9px solid transparent;border-top-color:#fff;border-bottom:0}
+.rbubble.show{opacity:1;transform:translateX(-50%) scale(1)}
+.ctoss{--cs:42px;--rise:125px;position:absolute;left:57.2%;top:38%;width:var(--cs);height:var(--cs);margin:-21px 0 0 -21px;perspective:300px;z-index:2}
+.ctoss.go{animation:ctoss 2s cubic-bezier(.3,.6,.5,1)}
+@keyframes ctoss{0%{transform:translateY(0)}45%{transform:translateY(calc(var(--rise)*-1))}100%{transform:translateY(0)}}
+.coin{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 2s cubic-bezier(.2,.7,.3,1)}
+.ctoss .cf{border-width:3px}
+
+/* VAR */
+.varbox{width:min(100%,780px);display:flex;flex-direction:column;gap:10px}
+.varhead{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
+.varbadge{font-family:var(--disp);background:#fff;color:#0b1217;padding:2px 12px;border-radius:8px;font-size:22px}
+.varstage{position:relative;aspect-ratio:16/10;border-radius:16px;overflow:hidden;border:2px solid rgba(255,255,255,.2);background:#050b10}
+#varSvg{position:absolute;inset:0;width:100%;height:100%;display:block}
+#varRef{animation:lean 2.4s ease-in-out infinite}
+@keyframes lean{50%{transform:translateY(-5px)}}
+#varHead.nod{animation:nod .7s ease-in-out 2}
+@keyframes nod{40%{transform:translateY(9px)}}
+#varScr.on{animation:scron .6s}
+@keyframes scron{0%{opacity:0}20%{opacity:1}30%{opacity:.3}45%{opacity:1}60%{opacity:.6}100%{opacity:1}}
+#varScr .ann{opacity:0;transition:opacity .45s}
+#varScr.freeze .ann{opacity:1}
+.rbubble.varb{left:3%;top:auto;bottom:6%;max-width:36%;transform:scale(.9);transform-origin:left bottom}
+.rbubble.varb.show{transform:scale(1)}
+.rbubble.varb::after{left:auto;right:-14px;bottom:16px;margin:0;border:9px solid transparent;border-left-color:#fff;border-right:0;border-top-color:transparent}
+.stamp{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%) rotate(-8deg) scale(.6);font-family:var(--disp);font-size:clamp(22px,5.4vw,52px);padding:6px 22px;border:6px solid;border-radius:12px;opacity:0;background:rgba(5,11,16,.86);white-space:nowrap;z-index:4;text-align:center;line-height:1.1}
+.stamp small{display:block;font-family:'Barlow Semi Condensed',sans-serif;font-weight:700;font-size:.34em;margin-top:4px}
+.stamp.show{animation:stamp .5s cubic-bezier(.2,1.4,.3,1) forwards}
+@keyframes stamp{to{opacity:1;transform:translate(-50%,-50%) rotate(-8deg) scale(1)}}
+.stamp.ok{color:#7be08a;border-color:#7be08a}
+.stamp.bad{color:#ff8a80;border-color:#ff8a80}
+
+/* Tiro libre */
+.fkbox{width:min(100%,780px);display:flex;flex-direction:column;gap:10px;align-items:center}
+.fkhead{font-family:var(--disp);font-size:clamp(20px,4vw,28px);text-align:center}
+.fkstage{position:relative;width:100%;aspect-ratio:16/9;border-radius:16px;overflow:hidden;border:2px solid rgba(255,255,255,.2);background:#08161f}
+#fkSvg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.fktag{position:absolute;left:50%;top:10px;transform:translateX(-50%) scale(.9);background:rgba(8,20,30,.85);border:2px solid rgba(255,255,255,.3);border-radius:999px;padding:5px 18px;font-weight:700;font-size:clamp(14px,2.6vw,20px);white-space:nowrap;opacity:0;transition:opacity .2s,transform .2s}
+.fktag.on{opacity:1;transform:translateX(-50%) scale(1)}
+.fktag.ok{background:#1d7a2b;border-color:#7be08a}
+.fktag.warn{background:#8a5a00;border-color:var(--sol)}
+.fktag.bad{background:#8c2a24;border-color:#ff9c96}
+.fkdice{display:flex;gap:22px;align-items:center;justify-content:center;flex-wrap:wrap}
+.fklegend{display:flex;flex-direction:column;gap:6px;font-size:16px;font-weight:600;max-width:340px}
+.fklegend div{display:flex;gap:10px;align-items:center}
+.fklegend b{min-width:60px;text-align:center;border-radius:8px;padding:2px 8px;color:#06223a;font-weight:700}
+.fklegend .g b{background:#7be08a}
+.fklegend .s b{background:var(--sol)}
+.fklegend .m b{background:#ff9c96}
+#fkMsg{min-height:26px;font-weight:700;font-size:18px;text-align:center}
+.die-scene{perspective:600px;width:70px;height:70px}
+.die{width:70px;height:70px;position:relative;transform-style:preserve-3d;transition:transform 1.9s cubic-bezier(.15,.8,.2,1)}
+.die .f{position:absolute;inset:0;background:linear-gradient(145deg,#fffdf4,#e9e0c8);border:2px solid #b9ad88;border-radius:12px;display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);padding:10px;backface-visibility:hidden}
+.die .f i{width:13px;height:13px;border-radius:50%;background:#1b2a36;place-self:center}
+.die .f b{display:block}
+.die .front{transform:translateZ(35px)}
+.die .back{transform:rotateY(180deg) translateZ(35px)}
+.die .right{transform:rotateY(90deg) translateZ(35px)}
+.die .left{transform:rotateY(-90deg) translateZ(35px)}
+.die .top{transform:rotateX(90deg) translateZ(35px)}
+.die .bottom{transform:rotateX(-90deg) translateZ(35px)}
+
 @media (max-width:640px){
   :root{--cw:clamp(46px,13vw,60px)}
   .brand{display:none}
@@ -335,6 +380,10 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
   .dcard{--cw:50px}
   .slotbox{font-size:12px;padding:4px 7px}
   .dar{font-size:20px}
+  .ctoss{--cs:30px;--rise:84px;margin:-15px 0 0 -15px}
+  .rbubble{padding:6px 12px;max-width:78%}
+  .rbubble.varb{max-width:44%;font-size:12px}
+  .fklegend{font-size:14px}
   .stage{min-height:0}
   #s-game{padding-bottom:68px}
   .tracker{padding:4px 7px;gap:3px}
@@ -383,15 +432,28 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
   </div>
 </section>
 
-<!-- Sorteo con moneda -->
+<!-- Sorteo con árbitro -->
 <section id="s-draw" class="screen">
   <div class="draw-wrap">
-    <h2 id="drawTitle">¿Quién patea primero?</h2>
-    <div class="coin-stage">
-      <div class="toss" id="toss"><div class="coin" id="coin"><div class="cf sol" id="faceSol"></div><div class="cf luna" id="faceLuna"></div></div></div>
-      <div class="coin-shadow"></div>
+    <div class="sorteo">
+      <svg id="sorteoSvg" viewBox="0 0 640 360" role="img" aria-label="El árbitro, un jugador y un arquero antes del sorteo">
+        <defs>
+          <linearGradient id="sky2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#091a28"/><stop offset="1" stop-color="#17384d"/></linearGradient>
+          <linearGradient id="grass2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d7d4c"/><stop offset="1" stop-color="#0c4a2d"/></linearGradient>
+        </defs>
+        <rect width="640" height="360" fill="url(#sky2)"/>
+        <g id="sCrowd"></g>
+        <rect y="100" width="640" height="22" fill="#0b141c"/>
+        <rect y="120" width="640" height="240" fill="url(#grass2)"/>
+        <g id="sStripes"></g>
+        <ellipse cx="320" cy="326" rx="170" ry="30" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="3"/>
+        <ellipse cx="320" cy="326" rx="6" ry="3" fill="#fff" fill-opacity=".85"/>
+        <g id="sFigs"></g>
+      </svg>
+      <div class="rbubble" id="rbubble"></div>
+      <div class="ctoss" id="toss"><div class="coin" id="coin"><div class="cf sol" id="faceSol"></div><div class="cf luna" id="faceLuna"></div></div></div>
     </div>
-    <p id="drawMsg" class="drawmsg">Elegí un lado de la moneda.</p>
+    <p id="drawMsg" class="drawmsg"></p>
     <div class="coin-btns" id="coinBtns">
       <button class="btn big" type="button" data-side="sol" id="btnSol"></button>
       <button class="btn big" type="button" data-side="luna" id="btnLuna"></button>
@@ -545,11 +607,77 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
 <div class="ov" id="ovAnn"></div>
 <div id="big" aria-hidden="true"></div>
 
-<div class="ov" id="ovDeck">
-  <div class="deckbox">
-    <h3 id="deckTitle"></h3>
-    <div class="deckstage" id="deckStage"></div>
-    <div id="deckRes"></div>
+<div class="ov" id="ovVar">
+  <div class="varbox">
+    <div class="varhead"><span class="varbadge">VAR</span><span id="varTitle">El árbitro revisa la jugada</span></div>
+    <div class="varstage">
+      <svg id="varSvg" viewBox="0 0 640 400" role="img" aria-label="El árbitro mira la pantalla del VAR">
+        <defs>
+          <linearGradient id="varbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#101b24"/><stop offset="1" stop-color="#05090d"/></linearGradient>
+          <clipPath id="varclip"><rect x="76" y="28" width="488" height="250" rx="8"/></clipPath>
+          <pattern id="netp2" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M0 0H8M0 0V8" stroke="#fff" stroke-opacity=".35" stroke-width=".8" fill="none"/></pattern>
+        </defs>
+        <rect width="640" height="400" fill="url(#varbg)"/>
+        <rect x="60" y="14" width="520" height="282" rx="18" fill="#1a232b" stroke="#41505d" stroke-width="3"/>
+        <rect x="76" y="28" width="488" height="250" rx="8" fill="#04090d"/>
+        <g id="varScr" clip-path="url(#varclip)"></g>
+        <g id="varRef">
+          <path d="M150 402 Q158 352 232 342 L408 342 Q482 352 490 402Z" fill="#14181c"/>
+          <path d="M214 378 Q170 330 138 274" stroke="#14181c" stroke-width="30" stroke-linecap="round" fill="none"/>
+          <path d="M426 378 Q470 330 502 274" stroke="#14181c" stroke-width="30" stroke-linecap="round" fill="none"/>
+          <ellipse cx="132" cy="266" rx="16" ry="14" fill="#e9c9a5"/>
+          <ellipse cx="508" cy="266" rx="16" ry="14" fill="#e9c9a5"/>
+          <g id="varHead">
+            <rect x="306" y="342" width="28" height="18" fill="#e9c9a5"/>
+            <ellipse cx="284" cy="326" rx="7" ry="9" fill="#e9c9a5"/>
+            <ellipse cx="356" cy="326" rx="7" ry="9" fill="#e9c9a5"/>
+            <circle cx="320" cy="318" r="37" fill="#1c1812"/>
+            <path d="M286 320 Q320 272 354 320" stroke="#8a96a0" stroke-width="5" fill="none" stroke-linecap="round"/>
+            <rect x="278" y="316" width="11" height="20" rx="4" fill="#2a333b"/>
+            <rect x="351" y="316" width="11" height="20" rx="4" fill="#2a333b"/>
+          </g>
+        </g>
+      </svg>
+      <div class="rbubble varb" id="varBubble"></div>
+      <div class="stamp" id="varStamp"></div>
+    </div>
+  </div>
+</div>
+
+<div class="ov" id="ovFK">
+  <div class="fkbox">
+    <div class="fkhead" id="fkTitle">Tiro libre</div>
+    <div class="fkstage">
+      <svg id="fkSvg" viewBox="0 0 640 360" role="img" aria-label="Tiro libre con barrera de jugadores">
+        <defs>
+          <linearGradient id="skyF" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#091a28"/><stop offset="1" stop-color="#17384d"/></linearGradient>
+          <linearGradient id="grassF" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d7d4c"/><stop offset="1" stop-color="#0c4a2d"/></linearGradient>
+          <pattern id="netF" width="7" height="7" patternUnits="userSpaceOnUse"><path d="M0 0H7M0 0V7" stroke="#fff" stroke-opacity=".4" stroke-width=".8" fill="none"/></pattern>
+        </defs>
+        <rect width="640" height="360" fill="url(#skyF)"/>
+        <g id="fkCrowd"></g>
+        <rect y="92" width="640" height="18" fill="#0b141c"/>
+        <rect y="108" width="640" height="252" fill="url(#grassF)"/>
+        <g id="fkStripes"></g>
+        <path d="M175 172 L108 296 H532 L465 172" stroke="#fff" stroke-opacity=".45" fill="none" stroke-width="3"/>
+        <path d="M280 296 Q320 262 360 296" stroke="#fff" stroke-opacity=".35" fill="none" stroke-width="2"/>
+        <rect x="248" y="116" width="144" height="56" fill="url(#netF)"/>
+        <rect x="248" y="116" width="144" height="56" fill="#000" fill-opacity=".2"/>
+        <g fill="#fff"><rect x="245" y="113" width="150" height="5" rx="2"/><rect x="245" y="113" width="5" height="60" rx="2"/><rect x="390" y="113" width="5" height="60" rx="2"/></g>
+        <g id="fkDyn"></g>
+      </svg>
+      <div class="fktag" id="fkTag"></div>
+    </div>
+    <div class="fkdice">
+      <div class="die-scene"><div class="die" id="fkDie"></div></div>
+      <div class="fklegend">
+        <div class="g"><b>5 y 6</b><span>Gol, suma 3</span></div>
+        <div class="s"><b>3 y 4</b><span>Lo ataja el arquero, suma 1 el rival</span></div>
+        <div class="m"><b>1 y 2</b><span>Afuera</span></div>
+      </div>
+    </div>
+    <p id="fkMsg"></p>
+    <button class="btn primary big" id="fkRoll" type="button">Tirar el dado</button>
   </div>
 </div>
 
@@ -576,8 +704,8 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
     </ul>
     <h3>Cartas especiales</h3>
     <ul>
-      <li><b>Ofensivas (una por ronda):</b> Penal Extra (+1), Tiro Libre (+3, 20% de gol), Penal Vale Doble (+2), Revancha (repite un penal atajado, +1).</li>
-      <li><b>Defensivas (una por ronda):</b> Chequeo VAR (50% de anular un gol), Arquero Experto (cubre dos lados), El Peso de la Hinchada (el pateador pierde el centro).</li>
+      <li><b>Ofensivas (una por ronda):</b> Penal Extra (+1), Tiro Libre (+3 si sale 5 o 6 en el dado), Penal Vale Doble (+2), Revancha (repite un penal atajado, +1).</li>
+      <li><b>Defensivas (una por ronda):</b> Chequeo VAR (50% de anular un gol, lo decide el árbitro en la pantalla), Arquero Experto (cubre dos lados), El Peso de la Hinchada (el pateador pierde el centro).</li>
       <li>Penal Extra y Tiro Libre se juegan antes de un penal tuyo o entre fases. No se pueden usar durante una mano de Truco.</li>
     </ul>
     <div class="row"><button class="btn primary" id="rulesOk" type="button">Entendido</button></div>
@@ -654,6 +782,7 @@ const SFX={
   deal(){noise(.07,.05,2800,.7);},
   flip(){noise(.09,.05,1800,.7);},
   click(){tone(540,.05,'square',.025);},
+  dice(){for(let i=0;i<9;i++)tone(300+rnd(300),.04,'square',.025,i*.16);},
   coin(){tone(2300,.5,'sine',.035);tone(3450,.4,'sine',.02,.02);tone(2100,.3,'sine',.03,1.7);noise(.1,.05,4000,1,1.75);},
   whistle(){tone(2600,.28,'sine',.06,0,60);tone(2700,.22,'sine',.05,.3,-80);},
   goal(){noise(1.4,.09,900,.6,0,2600);[523,659,784,1047].forEach((f,i)=>tone(f,.18,'triangle',.06,.05+i*.1));},
@@ -751,7 +880,7 @@ function flyFrom(elm,fromRect,dur=450,delay=0,rot=0){
 const SP={
   extra:{name:'Penal Extra',icon:'⚽',cat:'off',n:6,txt:'Un penal más, fuera de los tres de la ronda. Vale 1.'},
   var:{name:'Chequeo VAR',icon:'📺',cat:'def',n:4,txt:'Después de un gol rival: 50% de anularlo.'},
-  libre:{name:'Tiro Libre',icon:'🎯',cat:'off',n:5,txt:'Sale una carta: 20% gol (+3), 30% atajado (rival +1), 50% afuera.'},
+  libre:{name:'Tiro Libre',icon:'🎯',cat:'off',n:5,txt:'Tirás un dado: 5 o 6 gol (+3), 3 o 4 lo ataja (rival +1), 1 o 2 afuera.'},
   experto:{name:'Arquero Experto',icon:'🧤',cat:'def',n:4,txt:'En un penal rival cubrís dos direcciones.'},
   doble:{name:'Penal Vale Doble',icon:'×2',cat:'off',n:4,txt:'Tu penal normal vale 2 si lo convertís.'},
   revancha:{name:'Revancha',icon:'🔁',cat:'off',n:3,txt:'Repetís un penal normal que te atajaron. Vale 1.'},
@@ -970,37 +1099,8 @@ function sunSVG(){
   return `<svg viewBox="-48 -48 96 96" aria-hidden="true"><g stroke="#8a5a00" stroke-width="3.4" stroke-linecap="round">${r}</g><circle r="19" fill="#ffd45a" stroke="#8a5a00" stroke-width="3.4"/><circle cx="-6.5" cy="-4" r="2.2" fill="#8a5a00"/><circle cx="6.5" cy="-4" r="2.2" fill="#8a5a00"/><path d="M-8 6Q0 13 8 6" fill="none" stroke="#8a5a00" stroke-width="2.6" stroke-linecap="round"/></svg>`;
 }
 function moonSVG(fill='#46535f',stroke='#2f3a44'){
-  return `<svg viewBox="-48 -48 96 96" aria-hidden="true"><path d="M10 -38A38 38 0 1 0 10 38A29 29 0 1 1 10 -38Z" fill="${fill}" stroke="${stroke}" stroke-width="2.4" stroke-linejoin="round"/><circle cx="-16" cy="-6" r="3.2" fill="${stroke}" opacity=".5"/><circle cx="-9" cy="14" r="2.2" fill="${stroke}" opacity=".5"/></svg>`;
+  return `<svg viewBox="-48 -48 96 96" aria-hidden="true"><path d="M17.3 -33.8A38 38 0 1 0 17.3 33.8A34 34 0 1 1 17.3 -33.8Z" fill="${fill}" stroke="${stroke}" stroke-width="2.4" stroke-linejoin="round"/></svg>`;
 }
-async function sorteo(){
-  show('s-draw');
-  const coin=$('#coin'),toss=$('#toss'),msg=$('#drawMsg'),btns=$$('#coinBtns .btn');
-  $('#faceSol').innerHTML=sunSVG();$('#faceLuna').innerHTML=moonSVG();
-  $('#btnSol').innerHTML=sunSVG()+'<span>Sol</span>';
-  $('#btnLuna').innerHTML=moonSVG('#e3e9ee','#8793a0')+'<span>Luna</span>';
-  coin._x=0;coin.style.transition='none';coin.style.transform='rotateX(0deg)';void coin.offsetWidth;coin.style.transition='';
-  async function tirar(title,okText){
-    $('#drawTitle').textContent=title;
-    msg.textContent='Elegí un lado de la moneda. Si acertás, ganás el sorteo.';
-    const side=await new Promise(r=>{
-      btns.forEach(b=>{b.disabled=false;b.onclick=()=>{btns.forEach(x=>{x.disabled=true;});SFX.click();r(b.dataset.side);};});
-    });
-    const res=Math.random()<.5?'sol':'luna';
-    coin._x=(Math.floor(coin._x/360)+5+rnd(2))*360+(res==='luna'?180:0);
-    toss.classList.remove('go');void toss.offsetWidth;toss.classList.add('go');
-    coin.style.transform=`rotateX(${coin._x}deg)`;
-    SFX.coin();
-    msg.textContent='La moneda está en el aire…';
-    await sleep(2300);
-    const w=side===res?'you':'cpu';
-    msg.textContent=`Salió ${res==='sol'?'Sol':'Luna'} y elegiste ${side==='sol'?'Sol':'Luna'}. ${okText(w)}`;
-    await sleep(1900);
-    return w;
-  }
-  G.kick1=await tirar('¿Quién patea primero?',w=>w==='you'?'Pateás primero vos.':'Patea primero Compu.');
-  G.mano1=await tirar('¿Quién es mano en el Truco?',w=>w==='you'?'Sos mano en la primera ronda.':'Compu es mano en la primera ronda.');
-}
-
 /* ============ Escena de penales ============ */
 const TG={L:215,C:320,R:425};
 function initScene(){
@@ -1112,34 +1212,6 @@ function cpuKeepDirs(avail,count){
   return [a,b];
 }
 
-/* ============ Mazos de azar (VAR y Tiro Libre) ============ */
-async function drawDeck(type){
-  const comp=type==='var'
-    ?['valid','valid','valid','valid','valid','annul','annul','annul','annul','annul']
-    :['gol','gol','atajado','atajado','atajado','afuera','afuera','afuera','afuera','afuera'];
-  const res=comp[rnd(10)];
-  const names={valid:['GOL VÁLIDO','ok'],annul:['GOL ANULADO','bad'],gol:['GOL','ok'],atajado:['ATAJADO','warn'],afuera:['AFUERA','bad']};
-  const long={valid:'El gol se mantiene',annul:'Gol anulado',gol:'¡Es gol!',atajado:'Lo atajó el arquero',afuera:'Se fue afuera'};
-  $('#deckTitle').textContent=type==='var'?'El VAR revisa la jugada':'Tiro libre: sale una carta del mazo';
-  const st=$('#deckStage');st.innerHTML='';st.classList.remove('shuffling');$('#deckRes').textContent='';
-  const cards=[];
-  for(let i=0;i<10;i++){const c=el('div','mini');c.style.setProperty('--i',i);st.appendChild(c);cards.push(c);}
-  $('#ovDeck').classList.add('show');
-  await sleep(450);
-  st.classList.add('shuffling');for(let i=0;i<5;i++)setTimeout(()=>SFX.deal(),i*220);
-  await sleep(1400);
-  st.classList.remove('shuffling');
-  const pick=cards[rnd(10)];pick.classList.add('picked');
-  await sleep(550);
-  pick.classList.add('shown');pick.innerHTML=`<div class="mf ${names[res][1]}">${names[res][0]}</div>`;SFX.flip();
-  await sleep(450);
-  $('#deckRes').textContent=long[res];
-  await sleep(1300);
-  $('#ovDeck').classList.remove('show');
-  await sleep(150);
-  return res;
-}
-
 /* ============ Penales ============ */
 async function defenseWindow(defender,kicker,doubled){
   if(G.used[defender].def)return 'normal';
@@ -1171,7 +1243,7 @@ async function varWindow(defender,kicker,points){
   }
   if(!use)return points;
   await useSpecial(defender,'var');
-  const r=await drawDeck('var');
+  const r=await varReview(kicker,defender);
   if(r==='annul'){narrate('El VAR anuló el gol.');bigText('GOL ANULADO','bad');SFX.bad();await sleep(1500);return 0;}
   narrate('El VAR confirmó el gol.');await sleep(500);
   return points;
@@ -1231,31 +1303,24 @@ async function playExtra(pl){
 async function playLibre(pl){
   const rival=other(pl);
   await useSpecial(pl,'libre');
-  showView('pen');sceneReset(rival);setRole(pl);
   narrate(`Tiro libre ${pl==='you'?'para vos':'para Compu'}.`);
-  const r=await drawDeck('libre');
-  const kd=['L','R'][rnd(2)];
-  SFX.whistle();await sleep(400);
+  const r=await freeKickShow(pl);
   if(r==='gol'){
-    await sceneShot({kick:kd,dive:kd==='L'?'R':'L',goal:true,y:146+rnd(24)});
     narrate(`¡Golazo de tiro libre de ${wh(pl)}!`);
-    SFX.goal();bigText('¡GOLAZO!');crowdCheer();if(pl==='you')confetti(70);
+    SFX.goal();bigText('¡GOLAZO!');if(pl==='you')confetti(70);
     await sleep(1500);
     const pts=await varWindow(rival,pl,3);
     if(pts>0)addPoints(pl,pts,'cartas','Tiro libre');
   }else if(r==='atajado'){
-    await sceneShot({kick:kd,dive:kd,goal:false});
     narrate(`${rival==='you'?'Atajaste':'Compu atajó'} el tiro libre y suma 1 punto.`);
     SFX.save();bigText('¡ATAJADO!','save');
     await sleep(1300);
     addPoints(rival,1,'cartas','Atajó el tiro libre');
   }else{
-    await sceneShot({kick:kd,dive:kd==='L'?'R':'L',goal:false,miss:true});
     narrate('El tiro libre se fue afuera.');
     SFX.miss();bigText('¡AFUERA!','bad');
     await sleep(1400);
   }
-  sceneTag('');
 }
 async function normalPenalty(i,kicker){
   const defender=other(kicker);
@@ -1678,6 +1743,294 @@ async function trucoPhase(){
   bigText(T.winner==='you'?'¡Ganaste la mano!':'Ganó Compu la mano',T.winner==='you'?'':'bad');
   addPoints(T.winner,T.pts,'truco',T.reason);
   await sleep(1800);
+}
+/* ============ Figuras: árbitro, jugadores y arqueros ============ */
+let _fid=0;
+function figure(o){
+  const sc=o.s||1,skin=o.skin||'#e9c9a5',hair=o.hair||'#2a1d12',id='fc'+(++_fid);
+  const eye=o.face==='r'?3:o.face==='l'?-3:0,hand=o.glove||skin,hr=o.glove?8:6;
+  let s=`<g transform="translate(${o.x} ${o.y}) scale(${sc})">`;
+  s+='<ellipse cx="0" cy="2" rx="27" ry="6" fill="#000" opacity=".28"/>';
+  s+=`<rect x="-14" y="-62" width="11" height="54" rx="4" fill="${o.socks||'#f3efe3'}"/><rect x="3" y="-62" width="11" height="54" rx="4" fill="${o.socks||'#f3efe3'}"/>`;
+  s+='<ellipse cx="-9" cy="-4" rx="10" ry="5" fill="#1b2a36"/><ellipse cx="9" cy="-4" rx="10" ry="5" fill="#1b2a36"/>';
+  s+=`<rect x="-19" y="-82" width="38" height="28" rx="7" fill="${o.shorts||'#14181c'}"/>`;
+  s+=`<clipPath id="${id}"><rect x="-19" y="-132" width="38" height="58" rx="11"/></clipPath>`;
+  s+=`<rect x="-19" y="-132" width="38" height="58" rx="11" fill="${o.shirt}"/>`;
+  if(o.stripe)s+=`<g clip-path="url(#${id})" fill="${o.stripe}"><rect x="-12" y="-132" width="7" height="58"/><rect x="5" y="-132" width="7" height="58"/></g>`;
+  if(o.back)s+='<text x="0" y="-96" text-anchor="middle" font-size="26" fill="#fff" stroke="#000" stroke-opacity=".35" stroke-width="2" paint-order="stroke" font-family="\'Alfa Slab One\',Georgia,serif">10</text>';
+  const arm=(d)=>`<path d="${d}" stroke="${o.shirt}" stroke-width="11" stroke-linecap="round" fill="none"/>`;
+  if(o.arms==='wall'){
+    s+=arm('M-19 -124 Q-25 -96 -5 -80')+arm('M19 -124 Q25 -96 5 -80');
+    s+=`<circle cx="-4" cy="-76" r="${hr}" fill="${hand}"/><circle cx="4" cy="-76" r="${hr}" fill="${hand}"/>`;
+  }else if(o.arms==='ref'){
+    s+=arm('M-19 -124 Q-31 -100 -28 -80')+arm('M19 -124 Q42 -126 46 -152');
+    s+=`<circle cx="-28" cy="-74" r="6" fill="${hand}"/><circle cx="46" cy="-158" r="7" fill="${hand}"/>`;
+  }else{
+    s+=arm('M-19 -124 Q-31 -100 -28 -80')+arm('M19 -124 Q31 -100 28 -80');
+    s+=`<circle cx="-28" cy="-74" r="${hr}" fill="${hand}"/><circle cx="28" cy="-74" r="${hr}" fill="${hand}"/>`;
+  }
+  if(o.back){
+    s+=`<circle cx="0" cy="-146" r="14" fill="${hair}"/>`;
+  }else{
+    s+=`<circle cx="0" cy="-146" r="14" fill="${skin}"/>`;
+    if(o.cap){s+=`<path d="M-15 -149 A15 15 0 0 1 15 -149 Z" fill="${o.cap}"/><rect x="-16" y="-150" width="32" height="4" rx="2" fill="${o.cap}"/>`;}
+    else s+=`<path d="M-14.5 -147 A14.5 14.5 0 0 1 14.5 -147 Q0 -157 -14.5 -147Z" fill="${hair}"/>`;
+    s+=`<circle cx="${-5+eye}" cy="-144" r="1.8" fill="#14181c"/><circle cx="${5+eye}" cy="-144" r="1.8" fill="#14181c"/><path d="M-4 -138 Q0 -135 4 -138" stroke="#7a4a30" stroke-width="1.5" fill="none" stroke-linecap="round"/>`;
+  }
+  s+=(o.extra||'')+'</g>';
+  return s;
+}
+function crowdMarkup(ymax){
+  const cols=['#74acdf','#f3efe3','#f6b40e','#c8302b','#2a4a63','#74acdf','#f3efe3'];
+  let s='';
+  for(let y=8;y<=ymax;y+=8)for(let x=(y/8%2)*4;x<=640;x+=9){
+    s+=`<circle cx="${x+rnd(3)}" cy="${y+rnd(3)}" r="3.3" fill="${cols[rnd(cols.length)]}" opacity="${(.55+Math.random()*.4).toFixed(2)}"/>`;
+  }
+  return s;
+}
+function stripesMarkup(y0,h,n){
+  let s='';
+  for(let i=0;i<n;i++)if(i%2)s+=`<rect y="${y0+i*h}" width="640" height="${h}" fill="#fff" opacity=".045"/>`;
+  return s;
+}
+function escapeXml(t){return String(t).replace(/[<>&"]/g,'');}
+
+/* Dado */
+function buildDie(d){
+  d.innerHTML='';
+  [[1,'front'],[6,'back'],[3,'right'],[4,'left'],[5,'top'],[2,'bottom']].forEach(([v,cls])=>{
+    const f=el('div','f '+cls);
+    for(let i=1;i<=9;i++)f.appendChild(document.createElement(DIEPIPS[v].includes(i)?'i':'b'));
+    d.appendChild(f);
+  });
+  d._x=0;d._y=0;d.style.transition='none';d.style.transform='rotateX(0deg) rotateY(0deg)';void d.offsetWidth;d.style.transition='';
+}
+const DIEPIPS={1:[5],2:[1,9],3:[1,5,9],4:[1,3,7,9],5:[1,3,5,7,9],6:[1,3,4,6,7,9]};
+const DIEBASE={1:[0,0],6:[0,180],3:[0,-90],4:[0,90],5:[-90,0],2:[90,0]};
+function rollDie(d,v){
+  const b=DIEBASE[v];
+  d._x=(Math.floor(d._x/360)+3+rnd(2))*360+b[0];
+  d._y=(Math.floor(d._y/360)+3+rnd(2))*360+b[1];
+  d.style.transform=`rotateX(${d._x}deg) rotateY(${d._y}deg)`;
+}
+
+/* ============ Sorteo con árbitro y moneda ============ */
+function refSay(t,ms){
+  const b=$('#rbubble');
+  if(t){b.textContent=t;b.classList.add('show');}else b.classList.remove('show');
+  return ms?sleep(ms):Promise.resolve();
+}
+function buildSorteoScene(){
+  $('#sCrowd').innerHTML=crowdMarkup(96);
+  $('#sStripes').innerHTML=stripesMarkup(120,30,8);
+  const ck=G.cpuKit;
+  const player=figure({x:130,y:322,s:1.05,shirt:'#74acdf',stripe:'#fff',shorts:'#14181c',socks:'#fff',face:'r',hair:'#3a2616'});
+  const ref=figure({x:320,y:322,s:1.05,shirt:'#14181c',shorts:'#14181c',socks:'#14181c',face:'c',hair:'#1b1b1b',arms:'ref',
+    extra:'<path d="M-8 -132 L0 -121 L8 -132Z" fill="#fff"/><path d="M0 -128 L10 -110" stroke="#f6b40e" stroke-width="1.6"/><circle cx="10" cy="-108" r="3.4" fill="#f6b40e"/><rect x="-14" y="-108" width="7" height="9" rx="1" fill="#f6b40e"/><rect x="-14" y="-98" width="7" height="9" rx="1" fill="#d23b35"/>'});
+  const keeper=figure({x:510,y:322,s:1.05,shirt:ck.jersey,cap:ck.cap,glove:'#e8892b',shorts:'#14181c',socks:'#f3efe3',face:'l'});
+  const lab=(x,t)=>`<text x="${x}" y="348" text-anchor="middle" font-size="15" font-weight="700" fill="#fff" stroke="#000" stroke-opacity=".45" stroke-width="3" paint-order="stroke" font-family="'Barlow Semi Condensed',sans-serif">${escapeXml(t)}</text>`;
+  $('#sFigs').innerHTML=player+ref+keeper+lab(130,G.nick)+lab(320,'Árbitro')+lab(510,'Compu');
+}
+async function sorteo(){
+  show('s-draw');
+  buildSorteoScene();
+  const coin=$('#coin'),toss=$('#toss'),msg=$('#drawMsg'),btns=$$('#coinBtns .btn');
+  $('#faceSol').innerHTML=sunSVG();$('#faceLuna').innerHTML=moonSVG();
+  $('#btnSol').innerHTML=sunSVG()+'<span>Cara</span>';
+  $('#btnLuna').innerHTML=moonSVG('#e3e9ee','#8793a0')+'<span>Cruz</span>';
+  btns.forEach(b=>{b.disabled=true;});
+  coin._x=0;coin.style.transition='none';coin.style.transform='rotateX(0deg)';void coin.offsetWidth;coin.style.transition='';
+  const nm=s=>s==='sol'?'cara':'cruz';
+  async function tirar(intro,pregunta,okText){
+    msg.textContent='';
+    if(intro)await refSay(intro,2000);
+    await refSay(pregunta);
+    msg.textContent='Tocá cara o cruz.';
+    const side=await new Promise(r=>{
+      btns.forEach(b=>{b.disabled=false;b.onclick=()=>{btns.forEach(x=>{x.disabled=true;});SFX.click();r(b.dataset.side);};});
+    });
+    msg.textContent='';
+    await refSay(`Elegiste ${nm(side)}. ¡Va la moneda!`,1300);
+    await refSay(null);
+    const res=Math.random()<.5?'sol':'luna';
+    coin._x=(Math.floor(coin._x/360)+5+rnd(2))*360+(res==='luna'?180:0);
+    toss.classList.remove('go');void toss.offsetWidth;toss.classList.add('go');
+    coin.style.transform=`rotateX(${coin._x}deg)`;
+    SFX.coin();
+    await sleep(2300);
+    const w=side===res?'you':'cpu';
+    await refSay(`Salió ${nm(res)}. ${okText(w)}`,2600);
+    await refSay(null,300);
+    return w;
+  }
+  G.kick1=await tirar('¡Buenas! Vamos a hacer el sorteo.','Primero: ¿quién patea primero? Elegí cara o cruz.',w=>w==='you'?`Patea primero ${G.nick}.`:'Patea primero Compu.');
+  G.mano1=await tirar('','Ahora: ¿quién es mano en el Truco? Elegí cara o cruz.',w=>w==='you'?`${G.nick} es mano en la primera ronda.`:'Compu es mano en la primera ronda.');
+}
+
+/* ============ VAR: el árbitro revisa la jugada ============ */
+function varCommon(){
+  return '<g><circle cx="94" cy="46" r="5" fill="#ff3b30" class="blink"/><text x="104" y="50" fill="#fff" font-size="12" font-weight="700" font-family="\'Barlow Semi Condensed\',sans-serif">REPLAY</text><text x="544" y="50" text-anchor="end" fill="#fff" fill-opacity=".7" font-size="12" font-weight="700" font-family="\'Barlow Semi Condensed\',sans-serif">VAR</text></g>';
+}
+function ballMarkup(id,x,y,r){
+  return `<g id="${id}" style="transform:translate(${x}px,${y}px)"><circle r="${r}" fill="#fff" stroke="#1b2a36" stroke-width="1.4"/><polygon points="0,${-r*.45} ${r*.42},${-r*.14} ${r*.26},${r*.36} ${-r*.26},${r*.36} ${-r*.42},${-r*.14}" fill="#1b2a36"/></g>`;
+}
+function replayAdvance(kit){
+  const keeper=`<g id="rKeeperW" style="transition:transform .8s ease-in-out">${figure({x:320,y:196,s:.62,shirt:kit.jersey,cap:kit.cap,glove:'#e8892b',shorts:'#14181c',socks:'#f3efe3',face:'c'})}</g>`;
+  return `<rect x="76" y="28" width="488" height="250" fill="#0b1c28"/><rect x="76" y="116" width="488" height="162" fill="#17673f"/>
+  <g fill="#fff" opacity=".05"><rect x="76" y="150" width="488" height="22"/><rect x="76" y="194" width="488" height="22"/><rect x="76" y="238" width="488" height="22"/></g>
+  <rect x="232" y="102" width="176" height="94" fill="url(#netp2)"/>
+  <g fill="#fff"><rect x="228" y="98" width="184" height="6"/><rect x="228" y="98" width="6" height="100"/><rect x="406" y="98" width="6" height="100"/></g>
+  <line x1="150" y1="198" x2="490" y2="198" stroke="#fff" stroke-width="3"/>
+  ${keeper}
+  ${ballMarkup('rBall',320,258,9)}
+  <g class="ann">
+    <rect x="150" y="196" width="340" height="5" fill="#ff3b30" opacity=".9"/>
+    <circle cx="320" cy="210" r="30" fill="none" stroke="#ffd25a" stroke-width="3" stroke-dasharray="6 5"/>
+    <rect x="352" y="222" width="150" height="26" rx="6" fill="#ff3b30"/>
+    <text x="427" y="240" text-anchor="middle" fill="#fff" font-size="13" font-weight="700" font-family="'Barlow Semi Condensed',sans-serif">Arquero adelantado</text>
+    <line x1="345" y1="218" x2="352" y2="228" stroke="#ff3b30" stroke-width="3"/>
+  </g>${varCommon()}`;
+}
+function replayDouble(shirt){
+  const leg=(id,rot)=>`<g id="${id}" style="transform-origin:288px 178px;transform:rotate(${rot}deg);transition:transform .38s ease-out"><path d="M288 178 L290 202 L291 224" stroke="#f3efe3" stroke-width="10" stroke-linecap="round" fill="none"/><rect x="287" y="219" width="21" height="8" rx="4" fill="#1b2a36"/></g>`;
+  return `<rect x="76" y="28" width="488" height="250" fill="#0b1c28"/><rect x="76" y="132" width="488" height="146" fill="#17673f"/>
+  <g fill="#fff" opacity=".05"><rect x="76" y="150" width="488" height="24"/><rect x="76" y="198" width="488" height="24"/><rect x="76" y="246" width="488" height="24"/></g>
+  <line x1="76" y1="228" x2="564" y2="228" stroke="#fff" stroke-opacity=".25"/>
+  <circle cx="286" cy="112" r="13" fill="#e9c9a5"/><path d="M273 110 A13 13 0 0 1 299 108 Q286 102 273 110Z" fill="#2a1d12"/>
+  <rect x="276" y="124" width="22" height="54" rx="10" fill="${shirt}"/>
+  <path d="M288 132 Q300 150 308 160" stroke="${shirt}" stroke-width="9" stroke-linecap="round" fill="none"/>
+  <rect x="274" y="168" width="26" height="14" rx="5" fill="#14181c"/>
+  ${leg('legL',8)}${leg('legR',32)}
+  ${ballMarkup('rBall',334,217,9)}
+  <circle id="ring1" cx="334" cy="217" r="22" fill="none" stroke="#ffd25a" stroke-width="3" opacity="0" style="transition:opacity .2s"/>
+  <circle id="ring2" cx="344" cy="217" r="26" fill="none" stroke="#ff3b30" stroke-width="3" opacity="0" style="transition:opacity .2s"/>
+  <g class="ann">
+    <circle cx="316" cy="190" r="12" fill="#ffd25a"/><text x="316" y="195" text-anchor="middle" font-size="15" font-weight="700" fill="#14181c" font-family="'Barlow Semi Condensed',sans-serif">1</text>
+    <circle cx="372" cy="190" r="12" fill="#ff3b30"/><text x="372" y="195" text-anchor="middle" font-size="15" font-weight="700" fill="#fff" font-family="'Barlow Semi Condensed',sans-serif">2</text>
+    <rect x="262" y="246" width="164" height="26" rx="6" fill="#ff3b30"/>
+    <text x="344" y="264" text-anchor="middle" fill="#fff" font-size="14" font-weight="700" font-family="'Barlow Semi Condensed',sans-serif">Toca la pelota dos veces</text>
+  </g>${varCommon()}`;
+}
+async function varReview(kicker,defender,force){
+  const res=force||(Math.random()<.5?'valid':'annul');
+  const ov=$('#ovVar'),scr=$('#varScr'),bub=$('#varBubble'),stamp=$('#varStamp'),head=$('#varHead');
+  stamp.className='stamp';stamp.innerHTML='';bub.classList.remove('show');head.classList.remove('nod');
+  scr.classList.remove('freeze','on');
+  const kit=defender==='you'?G.kit:G.cpuKit;
+  scr.innerHTML=res==='valid'?replayAdvance(kit):replayDouble(kicker==='you'?'#74acdf':'#f6b40e');
+  $('#varTitle').textContent='El árbitro revisa la jugada';
+  ov.classList.add('show');
+  const say=async(t,ms)=>{bub.textContent=t;bub.classList.add('show');await sleep(ms);};
+  await sleep(500);
+  scr.classList.add('on');SFX.deal();
+  await say('Vamos a revisar la jugada…',1500);
+  bub.classList.remove('show');
+  if(res==='valid'){
+    await sleep(500);
+    $('#rKeeperW').style.transform='translateY(16px)';
+    await sleep(1000);
+    const bl=$('#rBall');bl.style.transition='transform .9s cubic-bezier(.2,.7,.3,1)';bl.style.transform='translate(266px,128px) scale(.6)';
+    await sleep(1300);
+  }else{
+    await sleep(500);
+    $('#legR').style.transform='rotate(-46deg)';
+    await sleep(240);
+    const bl=$('#rBall');bl.style.transition='transform .5s ease-out';bl.style.transform='translate(342px,217px)';
+    $('#ring1').setAttribute('opacity','1');
+    await sleep(750);
+    $('#legR').style.transform='rotate(30deg)';
+    $('#legL').style.transform='rotate(-46deg)';
+    await sleep(300);
+    bl.style.transition='transform .8s cubic-bezier(.2,.7,.3,1)';bl.style.transform='translate(520px,190px)';
+    $('#ring2').setAttribute('opacity','1');
+    await sleep(1100);
+  }
+  scr.classList.add('freeze');SFX.click();
+  await say(res==='valid'?'Mmm… el arquero se adelantó.':'Mmm… ¡la toca dos veces!',1900);
+  head.classList.add('nod');
+  if(res==='valid'){
+    await say('Se adelantó, pero la pelota entró. ¡El gol vale!',1200);
+    stamp.className='stamp ok show';stamp.innerHTML='GOL VÁLIDO<small>El arquero se adelantó, pero el gol sigue en pie</small>';SFX.point();
+  }else{
+    await say('¡Doble toque! Se anula el gol.',1200);
+    stamp.className='stamp bad show';stamp.innerHTML='GOL ANULADO<small>Doble toque del pateador</small>';SFX.bad();
+  }
+  await sleep(2400);
+  ov.classList.remove('show');
+  await sleep(200);
+  return res;
+}
+
+/* ============ Tiro libre: barrera y dado ============ */
+function arcFrames(x0,y0,x1,y1,apex,s1,n=28){
+  const cx=(x0+x1)/2,cy=2*apex-(y0+y1)/2,f=[];
+  for(let i=0;i<=n;i++){
+    const t=i/n,u=1-t;
+    const x=u*u*x0+2*u*t*cx+t*t*x1,y=u*u*y0+2*u*t*cy+t*t*y1,s=1+(s1-1)*Math.pow(t,.85);
+    f.push({transform:`translate(${x.toFixed(1)}px,${y.toFixed(1)}px) scale(${s.toFixed(3)})`});
+  }
+  return f;
+}
+function fkBuild(pl){
+  const you=pl==='you';
+  const blue={shirt:'#74acdf',stripe:'#fff',socks:'#fff'},yellow={shirt:'#f6b40e',stripe:null,socks:'#f6b40e'};
+  const kK=you?blue:yellow,wK=you?yellow:blue,kit=you?G.cpuKit:G.kit;
+  $('#fkCrowd').innerHTML=crowdMarkup(86);
+  $('#fkStripes').innerHTML=stripesMarkup(108,32,8);
+  let wall='';
+  [262,291,320,349,378].forEach((x,i)=>{wall+=figure(Object.assign({x,y:240,s:.5,arms:'wall',face:'c',hair:i%2?'#2a1d12':'#4a3320'},wK));});
+  const keeper=`<g id="fkKeeperW" style="transform-origin:320px 146px;transition:transform .55s cubic-bezier(.2,.7,.3,1)">${figure({x:320,y:172,s:.36,shirt:kit.jersey,cap:kit.cap,glove:'#e8892b',socks:'#f3efe3',face:'c'})}</g>`;
+  const kicker=`<g id="fkKicker" style="transition:transform .45s ease-in">${figure(Object.assign({x:282,y:342,s:.82,back:true,hair:'#2a1d12'},kK))}</g>`;
+  const ball=`<g id="fkBall" style="transform:translate(324px,332px) scale(1)"><ellipse cx="0" cy="13" rx="12" ry="3.5" fill="#000" opacity=".3"/><circle r="13" fill="#fff" stroke="#1b2a36" stroke-width="1.6"/><polygon points="0,-6 5.7,-1.9 3.5,4.9 -3.5,4.9 -5.7,-1.9" fill="#1b2a36"/><path d="M0 -6V-13M5.7 -1.9L12 -4M3.5 4.9L7.5 10.5M-3.5 4.9L-7.5 10.5M-5.7 -1.9L-12 -4" stroke="#1b2a36" stroke-width="1.4" fill="none"/></g>`;
+  $('#fkDyn').innerHTML=keeper+`<g id="fkWall" style="transition:transform .25s ease-out">${wall}</g>`+kicker+ball;
+}
+function fkSetTag(t,cls){const e=$('#fkTag');e.className='fktag'+(t?' on '+(cls||''):'');e.textContent=t||'';}
+async function fkKick(out){
+  const sx=rnd(2)?1:-1;
+  const ball=$('#fkBall'),kicker=$('#fkKicker'),wall=$('#fkWall'),kp=$('#fkKeeperW');
+  kicker.style.transform='translate(28px,-12px)';
+  await sleep(480);
+  noise(.12,.08,300,1);tone(130,.12,'sine',.1);
+  wall.style.transform='translateY(-12px)';setTimeout(()=>{wall.style.transform='translateY(0)';},330);
+  let x1,y1,apex,s1,dive;
+  if(out==='gol'){x1=320+sx*58;y1=128;apex=96;s1=.36;dive={x:-sx*30,y:-2,r:-sx*62};}
+  else if(out==='atajado'){x1=320+sx*30;y1=140;apex=104;s1=.38;dive={x:sx*30,y:0,r:sx*56};}
+  else if(rnd(2)){x1=320+sx*22;y1=54;apex=40;s1=.3;dive={x:sx*18,y:-4,r:sx*30};}
+  else{x1=320+sx*132;y1=132;apex=100;s1=.34;dive={x:sx*20,y:-4,r:sx*30};}
+  const anim=ball.animate(arcFrames(324,332,x1,y1,apex,s1),{duration:1250,easing:'cubic-bezier(.25,.5,.5,1)',fill:'forwards'});
+  setTimeout(()=>{kp.style.transform=`translate(${dive.x}px,${dive.y}px) rotate(${dive.r}deg)`;},520);
+  await anim.finished;
+  if(out==='gol'){SFX.goal();fkSetTag('¡Gol de tiro libre!','ok');}
+  else if(out==='atajado'){SFX.save();fkSetTag('¡Lo atajó el arquero!','warn');}
+  else{SFX.miss();fkSetTag('¡Se fue afuera!','bad');}
+  await sleep(1700);
+}
+async function freeKickShow(pl,forceDie){
+  const ov=$('#ovFK'),msg=$('#fkMsg'),btn=$('#fkRoll'),die=$('#fkDie');
+  $('#fkTitle').textContent=pl==='you'?(G.nick==='Vos'?'Tu tiro libre':`Tiro libre de ${G.nick}`):'Tiro libre de Compu';
+  fkBuild(pl);buildDie(die);fkSetTag('');
+  btn.style.display=pl==='you'?'':'none';
+  ov.classList.add('show');
+  await sleep(700);
+  if(pl==='you'){
+    msg.textContent='Tirá el dado: de eso depende el tiro.';
+    btn.disabled=false;
+    await new Promise(r=>{btn.onclick=()=>{btn.disabled=true;SFX.click();r();};});
+  }else{
+    msg.textContent='Compu tira el dado…';
+    await sleep(1200);
+  }
+  const v=forceDie||1+rnd(6);
+  SFX.dice();rollDie(die,v);
+  await sleep(2100);
+  const out=v>=5?'gol':v>=3?'atajado':'afuera';
+  msg.textContent=`Salió ${v}: ${out==='gol'?'¡es gol!':out==='atajado'?'lo ataja el arquero.':'se va afuera.'}`;
+  await sleep(1000);
+  await fkKick(out);
+  ov.classList.remove('show');
+  msg.textContent='';
+  await sleep(200);
+  return out;
 }
 /* ============ Rondas y partido ============ */
 function waitButton(id){return new Promise(r=>{$(id).onclick=()=>{SFX.click();r();};});}
