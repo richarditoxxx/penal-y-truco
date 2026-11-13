@@ -500,7 +500,7 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
       <button class="btn big" id="btnRules" type="button">Cómo se juega</button>
       <button class="btn big ghost" type="button" disabled>Jugar online <small>(próximamente)</small></button>
     </div>
-    <p class="ver">Versión 1.5 · Gambetas del genio · 6 cartas especiales · Tiros Libres mejorados.</p>
+    <p class="ver">Versión 1.6 · Gambetas del genio · 6 cartas especiales · Tiros Libres mejorados.</p>
   </div>
 </section>
 
@@ -857,7 +857,7 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
       <li><b>Penal Vale Doble:</b> si convertís uno de tus dos penales, sumás 2 en lugar de 1.</li>
       <li><b>Arquero Pulpo:</b> defendés dos direcciones en un penal.</li>
       <li><b>El Peso de la Hinchada:</b> pateador y arquero solo pueden elegir izquierda o derecha.</li>
-      <li><b>Chequeo VAR:</b> tras un gol, el arquero perjudicado puede intentar anularlo (50%). Tras una atajada, el pateador perjudicado puede solicitar que se repita (50%). Si el VAR no favorece al reclamante, la decisión inicial queda firme. Solo aplica a penales y tiros libres.</li>
+      <li><b>Chequeo VAR:</b> tras un gol, el arquero perjudicado puede intentar anularlo (50%). Tras una atajada, el pateador perjudicado puede solicitar que se repita (50%). Si el VAR no favorece al reclamante, la decisión inicial queda firme. Solo aplica a penales y tiros libres. <b>Máximo 2 revisiones VAR por jugador y por ronda</b>; la carta se conserva, y el cupo se renueva en la siguiente ronda.</li>
       <li><b>Tiro Colocado:</b> el pateador elige 3 números en un tiro libre en lugar de 2.</li>
       <li><b>Barrera Reforzada:</b> el arquero elige 3 números para atajar un tiro libre en lugar de 2.</li>
       <li>Si ambos activan Tiro Colocado y Barrera Reforzada en el mismo tiro libre, <b>se neutralizan</b>: 2 números por cada uno y 2 para afuera.</li>
@@ -1046,7 +1046,7 @@ function flyFrom(elm,fromRect,dur=450,delay=0,rot=0){
 
 /* ============ Cartas especiales ============ */
 const SP={
-  var:{name:'Chequeo VAR',icon:'📺',cat:'def',n:5,txt:'Revisá un gol o una atajada: 50% de cambiar la decisión.'},
+  var:{name:'Chequeo VAR',icon:'📺',cat:'def',n:5,txt:'Revisá goles o atajadas (50%). Máximo 2 revisiones por ronda.'},
   experto:{name:'Arquero Pulpo',icon:'🧤',cat:'def',n:5,txt:'En un penal rival cubrís dos direcciones.'},
   doble:{name:'Penal Vale Doble',icon:'×2',cat:'off',n:5,txt:'Uno de tus dos penales suma 2 si lo convertís.'},
   hinchada:{name:'El Peso de la Hinchada',icon:'📣',cat:'def',n:5,txt:'El pateador pierde la opción centro en ese penal.'},
@@ -1063,10 +1063,12 @@ function spEl(type){
 
 /* ============ Estado ============ */
 const emptyCats=()=>({pen:0,libres:0,genio:0,truco:0,envido:0});
+const MAX_VAR_PER_ROUND=2;
 const G={
   score:{you:0,cpu:0},round:0,kick1:'you',mano1:'you',kickFirst:'you',mano:'you',
   spDeck:[],spDiscard:[],hand:{you:[],cpu:[]},
   used:{you:{off:false,def:false},cpu:{off:false,def:false}},
+  varUsed:{you:0,cpu:0},
   hist:{kick:[],keep:[]},
   rs:{you:emptyCats(),cpu:emptyCats()},tot:{you:emptyCats(),cpu:emptyCats()},
   log:[],kc:{you:0,cpu:0},fkc:{you:0,cpu:0},nick:'Vos',kit:null,cpuKit:null
@@ -1192,7 +1194,8 @@ function renderSpecials(newType){
 function renderLimits(){
   ['you','cpu'].forEach(p=>{
     const name=p==='you'?'You':'Cpu';
-    $('#lim'+name).innerHTML='<span>Cartas reutilizables: sin límite por ronda</span>';
+    const varStatus=G.hand[p].includes('var')?` · VAR: ${G.varUsed[p]}/${MAX_VAR_PER_ROUND} revisiones` : '';
+    $('#lim'+name).innerHTML='<span>Cartas reutilizables'+varStatus+'</span>';
   });
 }
 async function announceCard(who,type){
@@ -1204,12 +1207,17 @@ async function announceCard(who,type){
   await sleep(200);
 }
 async function useSpecial(who,type){
-  // Cartas reutilizables: no se descartan después de usarlas.
-  // Pueden volver a activarse en el siguiente penal o tiro libre.
-  if(!G.hand[who].includes(type))return;
+  // Las cartas se mantienen en la mano y pueden volver a usarse.
+  // La excepción es VAR: el árbitro acepta hasta 2 revisiones por jugador y ronda.
+  if(!G.hand[who].includes(type))return false;
+  if(type==='var'){
+    if(G.varUsed[who]>=MAX_VAR_PER_ROUND)return false;
+    G.varUsed[who]++;
+  }
   log(`${Who(who)} juega ${SP[type].name}.`);
   renderSpecials();
   await announceCard(who,type);
+  return true;
 }
 function drawSpFor(who,initialUnique=false){
   const hand=G.hand[who],limit=1;
@@ -1437,19 +1445,25 @@ async function varWindow(defender,kicker,points,incident='gol'){
   // En el gol es perjudicado el arquero; en la atajada, el pateador.
   const affected=incident==='gol'?defender:kicker;
   const isSave=incident==='atajada';
-  if(!G.hand[affected].includes('var'))return isSave?false:points;
+  // Evita que la computadora solicite VAR en prácticamente cada jugada.
+  // Este límite es igual para ambos y se reinicia al comenzar cada ronda.
+  if(!G.hand[affected].includes('var')||G.varUsed[affected]>=MAX_VAR_PER_ROUND)return isSave?false:points;
   let use=false;
   if(affected==='you'){
     const question=isSave?'¡Te atajaron! ¿Querés usar Chequeo VAR para intentar repetir el tiro? (50%)':
       `¡Gol de Compu por ${points} ${points===1?'punto':'puntos'}! ¿Pedís Chequeo VAR para intentar anularlo? (50%)`;
-    const r=await ask({msg:question+' Tocá la carta VAR iluminada para revisarlo.',buttons:[{id:'no',label:'Aceptar la jugada',cls:'primary'}],specials:['var']});
+    const available=MAX_VAR_PER_ROUND-G.varUsed.you;
+    const r=await ask({msg:question+` Te quedan ${available} ${available===1?'revisión':'revisiones'} esta ronda. Tocá la carta VAR iluminada para revisarlo.`,buttons:[{id:'no',label:'Aceptar la jugada',cls:'primary'}],specials:['var']});
     use=r.special==='var';
   }else{
-    const base=isSave?.7:points>=3?.95:points===2?.85:.6;
-    use=Math.random()<base;
+    // La CPU usa VAR de manera selectiva, no en todos los goles y atajadas.
+    // Prioriza las jugadas de mayor valor. El límite de 2 evita abusos incluso
+    // si una racha aleatoria produce varios intentos favorables seguidos.
+    const chance=isSave?.12:points>=3?.45:points===2?.30:.18;
+    use=Math.random()<chance;
   }
   if(!use)return isSave?false:points;
-  await useSpecial(affected,'var');
+  if(!await useSpecial(affected,'var'))return isSave?false:points;
   const ruling=await varReview(kicker,defender,undefined,incident);
   if(isSave){
     if(ruling==='annul'){
@@ -2532,6 +2546,7 @@ async function recap(){
 async function playRound(){
   G.round++;
   G.used={you:{off:false,def:false},cpu:{off:false,def:false}};
+  G.varUsed={you:0,cpu:0}; // Cada jugador recupera sus 2 revisiones VAR.
   G.rs={you:emptyCats(),cpu:emptyCats()};
   // Un solo sorteo: el ganador comienza todas las fases de todas las rondas.
   G.kickFirst=G.kick1;
