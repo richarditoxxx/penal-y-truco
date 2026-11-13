@@ -267,11 +267,20 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
 .kit:hover{border-color:rgba(255,255,255,.4)}
 .kit[aria-checked="true"]{border-color:var(--sol);box-shadow:0 0 0 3px rgba(246,180,14,.35);background:#1b4560}
 .kit:focus-visible{outline:3px solid var(--sol);outline-offset:2px}
+#playerKitList{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+#playerKitList .kit svg{width:82px;height:95px;max-width:100%}
+#playerKitList .kit[aria-checked="true"]{background:#1a4d51}
+#playerKitList .kit{min-height:152px}
 
 /* Moneda */
 .draw-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;max-width:520px}
 .cf{position:absolute;inset:0;border-radius:50%;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:grid;place-items:center;border:5px solid;box-shadow:inset 0 0 0 4px rgba(255,255,255,.18),0 4px 12px rgba(0,0,0,.4)}
 .cf svg{width:68%;height:68%}
+.cf .coin-face-img{position:relative;display:block;width:100%;height:100%;object-fit:cover;border-radius:50%;border:3px solid rgba(255,255,255,.75)}
+.cf .coin-fallback{position:absolute;inset:0;display:grid;place-items:center;font-size:12px;font-weight:800;color:#182838;text-shadow:0 1px 0 #fff}
+.coin-btns .btn .coin-mini{height:35px;width:35px;object-fit:cover;border-radius:50%;border:2px solid #fff}
+.coin-photo-credits{font-size:11px;color:var(--muted);text-align:center;max-width:660px}
+.coin-photo-credits a{color:#bce2fb}
 .cf.sol{background:radial-gradient(circle at 35% 30%,#ffe58a,#f1b81c 55%,#b8830a);border-color:#9a6b05}
 .cf.luna{transform:rotateX(180deg);background:radial-gradient(circle at 35% 30%,#f7fafc,#c3ccd4 55%,#8793a0);border-color:#6c7885}
 .coin-btns{display:flex;gap:12px;justify-content:center}
@@ -309,6 +318,8 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
 @keyframes ctoss{0%{transform:translateY(0)}45%{transform:translateY(calc(var(--rise)*-1))}100%{transform:translateY(0)}}
 .coin{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 2s cubic-bezier(.2,.7,.3,1)}
 .ctoss .cf{border-width:3px}
+.ctoss{--cs:58px;margin:-29px 0 0 -29px}
+.coin-btns .btn{min-width:136px;justify-content:center}
 
 /* Carta VAR disponible para revisión: aviso discreto pero visible */
 .sp.var-ready{animation:varNudge 1.35s ease-in-out infinite!important;border-color:#a7e5ff!important;box-shadow:0 0 0 2px rgba(116,172,223,.45)!important}
@@ -407,7 +418,7 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
   .dcard{--cw:50px}
   .slotbox{font-size:12px;padding:4px 7px}
   .dar{font-size:20px}
-  .ctoss{--cs:30px;--rise:84px;margin:-15px 0 0 -15px}
+  .ctoss{--cs:42px;--rise:84px;margin:-21px 0 0 -21px}
   .rbubble{padding:6px 12px;max-width:78%}
   .rbubble.varb{max-width:44%;font-size:12px}
   .fklegend{font-size:14px}
@@ -451,7 +462,7 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
       <button class="btn big" id="btnRules" type="button">Cómo se juega</button>
       <button class="btn big ghost" type="button" disabled>Jugar online <small>(próximamente)</small></button>
     </div>
-    <p class="ver">Versión 1.3 · VAR animado con secuencia arbitral · dos penales + dos tiros libres por jugador.</p>
+    <p class="ver">Versión 1.4 · Un sorteo Messi/Maradona · camisetas a rayas · cartas reutilizables.</p>
   </div>
 </section>
 
@@ -461,6 +472,7 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
     <h2>Armá tu jugador</h2>
     <label class="field"><span>Tu apodo</span><input id="nick" maxlength="12" autocomplete="off" placeholder="Escribí tu apodo"></label>
     <fieldset class="kits"><legend>Elegí el buzo de tu arquero</legend><div id="kitList" role="radiogroup" aria-label="Buzo del arquero"></div></fieldset>
+    <fieldset class="kits"><legend>Elegí la ropa de tu jugador</legend><div id="playerKitList" role="radiogroup" aria-label="Ropa del jugador"></div></fieldset>
     <button class="btn primary big" id="setupGo" type="button">Empezar</button>
   </div>
 </section>
@@ -487,6 +499,7 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
       <div class="ctoss" id="toss"><div class="coin" id="coin"><div class="cf sol" id="faceSol"></div><div class="cf luna" id="faceLuna"></div></div></div>
     </div>
     <p id="drawMsg" class="drawmsg"></p>
+    <p class="coin-photo-credits">Fotos: Lionel Messi — Fanny Schertzer (CC BY-SA 3.0); Diego Maradona — Armando Tovar / recorte Mario Žamić (CC BY 2.0). <a href="https://commons.wikimedia.org/wiki/File:Lionel_Messi_close-up.jpg" target="_blank" rel="noopener">Messi</a> · <a href="https://commons.wikimedia.org/wiki/File:Diego_Maradona_cropped.jpg" target="_blank" rel="noopener">Maradona</a></p>
     <div class="coin-btns" id="coinBtns">
       <button class="btn big" type="button" data-side="sol" id="btnSol"></button>
       <button class="btn big" type="button" data-side="luna" id="btnLuna"></button>
@@ -742,16 +755,16 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
     <ul>
       <li>Una mano de Truco argentino de 40 cartas, sin Flor ni Falta Envido.</li>
       <li>Truco 2, Retruco 3, Vale Cuatro 4. Envido 2, Real Envido 3, Envido + Envido 4, Envido + Real 5 y Envido + Envido + Real 7.</li>
-      <li>El mano se alterna en cada ronda.</li>
+      <li>El ganador del único sorteo comienza también el Truco y continúa comenzando cada ronda.</li>
     </ul>
     <h3>Cartas especiales: siempre tres</h3>
     <ul>
       <li><b>Penal Vale Doble:</b> si convertís uno de tus dos penales, sumás 2 en lugar de 1.</li>
-      <li><b>Arquero Experto:</b> defendés dos direcciones en un penal.</li>
+      <li><b>Arquero Pulpo:</b> defendés dos direcciones en un penal.</li>
       <li><b>El Peso de la Hinchada:</b> pateador y arquero solo pueden elegir izquierda o derecha.</li>
       <li><b>Chequeo VAR:</b> tras un gol, el arquero perjudicado puede intentar anularlo (50%). Tras una atajada, el pateador perjudicado puede solicitar que se repita (50%). Si el VAR no favorece al reclamante, la decisión inicial queda firme.</li>
-      <li>Se puede usar una carta ofensiva y una defensiva de dirección por ronda. El VAR funciona como revisión reactiva y puede pedirse siempre que tengas esa carta; una misma ejecución no se revisa dos veces.</li>
-      <li>Cuando gastás una carta, recibís otra inmediatamente para mantener tres en mano. Al final de la ronda podés cambiar voluntariamente una carta.</li>
+      <li>Las cartas especiales no se gastan: podés volver a utilizar la misma carta en tu siguiente penal o tiro libre. No hay límite por ronda. Una misma ejecución no se revisa dos veces con VAR.</li>
+      <li>Siempre tenés tres cartas especiales distintas, sin duplicados. Podés cambiar una al finalizar cada ronda. Las cartas utilizadas permanecen en tu mano.</li>
     </ul>
     <div class="row"><button class="btn primary" id="rulesOk" type="button">Entendido</button></div>
   </div>
@@ -936,7 +949,7 @@ function flyFrom(elm,fromRect,dur=450,delay=0,rot=0){
 /* ============ Cartas especiales ============ */
 const SP={
   var:{name:'Chequeo VAR',icon:'📺',cat:'def',n:9,txt:'Revisá un gol o una atajada: 50% de cambiar la decisión.'},
-  experto:{name:'Arquero Experto',icon:'🧤',cat:'def',n:7,txt:'En un penal rival cubrís dos direcciones.'},
+  experto:{name:'Arquero Pulpo',icon:'🧤',cat:'def',n:7,txt:'En un penal rival cubrís dos direcciones.'},
   doble:{name:'Penal Vale Doble',icon:'×2',cat:'off',n:7,txt:'Uno de tus dos penales suma 2 si lo convertís.'},
   hinchada:{name:'El Peso de la Hinchada',icon:'📣',cat:'def',n:7,txt:'El pateador pierde la opción centro en ese penal.'}
 };
@@ -1077,9 +1090,8 @@ function renderSpecials(newType){
 }
 function renderLimits(){
   ['you','cpu'].forEach(p=>{
-    const u=G.used[p];
-    $('#lim'+(p==='you'?'You':'Cpu')).innerHTML=
-      `<span class="o ${u.off?'used':''}">Ofensiva ${u.off?'usada':'libre'}</span><span class="d ${u.def?'used':''}">Arquero/Hinchada ${u.def?'usada':'libre'}</span>`;
+    const name=p==='you'?'You':'Cpu';
+    $('#lim'+name).innerHTML='<span>Cartas reutilizables: sin límite por ronda</span>';
   });
 }
 async function announceCard(who,type){
@@ -1091,28 +1103,52 @@ async function announceCard(who,type){
   await sleep(200);
 }
 async function useSpecial(who,type){
-  const i=G.hand[who].indexOf(type);if(i>=0)G.hand[who].splice(i,1);
-  // El VAR es una reacción por jugada: no consume el turno defensivo de Arquero Experto / Hinchada.
-  if(type!=='var')G.used[who][SP[type].cat]=true;
-  G.spDiscard.push(type);
+  // Cartas reutilizables: no se descartan después de usarlas.
+  // Pueden volver a activarse en el siguiente penal o tiro libre.
+  if(!G.hand[who].includes(type))return;
   log(`${Who(who)} juega ${SP[type].name}.`);
-  const replacement=drawSp();
-  if(replacement)G.hand[who].push(replacement);
   renderSpecials();
   await announceCard(who,type);
 }
-function drawSp(){
-  if(!G.spDeck.length&&G.spDiscard.length){G.spDeck=shuffle(G.spDiscard.splice(0));}
-  return G.spDeck.pop()||null;
+function drawSpFor(who,initialUnique=false){
+  const hand=G.hand[who],limit=1;
+  const ok=t=>hand.filter(x=>x===t).length<limit;
+  if(!G.spDeck.length&&G.spDiscard.length)G.spDeck=shuffle(G.spDiscard.splice(0));
+  // Elegimos una copia real del mazo y las tres cartas de la mano siempre son distintas.
+  let available=[];
+  for(let i=0;i<G.spDeck.length;i++)if(ok(G.spDeck[i]))available.push(i);
+  if(!available.length&&G.spDiscard.length){
+    G.spDeck.push(...shuffle(G.spDiscard.splice(0)));
+    for(let i=0;i<G.spDeck.length;i++)if(ok(G.spDeck[i]))available.push(i);
+  }
+  if(!available.length){
+    // Último recurso para garantizar siempre tres cartas: restaurar una copia permitida.
+    const choices=Object.keys(SP).filter(ok);
+    return choices.length?choices[fairRandomInt(choices.length)]:null;
+  }
+  const at=available[fairRandomInt(available.length)];
+  return G.spDeck.splice(at,1)[0];
 }
-
 /* ============ Jugador: apodo y buzo del arquero ============ */
 const KITS=[
   {id:'rojo',name:'Buzo rojo y gorra negra',jersey:'#d23b35',cap:'#14181c'},
   {id:'azul',name:'Buzo azul y gorra roja',jersey:'#2f6fb8',cap:'#d23b35'},
   {id:'blanco',name:'Buzo blanco y gorra verde',jersey:'#f3efe3',cap:'#2f9a4a'}
 ];
+const PLAYER_KITS=[
+  {id:'blanco-rojo',name:'Blancas y rojas',shirt:'#f6f3ed',stripe:'#d03936',shorts:'#f6f3ed',socks:'#f6f3ed'},
+  {id:'rojo-azul',name:'Rojas y azules',shirt:'#dc373c',stripe:'#2252ae',shorts:'#143c83',socks:'#143c83'},
+  {id:'azul-verde',name:'Azules y verdes',shirt:'#2478cd',stripe:'#21a26c',shorts:'#2467a7',socks:'#2467a7'}
+];
 G.kit=KITS[0];G.cpuKit=KITS[1];
+G.playerKit=PLAYER_KITS[0];
+G.cpuPlayerKit={shirt:'#f6b40e',stripe:'#17191c',shorts:'#17191c',socks:'#f6b40e'};
+function playerOutfit(k){return {shirt:k.shirt,stripe:k.stripe,verticalStripes:true,shorts:k.shorts,socks:k.socks};}
+function playerShirtSVG(k){
+  const bars=Array.from({length:6},(_,i)=>`<rect x="${20+i*10}" y="22" width="10" height="61" fill="${i%2?k.stripe:k.shirt}"/>`).join('');
+  return `<svg viewBox="0 0 100 105" role="img" aria-label="Camiseta a rayas ${k.name}"><defs><clipPath id="kitclip-${k.id}"><path d="M22 14L35 8H65L78 14L94 31L79 49L73 41V87H27V41L21 49L6 31Z"/></clipPath></defs><path d="M22 14L35 8H65L78 14L94 31L79 49L73 41V87H27V41L21 49L6 31Z" fill="${k.shirt}" stroke="#162a34" stroke-width="2"/><g clip-path="url(#kitclip-${k.id})">${bars}</g><path d="M36 8Q50 24 64 8" stroke="#fff" stroke-width="4" fill="none"/><rect x="27" y="86" width="46" height="3" rx="1.5" fill="#15232b"/></svg>`;
+}
+
 function keeperSVG(j,c){
   return `<svg viewBox="-46 -64 92 116" width="72" height="90" aria-hidden="true"><rect x="-11" y="14" width="8" height="30" rx="3" fill="#f3efe3"/><rect x="3" y="14" width="8" height="30" rx="3" fill="#f3efe3"/><rect x="-12" y="40" width="10" height="6" rx="2" fill="#1b2a36"/><rect x="2" y="40" width="10" height="6" rx="2" fill="#1b2a36"/><rect x="-15" y="4" width="30" height="16" rx="5" fill="#1b2a36"/><rect x="-15" y="-26" width="30" height="34" rx="9" fill="${j}" stroke="#000" stroke-opacity=".35"/><path d="M-13 -20L-33 -39M13 -20L33 -39" stroke="${j}" stroke-width="9" stroke-linecap="round" fill="none"/><circle cx="-35" cy="-42" r="7" fill="#e8892b"/><circle cx="35" cy="-42" r="7" fill="#e8892b"/><circle cy="-36" r="9" fill="#e9c9a5"/><path d="M-9.5 -37Q0 -53 9.5 -37Z" fill="${c}"/><rect x="-10.5" y="-38.5" width="21" height="3.2" rx="1.6" fill="${c}"/></svg>`;
 }
@@ -1136,10 +1172,19 @@ function setupPlayer(){
       b.onclick=()=>{sel=k;$$('.kit',list).forEach(x=>x.setAttribute('aria-checked',x===b?'true':'false'));SFX.click();};
       list.appendChild(b);
     });
+    const playerList=$('#playerKitList');playerList.innerHTML='';
+    let playerSel=G.playerKit;
+    PLAYER_KITS.forEach(k=>{
+      const b=el('button','kit',playerShirtSVG(k)+`<span>${k.name}</span>`);
+      b.type='button';b.setAttribute('role','radio');b.setAttribute('aria-checked',k===playerSel?'true':'false');
+      b.onclick=()=>{playerSel=k;$$('.kit',playerList).forEach(x=>x.setAttribute('aria-checked',x===b?'true':'false'));SFX.click();};
+      playerList.appendChild(b);
+    });
     const inp=$('#nick');
     const go=()=>{
       G.nick=cleanNick(inp.value)||'Vos';
       G.kit=sel;
+      G.playerKit=playerSel;
       const rest=KITS.filter(k=>k!==sel);G.cpuKit=rest[rnd(rest.length)];
       applyNick();res();
     };
@@ -1148,17 +1193,16 @@ function setupPlayer(){
     setTimeout(()=>inp.focus(),50);
   });
 }
-/* ============ Sorteo con moneda (Sol o Luna) ============ */
-function sunSVG(){
-  let r='';
-  for(let i=0;i<16;i++){
-    const a=i*Math.PI/8,l=i%2?36:42,x1=Math.cos(a)*24,y1=Math.sin(a)*24,x2=Math.cos(a)*l,y2=Math.sin(a)*l;
-    r+=`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}"/>`;
-  }
-  return `<svg viewBox="-48 -48 96 96" aria-hidden="true"><g stroke="#8a5a00" stroke-width="3.4" stroke-linecap="round">${r}</g><circle r="19" fill="#ffd45a" stroke="#8a5a00" stroke-width="3.4"/><circle cx="-6.5" cy="-4" r="2.2" fill="#8a5a00"/><circle cx="6.5" cy="-4" r="2.2" fill="#8a5a00"/><path d="M-8 6Q0 13 8 6" fill="none" stroke="#8a5a00" stroke-width="2.6" stroke-linecap="round"/></svg>`;
-}
-function moonSVG(fill='#46535f',stroke='#2f3a44'){
-  return `<svg viewBox="-48 -48 96 96" aria-hidden="true"><path d="M17.3 -33.8A38 38 0 1 0 17.3 33.8A34 34 0 1 1 17.3 -33.8Z" fill="${fill}" stroke="${stroke}" stroke-width="2.4" stroke-linejoin="round"/></svg>`;
+/* ============ Moneda Messi / Maradona ============ */
+// Miniaturas con atribución Wikimedia Commons. Fallback de texto si el navegador no tiene conexión.
+const COIN_PHOTOS={
+  sol:'https://thumb.wikimedia.org/wikipedia/commons/thumb/7/74/Lionel_Messi_close-up.jpg/250px-Lionel_Messi_close-up.jpg',
+  luna:'https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7b/Diego_Maradona_cropped.jpg/250px-Diego_Maradona_cropped.jpg'
+};
+function coinPhoto(side,small=false){
+  const name=side==='sol'?'Messi':'Maradona';
+  if(small)return `<img class="coin-mini" src="${COIN_PHOTOS[side]}" alt="${name}" onerror="this.style.display='none'">`;
+  return `<span class="coin-fallback">${name}</span><img class="coin-face-img" src="${COIN_PHOTOS[side]}" alt="${name}" onerror="this.style.display='none'">`;
 }
 /* ============ Escena de penales ============ */
 const TG={L:215,C:320,R:425};
@@ -1273,7 +1317,6 @@ function cpuKeepDirs(avail,count){
 
 /* ============ Penales ============ */
 async function defenseWindow(defender,kicker,doubled){
-  if(G.used[defender].def)return 'normal';
   const has=G.hand[defender].filter(t=>t==='experto'||t==='hinchada');
   if(!has.length)return 'normal';
   if(defender==='you'){
@@ -1337,7 +1380,7 @@ async function kickAttempt({kicker,defender,value,label,kind,doubled,allowReview
   const mode=allowDefense?await defenseWindow(defender,kicker,doubled):'normal';
   const avail=mode==='hinchada'?['L','R']:['L','C','R'];
   if(mode==='hinchada'){sceneZones({blocked:['C']});sceneTag('El Peso de la Hinchada: sin tiro al centro');crowdShake();}
-  if(mode==='experto')sceneTag('Arquero Experto: cubre dos lados');
+  if(mode==='experto')sceneTag('Arquero Pulpo: cubre dos lados');
   let kickDir,keepDirs;
   if(kicker==='you')kickDir=(await pickDirs({count:1,avail,msg:'Pateás vos: elegí hacia dónde patear. Compu no ve tu elección.',role:'kick'}))[0];
   else kickDir=cpuKickDir(avail);
@@ -1375,10 +1418,10 @@ async function normalPenalty(i,kicker){
   narrate(`Penal ${i+1} de 4. ${kicker==='you'?'Pateás vos.':'Patea Compu.'}`);
   await sleep(500);
   let doubled=false;
-  if(kicker==='you'&&!G.used.you.off&&G.hand.you.includes('doble')){
+  if(kicker==='you'&&G.hand.you.includes('doble')){
     const r=await ask({msg:'¿Querés que este penal valga doble?',buttons:[{id:'go',label:'Patear normal',cls:'primary'}],specials:['doble']});
     if(r.special==='doble'){await useSpecial('you','doble');doubled=true;}
-  }else if(kicker==='cpu'&&!G.used.cpu.off&&G.hand.cpu.includes('doble')&&Math.random()<.5){
+  }else if(kicker==='cpu'&&G.hand.cpu.includes('doble')&&Math.random()<.5){
     await useSpecial('cpu','doble');doubled=true;
   }
   const result=await kickAttempt({kicker,defender,value:doubled?2:1,label:doubled?'Penal Vale Doble':'Penal',kind:'normal',doubled});
@@ -1412,13 +1455,13 @@ async function playRoundFreeKick(i,kicker){
 
 /* ============ Reposición ============ */
 async function resupply(){
-  // Todas las manos siempre contienen tres cartas: cada uso repone instantáneamente.
+  // Las tres cartas permanecen en la mano después de usarse.
   narrate('Renovación de cartas: conservás tres cartas especiales.');
   renderSpecials();
   const r=await ask({msg:'Tenés tres cartas. ¿Querés cambiar una por otra del mazo para la próxima ronda?',buttons:[{id:'keep',label:'Conservar mis 3 cartas',cls:'primary'}],specials:[...new Set(G.hand.you)]});
   if(r.special){
     const i=G.hand.you.indexOf(r.special);
-    if(i>=0){G.spDiscard.push(G.hand.you.splice(i,1)[0]);const t=drawSp();if(t)G.hand.you.push(t);}
+    if(i>=0){G.spDiscard.push(G.hand.you.splice(i,1)[0]);const t=drawSpFor('you');if(t)G.hand.you.push(t);}
     narrate('Cambiaste una carta especial.');renderSpecials();
   }
   if(Math.random()<.65){
@@ -1427,7 +1470,7 @@ async function resupply(){
     const priorities=h.map((t,i)=>({i,score:val[t]-(h.filter(x=>x===t).length>1?2:0)+Math.random()}));
     priorities.sort((a,b)=>a.score-b.score);
     G.spDiscard.push(h.splice(priorities[0].i,1)[0]);
-    const t=drawSp();if(t)h.push(t);
+    const t=drawSpFor('cpu');if(t)h.push(t);
     log('Compu renovó una carta especial.');
   }
   renderSpecials();setMsg('');
@@ -1775,7 +1818,11 @@ function figure(o){
   s+=`<rect x="-19" y="-82" width="38" height="28" rx="7" fill="${o.shorts||'#14181c'}"/>`;
   s+=`<clipPath id="${id}"><rect x="-19" y="-132" width="38" height="58" rx="11"/></clipPath>`;
   s+=`<rect x="-19" y="-132" width="38" height="58" rx="11" fill="${o.shirt}"/>`;
-  if(o.stripe)s+=`<g clip-path="url(#${id})" fill="${o.stripe}"><rect x="-12" y="-132" width="7" height="58"/><rect x="5" y="-132" width="7" height="58"/></g>`;
+  if(o.verticalStripes&&o.stripe){
+    s+=`<g clip-path="url(#${id})">`;
+    for(let i=0;i<6;i++)s+=`<rect x="${-19+i*7}" y="-132" width="7" height="58" fill="${i%2?o.stripe:o.shirt}"/>`;
+    s+='</g>';
+  }else if(o.stripe)s+=`<g clip-path="url(#${id})" fill="${o.stripe}"><rect x="-12" y="-132" width="7" height="58"/><rect x="5" y="-132" width="7" height="58"/></g>`;
   if(o.back)s+='<text x="0" y="-96" text-anchor="middle" font-size="26" fill="#fff" stroke="#000" stroke-opacity=".35" stroke-width="2" paint-order="stroke" font-family="\'Alfa Slab One\',Georgia,serif">10</text>';
   const arm=(d)=>`<path d="${d}" stroke="${o.shirt}" stroke-width="11" stroke-linecap="round" fill="none"/>`;
   if(o.arms==='wall'){
@@ -1843,7 +1890,7 @@ function buildSorteoScene(){
   $('#sCrowd').innerHTML=crowdMarkup(96);
   $('#sStripes').innerHTML=stripesMarkup(120,30,8);
   const ck=G.cpuKit;
-  const player=figure({x:130,y:322,s:1.05,shirt:'#74acdf',stripe:'#fff',shorts:'#14181c',socks:'#fff',face:'r',hair:'#3a2616'});
+  const player=figure({x:130,y:322,s:1.05,...playerOutfit(G.playerKit),face:'r',hair:'#3a2616'});
   const ref=figure({x:320,y:322,s:1.05,shirt:'#14181c',shorts:'#14181c',socks:'#14181c',face:'c',hair:'#1b1b1b',arms:'ref',
     extra:'<path d="M-8 -132 L0 -121 L8 -132Z" fill="#fff"/><path d="M0 -128 L10 -110" stroke="#f6b40e" stroke-width="1.6"/><circle cx="10" cy="-108" r="3.4" fill="#f6b40e"/><rect x="-14" y="-108" width="7" height="9" rx="1" fill="#f6b40e"/><rect x="-14" y="-98" width="7" height="9" rx="1" fill="#d23b35"/>'});
   const keeper=figure({x:510,y:322,s:1.05,shirt:ck.jersey,cap:ck.cap,glove:'#e8892b',shorts:'#14181c',socks:'#f3efe3',face:'l'});
@@ -1854,17 +1901,17 @@ async function sorteo(){
   show('s-draw');
   buildSorteoScene();
   const coin=$('#coin'),toss=$('#toss'),msg=$('#drawMsg'),btns=$$('#coinBtns .btn');
-  $('#faceSol').innerHTML=sunSVG();$('#faceLuna').innerHTML=moonSVG();
-  $('#btnSol').innerHTML=sunSVG()+'<span>Cara</span>';
-  $('#btnLuna').innerHTML=moonSVG('#e3e9ee','#8793a0')+'<span>Cruz</span>';
+  $('#faceSol').innerHTML=coinPhoto('sol');$('#faceLuna').innerHTML=coinPhoto('luna');
+  $('#btnSol').innerHTML=coinPhoto('sol',true)+'<span>Messi</span>';
+  $('#btnLuna').innerHTML=coinPhoto('luna',true)+'<span>Maradona</span>';
   btns.forEach(b=>{b.disabled=true;});
   coin._x=0;coin.style.transition='none';coin.style.transform='rotateX(0deg)';void coin.offsetWidth;coin.style.transition='';
-  const nm=s=>s==='sol'?'cara':'cruz';
+  const nm=s=>s==='sol'?'Messi':'Maradona';
   async function tirar(intro,pregunta,okText){
     msg.textContent='';
     if(intro)await refSay(intro,2000);
     await refSay(pregunta);
-    msg.textContent='Tocá cara o cruz.';
+    msg.textContent='Elegí Messi o Maradona.';
     const side=await new Promise(r=>{
       btns.forEach(b=>{b.disabled=false;b.onclick=()=>{btns.forEach(x=>{x.disabled=true;});SFX.click();r(b.dataset.side);};});
     });
@@ -1885,8 +1932,8 @@ async function sorteo(){
     await refSay(null,300);
     return w;
   }
-  G.kick1=await tirar('¡Buenas! Vamos a hacer el sorteo.','Primero: ¿quién patea primero? Elegí cara o cruz.',w=>w==='you'?`Patea primero ${G.nick}.`:'Patea primero Compu.');
-  G.mano1=await tirar('','Ahora: ¿quién es mano en el Truco? Elegí cara o cruz.',w=>w==='you'?`${G.nick} es mano en la primera ronda.`:'Compu es mano en la primera ronda.');
+  G.kick1=await tirar('¡Buenas! ¡Una moneda decide todo!','Elegí Messi o Maradona: quien gane el sorteo comienza los penales, los tiros libres y el Truco.',w=>w==='you'?`${G.nick} comienza en todas las fases del partido.`:'Compu comienza en todas las fases del partido.');
+  G.mano1=G.kick1;
 }
 
 /* ============ VAR: el árbitro revisa la jugada ============ */
@@ -1987,7 +2034,7 @@ async function varReview(kicker,defender,force,incident='gol'){
 
   setVarRefPose('monitor');
   const kit=defender==='you'?G.kit:G.cpuKit;
-  scr.innerHTML=isSave||res==='valid'?replayAdvance(kit):replayDouble(kicker==='you'?'#74acdf':'#f6b40e');
+  scr.innerHTML=isSave||res==='valid'?replayAdvance(kit):replayDouble(kicker==='you'?G.playerKit.shirt:'#f6b40e');
   scr.classList.add('on');
   SFX.deal();
   await say('Ahora voy a revisar la jugada en el monitor.',1500);
@@ -2070,7 +2117,7 @@ function arcFrames(x0,y0,x1,y1,apex,s1,n=28){
 }
 function fkBuild(pl){
   const you=pl==='you';
-  const blue={shirt:'#74acdf',stripe:'#fff',socks:'#fff'},yellow={shirt:'#f6b40e',stripe:null,socks:'#f6b40e'};
+  const blue=playerOutfit(G.playerKit),yellow=G.cpuPlayerKit;
   const kK=you?blue:yellow,wK=you?yellow:blue,kit=you?G.cpuKit:G.kit;
   $('#fkCrowd').innerHTML=crowdMarkup(86);
   $('#fkStripes').innerHTML=stripesMarkup(108,32,8);
@@ -2153,7 +2200,7 @@ function buildFkIntroScene(){
   const stadium='<rect width="640" height="360" fill="#102b3b"/><rect y="107" width="640" height="19" fill="#0b151a"/>'+
     '<rect y="126" width="640" height="234" fill="#14663d"/><path d="M0 320 Q320 250 640 320" stroke="#fff" stroke-opacity=".45" stroke-width="3" fill="none"/>';
   const ref=figure({x:320,y:335,s:1.23,shirt:'#14181c',shorts:'#14181c',socks:'#14181c',face:'c',hair:'#1b1b1b',arms:'ref',extra:'<rect x="-14" y="-108" width="8" height="12" fill="#f6b40e"/>'});
-  const player=figure({x:138,y:335,s:.95,shirt:'#74acdf',stripe:'#fff',shorts:'#14181c',socks:'#fff',face:'r'});
+  const player=figure({x:138,y:335,s:.95,...playerOutfit(G.playerKit),face:'r'});
   const goalie=figure({x:520,y:335,s:.95,shirt:G.cpuKit.jersey,cap:G.cpuKit.cap,glove:'#e8892b',shorts:'#14181c',socks:'#fff',face:'l'});
   $('#fkRefScene').innerHTML=stadium+player+goalie+ref;
 }
@@ -2229,8 +2276,9 @@ async function playRound(){
   G.round++;
   G.used={you:{off:false,def:false},cpu:{off:false,def:false}};
   G.rs={you:emptyCats(),cpu:emptyCats()};
-  G.kickFirst=G.round===1?G.kick1:other(G.kickFirst);
-  G.mano=G.round===1?G.mano1:other(G.mano);
+  // Un solo sorteo: el ganador comienza todas las fases de todas las rondas.
+  G.kickFirst=G.kick1;
+  G.mano=G.kick1;
   $('#roundLbl').textContent='Ronda '+G.round;
   renderSpecials();trackerReset();G.fkc={you:0,cpu:0};
   setPhase('pen');showView('pen');sceneReset(G.kickFirst==='you'?'cpu':'you');setRole(null);
@@ -2267,8 +2315,8 @@ async function startGame(){
   try{
     actx();
     G.spDeck=shuffle(Object.keys(SP).flatMap(k=>Array(SP[k].n).fill(k)));
-    G.hand.you=[G.spDeck.pop(),G.spDeck.pop(),G.spDeck.pop()];
-    G.hand.cpu=[G.spDeck.pop(),G.spDeck.pop(),G.spDeck.pop()];
+    G.hand.you=[];G.hand.cpu=[];
+    for(const who of ['you','cpu'])for(let i=0;i<3;i++)G.hand[who].push(drawSpFor(who,true));
     await setupPlayer();
     await sorteo();
     show('s-game');
