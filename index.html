@@ -451,7 +451,7 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
       <button class="btn big" id="btnRules" type="button">Cómo se juega</button>
       <button class="btn big ghost" type="button" disabled>Jugar online <small>(próximamente)</small></button>
     </div>
-    <p class="ver">Versión 1.2 · Dos penales + dos tiros libres por jugador · VAR en goles y atajadas.</p>
+    <p class="ver">Versión 1.3 · VAR animado con secuencia arbitral · dos penales + dos tiros libres por jugador.</p>
   </div>
 </section>
 
@@ -655,22 +655,7 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
         <rect x="60" y="14" width="520" height="282" rx="18" fill="#1a232b" stroke="#41505d" stroke-width="3"/>
         <rect x="76" y="28" width="488" height="250" rx="8" fill="#04090d"/>
         <g id="varScr" clip-path="url(#varclip)"></g>
-        <g id="varRef">
-          <path d="M150 402 Q158 352 232 342 L408 342 Q482 352 490 402Z" fill="#14181c"/>
-          <path d="M214 378 Q170 330 138 274" stroke="#14181c" stroke-width="30" stroke-linecap="round" fill="none"/>
-          <path d="M426 378 Q470 330 502 274" stroke="#14181c" stroke-width="30" stroke-linecap="round" fill="none"/>
-          <ellipse cx="132" cy="266" rx="16" ry="14" fill="#e9c9a5"/>
-          <ellipse cx="508" cy="266" rx="16" ry="14" fill="#e9c9a5"/>
-          <g id="varHead">
-            <rect x="306" y="342" width="28" height="18" fill="#e9c9a5"/>
-            <ellipse cx="284" cy="326" rx="7" ry="9" fill="#e9c9a5"/>
-            <ellipse cx="356" cy="326" rx="7" ry="9" fill="#e9c9a5"/>
-            <circle cx="320" cy="318" r="37" fill="#1c1812"/>
-            <path d="M286 320 Q320 272 354 320" stroke="#8a96a0" stroke-width="5" fill="none" stroke-linecap="round"/>
-            <rect x="278" y="316" width="11" height="20" rx="4" fill="#2a333b"/>
-            <rect x="351" y="316" width="11" height="20" rx="4" fill="#2a333b"/>
-          </g>
-        </g>
+        <g id="varRef"></g>
       </svg>
       <div class="rbubble varb" id="varBubble"></div>
       <div class="stamp" id="varStamp"></div>
@@ -1905,12 +1890,38 @@ async function sorteo(){
 }
 
 /* ============ VAR: el árbitro revisa la jugada ============ */
+function sideName(side){return side==='you'?G.nick:'Compu';}
 function varCommon(){
   return '<g><circle cx="94" cy="46" r="5" fill="#ff3b30" class="blink"/><text x="104" y="50" fill="#fff" font-size="12" font-weight="700" font-family="\'Barlow Semi Condensed\',sans-serif">REPLAY</text><text x="544" y="50" text-anchor="end" fill="#fff" fill-opacity=".7" font-size="12" font-weight="700" font-family="\'Barlow Semi Condensed\',sans-serif">VAR</text></g>';
 }
 function ballMarkup(id,x,y,r){
   return `<g id="${id}" style="transform:translate(${x}px,${y}px)"><circle r="${r}" fill="#fff" stroke="#1b2a36" stroke-width="1.4"/><polygon points="0,${-r*.45} ${r*.42},${-r*.14} ${r*.26},${r*.36} ${-r*.26},${r*.36} ${-r*.42},${-r*.14}" fill="#1b2a36"/></g>`;
 }
+function varFieldScene(lbl='Chequeo VAR'){
+  return `<rect x="76" y="28" width="488" height="250" fill="#0d2a36"/>
+  <g fill="#fff" opacity=".16">${Array.from({length:8},(_,i)=>`<circle cx="${94+i*56}" cy="54" r="5"/>`).join('')}</g>
+  <rect x="76" y="116" width="488" height="162" fill="#5fb672"/>
+  <g fill="#fff" opacity=".18"><rect x="76" y="150" width="488" height="22"/><rect x="76" y="194" width="488" height="22"/><rect x="76" y="238" width="488" height="22"/></g>
+  <g stroke="#fff" stroke-width="4" fill="none" opacity=".95"><line x1="76" y1="246" x2="564" y2="246"/><line x1="442" y1="246" x2="564" y2="190"/><rect x="116" y="112" width="154" height="86" rx="2"/><rect x="112" y="108" width="162" height="6" fill="#fff" stroke="none"/><line x1="116" y1="112" x2="116" y2="198"/><line x1="270" y1="112" x2="270" y2="198"/></g>
+  <g stroke="#f8f8f8" stroke-opacity=".78" stroke-width="1.7" fill="none">${Array.from({length:10},(_,i)=>`<line x1="116" y1="${112+i*8.6}" x2="270" y2="${112+i*8.6}"/>`).join('')}${Array.from({length:12},(_,i)=>`<line x1="${116+i*12.8}" y1="112" x2="${116+i*12.8}" y2="198"/>`).join('')}</g>
+  <rect x="208" y="40" width="224" height="34" rx="17" fill="rgba(5,15,22,.7)" stroke="rgba(255,255,255,.28)"/><text x="320" y="62" text-anchor="middle" fill="#fff" font-size="18" font-weight="700" font-family="'Barlow Semi Condensed',sans-serif">${escapeXml(lbl)}</text>`;
+}
+function varRefPoseMarkup(pose){
+  const waitArms=`<path d="M222 378 Q196 332 180 292" stroke="#14181c" stroke-width="30" stroke-linecap="round" fill="none"/><path d="M418 378 Q432 334 466 302" stroke="#14181c" stroke-width="30" stroke-linecap="round" fill="none"/><ellipse cx="176" cy="286" rx="17" ry="15" fill="#e9c9a5"/><ellipse cx="472" cy="301" rx="18" ry="16" fill="#e9c9a5"/>`;
+  const squareArms=`<path d="M222 378 Q210 332 226 286" stroke="#14181c" stroke-width="30" stroke-linecap="round" fill="none"/><path d="M418 378 Q430 332 414 286" stroke="#14181c" stroke-width="30" stroke-linecap="round" fill="none"/><rect x="214" y="260" width="34" height="26" rx="9" fill="#e9c9a5"/><rect x="392" y="260" width="34" height="26" rx="9" fill="#e9c9a5"/><rect x="248" y="246" width="144" height="54" rx="10" fill="none" stroke="#e9c9a5" stroke-width="6" opacity=".95"/>`;
+  const monitorArms=`<path d="M222 378 Q190 330 156 274" stroke="#14181c" stroke-width="30" stroke-linecap="round" fill="none"/><path d="M418 378 Q450 330 484 274" stroke="#14181c" stroke-width="30" stroke-linecap="round" fill="none"/><ellipse cx="150" cy="266" rx="16" ry="14" fill="#e9c9a5"/><ellipse cx="490" cy="266" rx="16" ry="14" fill="#e9c9a5"/>`;
+  const announceArms=`<path d="M222 378 Q196 338 168 312" stroke="#14181c" stroke-width="30" stroke-linecap="round" fill="none"/><path d="M418 378 Q436 336 458 308" stroke="#14181c" stroke-width="30" stroke-linecap="round" fill="none"/><ellipse cx="164" cy="306" rx="16" ry="14" fill="#e9c9a5"/><ellipse cx="462" cy="302" rx="16" ry="14" fill="#e9c9a5"/>`;
+  let arms=monitorArms,extra='';
+  if(pose==='wait'){arms=waitArms;extra='<path d="M145 283 q22 -16 39 0" stroke="#74acdf" stroke-width="4" fill="none" opacity=".85"/><path d="M145 296 q22 -16 39 0" stroke="#74acdf" stroke-width="3" fill="none" opacity=".6"/>';} 
+  else if(pose==='square'){arms=squareArms;extra='<text x="320" y="230" text-anchor="middle" fill="#fff" font-size="15" font-weight="700" font-family="\'Barlow Semi Condensed\',sans-serif">Revisión en campo</text>';} 
+  else if(pose==='announce'){arms=announceArms;extra='<path d="M455 288 l22 -8" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".65"/>';}
+  return `<path d="M150 402 Q158 352 232 342 L408 342 Q482 352 490 402Z" fill="#14181c"/>
+  ${arms}
+  <g id="varHead"><rect x="306" y="342" width="28" height="18" fill="#e9c9a5"/><ellipse cx="286" cy="326" rx="7" ry="9" fill="#e9c9a5"/><ellipse cx="354" cy="326" rx="7" ry="9" fill="#e9c9a5"/><circle cx="320" cy="318" r="37" fill="#e9c9a5"/><path d="M286 320 Q320 272 354 320" stroke="#5a321d" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M289 304 Q320 282 351 304 Q347 279 320 276 Q293 279 289 304Z" fill="#1c1812"/><rect x="278" y="316" width="11" height="20" rx="4" fill="#2a333b"/><rect x="351" y="316" width="11" height="20" rx="4" fill="#2a333b"/></g>
+  <rect x="274" y="358" width="92" height="16" rx="7" fill="#14181c"/>
+  <rect x="256" y="208" width="128" height="142" rx="18" fill="#181c21"/><path d="M302 208 L320 226 L338 208" fill="#dfe8ef"/><path d="M298 214 L320 236 L342 214" fill="#fff" opacity=".82"/><rect x="304" y="228" width="32" height="34" rx="6" fill="#14181c"/><rect x="292" y="258" width="56" height="72" rx="10" fill="#23282f"/><rect x="298" y="238" width="23" height="28" rx="3" fill="#f7f1de"/><rect x="298" y="238" width="23" height="6" rx="1" fill="#f6b40e"/><rect x="298" y="245" width="23" height="6" rx="1" fill="#c8302b"/>${extra}`;
+}
+function setVarRefPose(pose){ const host=$('#varRef'); if(host) host.innerHTML=varRefPoseMarkup(pose); }
 function replayAdvance(kit){
   const keeper=`<g id="rKeeperW" style="transition:transform .8s ease-in-out">${figure({x:320,y:196,s:.62,shirt:kit.jersey,cap:kit.cap,glove:'#e8892b',shorts:'#14181c',socks:'#f3efe3',face:'c'})}</g>`;
   return `<rect x="76" y="28" width="488" height="250" fill="#0b1c28"/><rect x="76" y="116" width="488" height="162" fill="#17673f"/>
@@ -1951,63 +1962,99 @@ function replayDouble(shirt){
 async function varReview(kicker,defender,force,incident='gol'){
   const res=force||(fairRandomInt(2)===0?'valid':'annul');
   const isSave=incident==='atajada';
-  const ov=$('#ovVar'),scr=$('#varScr'),bub=$('#varBubble'),stamp=$('#varStamp'),head=$('#varHead');
-  stamp.className='stamp';stamp.innerHTML='';bub.classList.remove('show');head.classList.remove('nod');
+  const ov=$('#ovVar'),scr=$('#varScr'),bub=$('#varBubble'),stamp=$('#varStamp');
+  const kickerName=sideName(kicker),keeperName=sideName(defender);
+  stamp.className='stamp';stamp.innerHTML='';
+  bub.classList.remove('show');
   scr.classList.remove('freeze','on');
+  $('#varTitle').textContent='Chequeo VAR';
+  ov.classList.add('show');
+  const say=async(t,ms)=>{bub.textContent=t;bub.classList.add('show');await sleep(ms||0);};
+  const hideSay=()=>bub.classList.remove('show');
+
+  scr.innerHTML=varFieldScene('Chequeo VAR');
+  setVarRefPose('wait');
+  await sleep(300);
+  SFX.click();
+  await say('Esperen, por favor. Estoy recibiendo la indicación del VAR.',1600);
+  hideSay();
+
+  setVarRefPose('square');
+  await sleep(260);
+  SFX.click();
+  await say('Voy a señalar la revisión en campo.',1400);
+  hideSay();
+
+  setVarRefPose('monitor');
   const kit=defender==='you'?G.kit:G.cpuKit;
   scr.innerHTML=isSave||res==='valid'?replayAdvance(kit):replayDouble(kicker==='you'?'#74acdf':'#f6b40e');
-  $('#varTitle').textContent='El árbitro revisa la jugada';
-  ov.classList.add('show');
-  const say=async(t,ms)=>{bub.textContent=t;bub.classList.add('show');await sleep(ms);};
-  await sleep(500);
-  scr.classList.add('on');SFX.deal();
-  await say('Vamos a revisar la jugada…',1500);
-  bub.classList.remove('show');
+  scr.classList.add('on');
+  SFX.deal();
+  await say('Ahora voy a revisar la jugada en el monitor.',1500);
+  hideSay();
+
   if(isSave||res==='valid'){
-    await sleep(500);
-    $('#rKeeperW').style.transform='translateY(16px)';
-    await sleep(1000);
-    const bl=$('#rBall');bl.style.transition='transform .9s cubic-bezier(.2,.7,.3,1)';bl.style.transform='translate(266px,128px) scale(.6)';
-    await sleep(1300);
-  }else{
-    await sleep(500);
-    $('#legR').style.transform='rotate(-46deg)';
-    await sleep(240);
-    const bl=$('#rBall');bl.style.transition='transform .5s ease-out';bl.style.transform='translate(342px,217px)';
-    $('#ring1').setAttribute('opacity','1');
-    await sleep(750);
-    $('#legR').style.transform='rotate(30deg)';
-    $('#legL').style.transform='rotate(-46deg)';
     await sleep(300);
-    bl.style.transition='transform .8s cubic-bezier(.2,.7,.3,1)';bl.style.transform='translate(520px,190px)';
-    $('#ring2').setAttribute('opacity','1');
-    await sleep(1100);
+    const k=$('#rKeeperW'); if(k) k.style.transform='translateY(16px)';
+    await sleep(850);
+    const bl=$('#rBall'); if(bl){bl.style.transition='transform .9s cubic-bezier(.2,.7,.3,1)';bl.style.transform='translate(266px,128px) scale(.6)';}
+    await sleep(1150);
+  }else{
+    await sleep(300);
+    const legR=$('#legR'), legL=$('#legL');
+    if(legR) legR.style.transform='rotate(-46deg)';
+    await sleep(230);
+    const bl=$('#rBall'); if(bl){bl.style.transition='transform .5s ease-out';bl.style.transform='translate(342px,217px)';}
+    const ring1=$('#ring1'); if(ring1) ring1.setAttribute('opacity','1');
+    await sleep(700);
+    if(legR) legR.style.transform='rotate(30deg)';
+    if(legL) legL.style.transform='rotate(-46deg)';
+    await sleep(280);
+    if(bl){bl.style.transition='transform .8s cubic-bezier(.2,.7,.3,1)';bl.style.transform='translate(520px,190px)';}
+    const ring2=$('#ring2'); if(ring2) ring2.setAttribute('opacity','1');
+    await sleep(1000);
   }
-  scr.classList.add('freeze');SFX.click();
+  scr.classList.add('freeze');
+  SFX.click();
+  await sleep(380);
+
+  scr.classList.remove('freeze','on');
+  scr.innerHTML=varFieldScene('Decisión final');
+  setVarRefPose('announce');
+  await sleep(240);
+
+  let finalMsg='', stampLabel='', stampCls='ok';
   if(isSave){
-    await say(res==='annul'?'El arquero se adelantó antes del disparo.':'El arquero atajó correctamente.',1700);
-    head.classList.add('nod');
-    if(res==='annul'){
-      await say('¡Atajada anulada! Se repite el tiro.',1000);
-      stamp.className='stamp bad show';stamp.innerHTML='ATAJADA ANULADA<small>Se repite el tiro</small>';SFX.point();
+    if(res==='valid'){
+      finalMsg=`Luego de una revisión en campo noto que el arquero ${keeperName} realiza una atajada legítima. Decisión final: NO GOL.`;
+      stampLabel='NO GOL<small>Atajada legítima</small>';
+      stampCls='ok';
+      SFX.save();
     }else{
-      await say('La atajada se mantiene.',1000);
-      stamp.className='stamp ok show';stamp.innerHTML='ATAJADA VÁLIDA<small>Se mantiene el resultado</small>';SFX.save();
+      finalMsg=`Luego de una revisión en campo noto que el arquero ${keeperName} realiza una atajada ilícita y antideportiva. Decisión final: GOL.`;
+      stampLabel='GOL<small>Atajada ilícita</small>';
+      stampCls='bad';
+      SFX.point();
     }
   }else{
-    await say(res==='valid'?'El arquero se adelantó, pero fue gol.':'¡El pateador toca dos veces la pelota!',1700);
-    head.classList.add('nod');
     if(res==='valid'){
-      await say('El gol es válido.',1000);
-      stamp.className='stamp ok show';stamp.innerHTML='GOL VÁLIDO<small>El gol sigue en pie</small>';SFX.point();
+      finalMsg=`Luego de una revisión en campo noto que el pateador ${kickerName} realiza el gol lícitamente. Decisión final: GOL.`;
+      stampLabel='GOL<small>Gol lícito</small>';
+      stampCls='ok';
+      SFX.point();
     }else{
-      await say('Doble toque: ¡se anula el gol!',1000);
-      stamp.className='stamp bad show';stamp.innerHTML='GOL ANULADO<small>Doble toque del pateador</small>';SFX.bad();
+      finalMsg=`Luego de una revisión en campo noto que el pateador ${kickerName} realiza un movimiento ilícito y antideportivo. Decisión final: NO GOL.`;
+      stampLabel='NO GOL<small>Movimiento ilícito</small>';
+      stampCls='bad';
+      SFX.bad();
     }
   }
+  await say(finalMsg,2800);
+  stamp.className='stamp '+stampCls+' show';
+  stamp.innerHTML=stampLabel;
   await sleep(2400);
   ov.classList.remove('show');
-  await sleep(200);
+  await sleep(220);
   return res;
 }
 
