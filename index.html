@@ -402,6 +402,44 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
 .die .top{transform:rotateX(90deg) translateZ(35px)}
 .die .bottom{transform:rotateX(-90deg) translateZ(35px)}
 
+
+/* ============ El Genio del Fútbol Mundial ============ */
+.phases{flex-wrap:wrap}
+.pchip{white-space:nowrap;padding:4px 11px}
+#v-genio{background:linear-gradient(180deg,#062119,#0d3428);align-items:center;justify-content:center}
+.genio-wrap{width:100%;max-width:840px;display:flex;flex-direction:column;gap:10px;padding:12px 14px}
+.genio-heading{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}
+.genio-heading h2{font-size:clamp(15px,2.5vw,23px);color:#f6d878;text-shadow:0 3px #153b31}
+.genio-heading span{border-radius:99px;background:#0b2833;border:1px solid rgba(255,255,255,.2);padding:5px 11px;font-size:14px;font-weight:800}
+.genio-pitch{width:100%;position:relative;border-radius:13px;overflow:hidden;border:3px solid rgba(255,255,255,.25);box-shadow:0 8px 20px #0005}
+#genioScene{display:block;width:100%;height:auto}
+.genio-pop{position:absolute;top:4%;left:50%;transform:translateX(-50%);background:rgba(4,26,32,.93);border:2px solid #f6b40e;border-radius:11px;padding:7px 16px;text-align:center;font-weight:800;font-size:clamp(13px,2vw,21px);pointer-events:none;max-width:88%;opacity:0;transition:opacity .2s}
+.genio-pop.on{opacity:1}
+.genio-pop.good{border-color:#80e39c;color:#b9f6ca}
+.genio-pop.bad{border-color:#ff9c96;color:#ffbdb5}
+.genio-progress{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px}
+.genio-progress .step{font-size:12px;text-align:center;padding:6px 2px;border:1px solid #ffffff38;border-radius:9px;background:#173b36;color:#bad2c8;font-weight:700}
+.genio-progress .step.done{background:#1e7340;color:#e5ffe6;border-color:#a9f2a5}
+.genio-progress .step.current{background:#796018;color:#fff3bf;border-color:#f6b40e;box-shadow:0 0 0 2px #f6b40e33}
+.genio-progress .step.lost{background:#7c312c;color:#fff;border-color:#f1a09b}
+.genio-hint{text-align:center;color:#d5e8df;font-weight:700;font-size:15px}
+#ovGenioIntro{background:rgba(3,13,15,.96)}
+.genio-intro-scene{background:#145d42}
+.genio-intro .fk-ref-bubble{top:3%;max-width:87%}
+.fk-special-offer{width:100%;padding:12px;background:#183d50;border:2px solid #75badb;border-radius:14px;text-align:center;display:flex;flex-direction:column;gap:10px}
+.fk-special-offer p{font-size:16px;font-weight:700}
+.fk-special-offer .offer-buttons{display:flex;justify-content:center;flex-wrap:wrap;gap:10px}
+.fk-special-status{min-height:18px;font-weight:700;color:#c4e5ef;text-align:center;font-size:14px}
+#ovAnn{z-index:90}
+@media(max-width:640px){
+  .genio-wrap{gap:7px;padding:7px}
+  .genio-progress{gap:3px}
+  .genio-progress .step{font-size:10px;padding:5px 1px}
+  .genio-hint{font-size:12px}
+  .genio-heading h2{font-size:14px}
+  .fk-special-offer p{font-size:14px}
+}
+
 @media (max-width:640px){
   :root{--cw:clamp(46px,13vw,60px)}
   .brand{display:none}
@@ -456,13 +494,13 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
   <div class="title-wrap">
     <div class="fan" id="fan" aria-hidden="true"></div>
     <h1 class="logo">Penal &amp; Truco</h1>
-    <p class="tag">Penales, tiros libres, Truco y cartas especiales. Gana quien llegue a 30 puntos al terminar una ronda.</p>
+    <p class="tag">Penales, tiros libres, gambetas, Truco y cartas especiales. Gana quien llegue a 30 puntos al terminar una ronda.</p>
     <div class="menu">
       <button class="btn primary big" id="btnPlay" type="button">Jugar contra la compu</button>
       <button class="btn big" id="btnRules" type="button">Cómo se juega</button>
       <button class="btn big ghost" type="button" disabled>Jugar online <small>(próximamente)</small></button>
     </div>
-    <p class="ver">Versión 1.4 · Un sorteo Messi/Maradona · camisetas a rayas · cartas reutilizables.</p>
+    <p class="ver">Versión 1.5 · Gambetas del genio · 6 cartas especiales · Tiros Libres mejorados.</p>
   </div>
 </section>
 
@@ -534,6 +572,7 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
   <div class="phases">
     <span class="pchip" data-p="pen">Penales</span>
       <span class="pchip" data-p="fk">Tiros libres</span>
+      <span class="pchip" data-p="genio">El Genio</span>
       <span class="pchip" data-p="truco">Truco</span>
       <span class="pchip" data-p="rep">Cartas</span>
   </div>
@@ -615,6 +654,38 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
       </div>
     </div>
 
+    <!-- Vista de El Genio: cinco defensores y arquero -->
+    <div class="view" id="v-genio">
+      <div class="genio-wrap">
+        <div class="genio-heading">
+          <h2>¡ARRANCA EL GENIO DEL FÚTBOL MUNDIAL!</h2>
+          <span id="genioRole">Turno de gambetas</span>
+        </div>
+        <div class="genio-pitch">
+          <svg id="genioScene" viewBox="0 0 760 440" role="img" aria-label="Cancha vista de costado: atacante gambetea cinco defensores y al arquero">
+            <defs>
+              <linearGradient id="genioGrass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#207447"/><stop offset="1" stop-color="#105233"/></linearGradient>
+              <pattern id="genioNet" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M0 0V10M0 0H10" stroke="#fff" stroke-opacity=".55" stroke-width="1" fill="none"/></pattern>
+            </defs>
+            <rect width="760" height="440" fill="url(#genioGrass)"/>
+            <g id="genioStripes"></g>
+            <rect x="19" y="18" width="722" height="404" rx="3" stroke="#fff" stroke-opacity=".72" stroke-width="3" fill="none"/>
+            <line x1="263" y1="18" x2="263" y2="422" stroke="#fff" stroke-opacity=".7" stroke-width="3"/>
+            <circle cx="263" cy="220" r="61" stroke="#fff" stroke-opacity=".7" stroke-width="3" fill="none"/>
+            <circle cx="263" cy="220" r="3" fill="#fff"/>
+            <path d="M741 79H614V361H741 M741 143H680V297H741" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="3"/>
+            <rect x="734" y="168" width="21" height="104" rx="3" fill="url(#genioNet)" stroke="#fff" stroke-width="5"/>
+            <g id="genioDefenders"></g>
+            <g id="genioRunner" style="transform:translate(99px,266px);transition:transform .62s cubic-bezier(.2,.75,.25,1)"></g>
+            <g id="genioEffects"></g>
+          </svg>
+          <div class="genio-pop" id="genioPop" aria-live="polite"></div>
+        </div>
+        <div class="genio-progress" id="genioProgress" aria-label="Avance del jugador"></div>
+        <p class="genio-hint" id="genioHint" aria-live="polite">Gambeteá a los cinco defensores y al arquero.</p>
+      </div>
+    </div>
+
     <!-- Vista de Truco -->
     <div class="view" id="v-truco">
       <div class="felt">
@@ -676,6 +747,19 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
   </div>
 </div>
 
+<div class="ov" id="ovGenioIntro">
+  <div class="fk-intro genio-intro" role="dialog" aria-label="El árbitro presenta El Genio del Fútbol Mundial">
+    <h2>¡ARRANCA EL GENIO DEL FÚTBOL MUNDIAL!</h2>
+    <div class="fk-intro-scene genio-intro-scene">
+      <svg id="genioRefScene" viewBox="0 0 640 360" role="img" aria-label="Árbitro y futbolistas junto a la mitad de la cancha"></svg>
+      <div id="genioRefBubble" class="fk-ref-bubble">¡Atención! Ahora llega el desafío del genio.</div>
+    </div>
+    <p class="fk-intro-steps">Cada uno ataca una vez. ¡Hay que superar <b>cinco defensores</b> y después al <b>arquero</b>!</p>
+    <p class="fk-intro-steps">Elegís <b>izquierda o derecha</b> en cada cruce. Si el defensor elige el mismo lado, recupera la pelota y termina tu ataque. Si eligen distinto, avanzás. Superá los <b>6 cruces seguidos</b> y hacés un <b>GOL de 6 puntos</b>.</p>
+    <button class="btn primary big" type="button" id="genioIntroOk">¡Entendido! Arranca el genio</button>
+  </div>
+</div>
+
 <div class="ov" id="ovFKIntro">
   <div class="fk-intro" role="dialog" aria-label="El árbitro explica los tiros libres">
     <h2>¡Llegaron los tiros libres!</h2>
@@ -714,19 +798,21 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
       </svg>
       <div class="fktag" id="fkTag"></div>
     </div>
+    <div id="fkSpecialOffer" class="fk-special-offer" style="display:none" aria-live="polite"></div>
+    <div id="fkSpecialStatus" class="fk-special-status" aria-live="polite"></div>
     <div class="fkchoice" id="fkChoice">
       <p id="fkChooseTitle" class="fkchoose-title" aria-live="polite"></p>
       <div class="fknums" id="fkNumbers" role="group" aria-label="Números de tiro libre"></div>
       <p id="fkPickHelp" class="fkhint" aria-live="polite"></p>
-      <button class="btn primary" id="fkPickOk" type="button" disabled>Confirmar mis 2 números</button>
+      <button class="btn primary" id="fkPickOk" type="button" disabled>Confirmar números</button>
     </div>
     <div class="fkchosen" id="fkChosen" aria-live="polite"></div>
     <div class="fkdice">
       <div class="die-scene"><div class="die" id="fkDie"></div></div>
       <div class="fklegend">
-        <div class="g"><b>2 números</b><span>Pateador: gol (+3)</span></div>
-        <div class="s"><b>2 números</b><span>Arquero: atajada (+1)</span></div>
-        <div class="m"><b>2 restantes</b><span>Afuera (0 puntos)</span></div>
+        <div class="g"><b id="fkGoalCount">2 números</b><span>Pateador: gol (+3)</span></div>
+        <div class="s"><b id="fkSaveCount">2 números</b><span>Arquero: atajada (+1)</span></div>
+        <div class="m"><b id="fkMissCount">2 restantes</b><span>Afuera (0 puntos)</span></div>
       </div>
     </div>
     <p id="fkMsg" aria-live="polite"></p>
@@ -737,7 +823,7 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
 <div class="ov" id="ovRules">
   <div class="modal" role="dialog" aria-label="Cómo se juega">
     <h2>Cómo se juega</h2>
-    <p>Se juega contra Compu hasta llegar a 30 puntos. Cada ronda tiene penales, tiros libres, Truco y renovación opcional de cartas. La victoria se decide al terminar la ronda.</p>
+    <p>Se juega contra Compu hasta llegar a 30 puntos. Cada ronda tiene penales, tiros libres, El Genio, Truco y renovación opcional de cartas. La victoria se decide al terminar la ronda.</p>
     <h3>1. Penales: dos por jugador</h3>
     <ul>
       <li>En total son <b>cuatro penales</b>: pateás, atajás, pateás, atajás (o al revés).</li>
@@ -749,9 +835,18 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
       <li>El árbitro explica las reglas antes de esta fase. Son <b>cuatro tiros libres</b>, alternando pateador y arquero.</li>
       <li>El pateador elige dos números del 1 al 6. El arquero elige otros dos distintos. Los dos restantes representan afuera.</li>
       <li>El dado decide: si sale un número del pateador, <b>gol +3</b>; si sale uno del arquero, <b>atajados +1</b>; si no, <b>afuera</b>.</li>
-      <li>Cada resultado tiene una probabilidad de 2/6 (33,3%) cuando se usa un dado justo.</li>
+      <li>Con <b>Tiro Colocado</b>, el pateador elige 3 números; con <b>Barrera Reforzada</b>, el arquero elige 3. Si se activan ambas, se neutralizan y cada jugador elige 2.</li>
+      <li>Sin cartas, cada resultado tiene una probabilidad de 2/6 (33,3%) con un dado justo.</li>
     </ul>
-    <h3>3. Truco Express</h3>
+    <h3>3. ¡Arranca el genio del fútbol mundial!</h3>
+    <ul>
+      <li>Después de los tiros libres, cada jugador tiene un ataque, comenzando quien ganó el sorteo.</li>
+      <li>Hay <b>cinco defensores y un arquero</b>: seis cruces seguidos, con decisiones secretas de izquierda o derecha.</li>
+      <li>Si atacante y defensor eligen el mismo lado, el defensor recupera la pelota y termina ese ataque.</li>
+      <li>Si eligen lados distintos, el atacante gambetea y pasa al siguiente rival.</li>
+      <li>Después de esquivar también al arquero, convierte automáticamente y recibe <b>6 puntos</b> (puntuación provisoria).</li>
+    </ul>
+    <h3>4. Truco Express</h3>
     <ul>
       <li>Una mano de Truco argentino de 40 cartas, sin Flor ni Falta Envido.</li>
       <li>Truco 2, Retruco 3, Vale Cuatro 4. Envido 2, Real Envido 3, Envido + Envido 4, Envido + Real 5 y Envido + Envido + Real 7.</li>
@@ -762,8 +857,11 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
       <li><b>Penal Vale Doble:</b> si convertís uno de tus dos penales, sumás 2 en lugar de 1.</li>
       <li><b>Arquero Pulpo:</b> defendés dos direcciones en un penal.</li>
       <li><b>El Peso de la Hinchada:</b> pateador y arquero solo pueden elegir izquierda o derecha.</li>
-      <li><b>Chequeo VAR:</b> tras un gol, el arquero perjudicado puede intentar anularlo (50%). Tras una atajada, el pateador perjudicado puede solicitar que se repita (50%). Si el VAR no favorece al reclamante, la decisión inicial queda firme.</li>
-      <li>Las cartas especiales no se gastan: podés volver a utilizar la misma carta en tu siguiente penal o tiro libre. No hay límite por ronda. Una misma ejecución no se revisa dos veces con VAR.</li>
+      <li><b>Chequeo VAR:</b> tras un gol, el arquero perjudicado puede intentar anularlo (50%). Tras una atajada, el pateador perjudicado puede solicitar que se repita (50%). Si el VAR no favorece al reclamante, la decisión inicial queda firme. Solo aplica a penales y tiros libres.</li>
+      <li><b>Tiro Colocado:</b> el pateador elige 3 números en un tiro libre en lugar de 2.</li>
+      <li><b>Barrera Reforzada:</b> el arquero elige 3 números para atajar un tiro libre en lugar de 2.</li>
+      <li>Si ambos activan Tiro Colocado y Barrera Reforzada en el mismo tiro libre, <b>se neutralizan</b>: 2 números por cada uno y 2 para afuera.</li>
+      <li>Las cartas especiales no se gastan: podés volver a utilizar la misma carta en tu siguiente penal o tiro libre. No hay límite por ronda. Una misma ejecución no se revisa dos veces con VAR. Las cartas no se utilizan en El Genio ni en Truco.</li>
       <li>Siempre tenés tres cartas especiales distintas, sin duplicados. Podés cambiar una al finalizar cada ronda. Las cartas utilizadas permanecen en tu mano.</li>
     </ul>
     <div class="row"><button class="btn primary" id="rulesOk" type="button">Entendido</button></div>
@@ -948,10 +1046,12 @@ function flyFrom(elm,fromRect,dur=450,delay=0,rot=0){
 
 /* ============ Cartas especiales ============ */
 const SP={
-  var:{name:'Chequeo VAR',icon:'📺',cat:'def',n:9,txt:'Revisá un gol o una atajada: 50% de cambiar la decisión.'},
-  experto:{name:'Arquero Pulpo',icon:'🧤',cat:'def',n:7,txt:'En un penal rival cubrís dos direcciones.'},
-  doble:{name:'Penal Vale Doble',icon:'×2',cat:'off',n:7,txt:'Uno de tus dos penales suma 2 si lo convertís.'},
-  hinchada:{name:'El Peso de la Hinchada',icon:'📣',cat:'def',n:7,txt:'El pateador pierde la opción centro en ese penal.'}
+  var:{name:'Chequeo VAR',icon:'📺',cat:'def',n:5,txt:'Revisá un gol o una atajada: 50% de cambiar la decisión.'},
+  experto:{name:'Arquero Pulpo',icon:'🧤',cat:'def',n:5,txt:'En un penal rival cubrís dos direcciones.'},
+  doble:{name:'Penal Vale Doble',icon:'×2',cat:'off',n:5,txt:'Uno de tus dos penales suma 2 si lo convertís.'},
+  hinchada:{name:'El Peso de la Hinchada',icon:'📣',cat:'def',n:5,txt:'El pateador pierde la opción centro en ese penal.'},
+  colocado:{name:'Tiro Colocado',icon:'🎯',cat:'off',n:5,txt:'En un tiro libre elegís 3 números para hacer gol, en vez de 2.'},
+  barrera:{name:'Barrera Reforzada',icon:'🧱',cat:'def',n:5,txt:'En un tiro libre elegís 3 números para atajar, en vez de 2.'}
 };
 function spEl(type){
   const d=SP[type];
@@ -962,7 +1062,7 @@ function spEl(type){
 }
 
 /* ============ Estado ============ */
-const emptyCats=()=>({pen:0,libres:0,truco:0,envido:0});
+const emptyCats=()=>({pen:0,libres:0,genio:0,truco:0,envido:0});
 const G={
   score:{you:0,cpu:0},round:0,kick1:'you',mano1:'you',kickFirst:'you',mano:'you',
   spDeck:[],spDiscard:[],hand:{you:[],cpu:[]},
@@ -980,6 +1080,7 @@ function show(id){
 function showView(v){
   $('#v-pen').classList.toggle('on',v==='pen');
   $('#v-truco').classList.toggle('on',v==='truco');
+  $('#v-genio').classList.toggle('on',v==='genio');
 }
 function setPhase(p){$$('.pchip').forEach(c=>c.classList.toggle('on',c.dataset.p===p));}
 function log(t){G.log.push(t);}
@@ -1465,7 +1566,7 @@ async function resupply(){
     narrate('Cambiaste una carta especial.');renderSpecials();
   }
   if(Math.random()<.65){
-    const val={doble:5,experto:5,var:5,hinchada:4};
+    const val={doble:5,experto:5,var:5,hinchada:4,colocado:5,barrera:4};
     const h=G.hand.cpu;
     const priorities=h.map((t,i)=>({i,score:val[t]-(h.filter(x=>x===t).length>1?2:0)+Math.random()}));
     priorities.sort((a,b)=>a.score-b.score);
@@ -2151,8 +2252,8 @@ async function fkKick(out){
 }
 // Elegimos dos números diferentes para cada equipo: 2 gol, 2 atajada, 2 afuera.
 const FK_ALL_NUMBERS=[1,2,3,4,5,6];
-function fkCpuPick(forbidden=[]){
-  return shuffle(FK_ALL_NUMBERS.filter(v=>!forbidden.includes(v))).slice(0,2).sort((a,b)=>a-b);
+function fkCpuPick(forbidden=[],count=2){
+  return shuffle(FK_ALL_NUMBERS.filter(v=>!forbidden.includes(v))).slice(0,count).sort((a,b)=>a-b);
 }
 function fkShowNumbers(kick,keep,pl){
   const p=pl==='you'?G.nick:'Compu',a=pl==='you'?'Compu':G.nick;
@@ -2162,7 +2263,7 @@ function fkShowNumbers(kick,keep,pl){
     `<span class="fkpick-save">🧤 ${escapeXml(a)}: <b>${keep.join(' y ')}</b></span>`+
     `<span class="fkpick-miss">❌ Afuera: <b>${outside.join(' y ')}</b></span>`;
 }
-function fkPickHumanNumbers(prompt,forbidden=[]){
+function fkPickHumanNumbers(prompt,forbidden=[],count=2){
   return new Promise(resolve=>{
     const box=$('#fkChoice'),title=$('#fkChooseTitle'),nums=$('#fkNumbers'),help=$('#fkPickHelp'),ok=$('#fkPickOk');
     const selection=[];
@@ -2171,8 +2272,9 @@ function fkPickHumanNumbers(prompt,forbidden=[]){
     nums.innerHTML='';
     ok.style.display='';ok.disabled=true;
     const update=()=>{
-      help.textContent=`Elegiste ${selection.length} de 2 números. ${forbidden.length?'Los números del pateador no se pueden repetir.':''}`;
-      ok.disabled=selection.length!==2;
+      help.textContent=`Elegiste ${selection.length} de ${count} números. ${forbidden.length?'Los números del pateador no se pueden repetir.':''}`;
+      ok.textContent=`Confirmar mis ${count} números`;
+      ok.disabled=selection.length!==count;
       $$('#fkNumbers button').forEach(b=>b.setAttribute('aria-pressed',String(selection.includes(Number(b.dataset.num)))));
     };
     FK_ALL_NUMBERS.forEach(n=>{
@@ -2183,14 +2285,14 @@ function fkPickHumanNumbers(prompt,forbidden=[]){
       b.onclick=()=>{
         SFX.click();const ix=selection.indexOf(n);
         if(ix>=0)selection.splice(ix,1);
-        else if(selection.length<2)selection.push(n);
+        else if(selection.length<count)selection.push(n);
         update();
       };
       nums.appendChild(b);
     });
     update();
     ok.onclick=()=>{
-      if(selection.length!==2)return;
+      if(selection.length!==count)return;
       SFX.click();box.style.display='none';
       resolve(selection.sort((a,b)=>a-b));
     };
@@ -2212,6 +2314,47 @@ async function introTirosLibres(){
   await waitButton('#fkIntroOk');
   $('#ovFKIntro').classList.remove('show');
 }
+/* Cartas nuevas de tiros libres. Pateador decide primero, arquero después.
+   Si se activan ambas, se neutralizan y vuelven a 2+2+2. */
+function fkOfferChoice(text,cardType){
+  return new Promise(resolve=>{
+    const host=$('#fkSpecialOffer');
+    host.style.display='flex';host.innerHTML='';
+    const p=el('p',null,text);host.appendChild(p);
+    const buttons=el('div','offer-buttons');
+    const yes=el('button','btn primary',`Activar ${SP[cardType].name}`);yes.type='button';
+    const no=el('button','btn ghost','No usar carta');no.type='button';
+    const finish=v=>{SFX.click();host.innerHTML='';host.style.display='none';resolve(v);};
+    yes.onclick=()=>finish(true);no.onclick=()=>finish(false);
+    buttons.appendChild(yes);buttons.appendChild(no);host.appendChild(buttons);
+  });
+}
+async function fkSpecialWindow(pl){
+  const defender=other(pl),attackType='colocado',defType='barrera';
+  let attack=false,defense=false;
+  if(G.hand[pl].includes(attackType)){
+    if(pl==='you')attack=await fkOfferChoice('¿Querés usar Tiro Colocado y elegir 3 números para intentar convertir?',attackType);
+    else attack=fairRandomInt(100)<68;
+    if(attack)await useSpecial(pl,attackType);
+  }
+  if(G.hand[defender].includes(defType)){
+    if(defender==='you'){
+      defense=await fkOfferChoice(attack?'Compu activó Tiro Colocado. ¿Querés neutralizarlo con Barrera Reforzada?':'¿Querés usar Barrera Reforzada y elegir 3 números para atajar?',defType);
+    }else defense=attack?fairRandomInt(100)<85:fairRandomInt(100)<60;
+    if(defense)await useSpecial(defender,defType);
+  }
+  const neutral=attack&&defense;
+  const kCount=neutral?2:attack?3:2;
+  const dCount=neutral?2:defense?3:2;
+  const desc=neutral?'⚔️ Tiro Colocado y Barrera Reforzada se neutralizan: 2 números por jugador.':
+    attack?'🎯 Tiro Colocado: 3 números para patear.':defense?'🧱 Barrera Reforzada: 3 números para atajar.':'Sin cartas: 2 números para cada jugador.';
+  $('#fkSpecialStatus').textContent=desc;
+  $('#fkGoalCount').textContent=kCount+' números';
+  $('#fkSaveCount').textContent=dCount+' números';
+  $('#fkMissCount').textContent=(6-kCount-dCount)+' restantes';
+  log(`Tiro libre: ${Who(pl)} ${attack?'activó Tiro Colocado':'sin Tiro Colocado'}; ${Who(defender)} ${defense?'activó Barrera Reforzada':'sin Barrera Reforzada'}${neutral?' (neutralizadas)':''}.`);
+  return {kCount,dCount,attack,defense,neutral};
+}
 async function freeKickShow(pl,forceDie,shotNumber=1,isRepeat=false){
   const ov=$('#ovFK'),msg=$('#fkMsg'),btn=$('#fkRoll'),die=$('#fkDie');
   $('#fkTitle').textContent=pl==='you'?(G.nick==='Vos'?'Tu tiro libre':`Tiro libre de ${G.nick}`):'Tiro libre de Compu';
@@ -2219,22 +2362,25 @@ async function freeKickShow(pl,forceDie,shotNumber=1,isRepeat=false){
   fkBuild(pl);buildDie(die);fkSetTag('');
   $('#fkChosen').innerHTML='';
   $('#fkChoice').style.display='none';
+  $('#fkSpecialOffer').style.display='none';
+  $('#fkSpecialStatus').textContent='';
   btn.style.display='none';
   ov.classList.add('show');
-  await sleep(500);
+  await sleep(300);
+  const {kCount,dCount}=await fkSpecialWindow(pl);
   let kickerNums,keeperNums;
   if(pl==='you'){
-    msg.textContent='Primero elegí tus dos números para hacer el gol.';
-    kickerNums=await fkPickHumanNumbers('Elegí 2 números del 1 al 6 para hacer el gol.');
-    keeperNums=fkCpuPick(kickerNums);
-    msg.textContent='Compu eligió otros dos números para intentar atajar.';
+    msg.textContent=`Primero elegí tus ${kCount} números para hacer gol.`;
+    kickerNums=await fkPickHumanNumbers(`Elegí ${kCount} números del 1 al 6 para hacer gol.`,[],kCount);
+    keeperNums=fkCpuPick(kickerNums,dCount);
+    msg.textContent=`Compu eligió otros ${dCount} números para intentar atajar.`;
   }else{
-    kickerNums=fkCpuPick();
-    msg.textContent=`Compu eligió ${kickerNums.join(' y ')} para patear.`;
-    keeperNums=await fkPickHumanNumbers(`Compu patea con ${kickerNums.join(' y ')}. Elegí otros 2 números para atajar.`,kickerNums);
+    kickerNums=fkCpuPick([],kCount);
+    msg.textContent=`Compu eligió ${kickerNums.join(', ')} para patear.`;
+    keeperNums=await fkPickHumanNumbers(`Compu patea con ${kickerNums.join(' y ')}. Elegí otros ${dCount} números para atajar.`,kickerNums,dCount);
   }
   fkShowNumbers(kickerNums,keeperNums,pl);
-  msg.textContent='¡Números listos! Tirás el dado y se decide el tiro libre.';
+  msg.textContent='¡Números listos! El dado decide el tiro libre.';
   btn.disabled=false;btn.style.display='';
   await new Promise(resolve=>{btn.onclick=()=>{btn.disabled=true;SFX.click();resolve();};});
   msg.textContent='¡El dado está girando!';
@@ -2251,9 +2397,120 @@ async function freeKickShow(pl,forceDie,shotNumber=1,isRepeat=false){
   return out;
 }
 
+/* ============ EL GENIO DEL FÚTBOL MUNDIAL ============ */
+const GENIO_X=[212,304,396,488,576,657];
+function genioIntroBuild(){
+  $('#genioRefScene').innerHTML=
+    '<rect width="640" height="360" fill="#143a46"/><rect y="108" width="640" height="252" fill="#196a44"/>'+
+    '<g fill="#fff" opacity=".055"><rect y="138" width="640" height="35"/><rect y="210" width="640" height="35"/><rect y="282" width="640" height="35"/></g>'+
+    '<path d="M0 327H640M320 108V360" stroke="#fff" stroke-width="3" opacity=".7"/>'+
+    figure({x:300,y:342,s:1.05,shirt:'#14181c',shorts:'#14181c',socks:'#14181c',arms:'ref',hair:'#161616',extra:'<rect x="-12" y="-106" width="8" height="10" fill="#f6b40e"/>'})+
+    figure({x:120,y:342,s:1,...playerOutfit(G.playerKit),face:'r'})+
+    figure({x:506,y:342,s:1,...playerOutfit(G.cpuPlayerKit),face:'l'});
+}
+async function introGenio(){
+  genioIntroBuild();
+  $('#genioRefBubble').textContent='¡Arranca el genio del fútbol mundial! Superá cinco jugadores y al arquero. ¡Seis gambetas seguidas para hacer el gol!';
+  $('#ovGenioIntro').classList.add('show');
+  SFX.whistle();
+  await waitButton('#genioIntroOk');
+  $('#ovGenioIntro').classList.remove('show');
+}
+function genioSetPop(text,cls=''){const p=$('#genioPop');p.textContent=text||'';p.className='genio-pop'+(text?' on':'')+(cls?' '+cls:'');}
+function genioProgress(complete,failAt=-1){
+  const host=$('#genioProgress');host.innerHTML='';
+  for(let i=0;i<6;i++){
+    const c=el('div','step',i===5?'🧤 ARQUERO':`⚽ RIVAL ${i+1}`);
+    if(i<complete)c.classList.add('done');
+    if(i===complete&&failAt===-1)c.classList.add('current');
+    if(i===failAt)c.classList.add('lost');
+    host.appendChild(c);
+  }
+}
+function genioBuild(attacker){
+  const stripe=$('#genioStripes');
+  stripe.innerHTML=Array.from({length:10},(_,i)=>i%2?`<rect x="${i*76}" width="76" height="440" fill="#fff" opacity=".04"/>`:'' ).join('');
+  const d=$('#genioDefenders');d.innerHTML='';
+  const defender=other(attacker);
+  const opp=defender==='you'?playerOutfit(G.playerKit):playerOutfit(G.cpuPlayerKit);
+  const kit=defender==='you'?G.kit:G.cpuKit;
+  for(let i=0;i<6;i++){
+    const isKeeper=i===5,x=GENIO_X[i],baseY=265;
+    const outfit=isKeeper?{shirt:kit.jersey,shorts:'#17191c',socks:'#f2f2f2',glove:'#eba23f',cap:kit.cap}:opp;
+    const g=document.createElementNS('http://www.w3.org/2000/svg','g');g.innerHTML=`<ellipse cx="0" cy="9" rx="24" ry="6" fill="#001f14" opacity=".33"/>${figure({x:0,y:0,s:isKeeper?.75:.69,...outfit,face:'l'})}<text x="0" y="29" text-anchor="middle" fill="#fff" font-size="14" font-weight="800" paint-order="stroke" stroke="#08261b" stroke-width="4">${isKeeper?'ARQ':i+1}</text>`;
+    g.id='genioOpponent'+i;g.setAttribute('transform',`translate(${x},${baseY})`);d.appendChild(g);
+  }
+  const outfit=attacker==='you'?playerOutfit(G.playerKit):playerOutfit(G.cpuPlayerKit);
+  const runner=$('#genioRunner');runner.style.transition='none';runner.style.transform='translate(99px,266px)';
+  runner.innerHTML=`${figure({x:0,y:0,s:.8,...outfit,face:'r'})}<g id="genioBall"><circle cx="30" cy="-5" r="12" fill="#fff" stroke="#142c29" stroke-width="2"/><path d="M30 -13 l7 5 -3 8 -8 0 -4 -8Z" fill="#152330"/></g>`;
+  $('#genioEffects').innerHTML='';
+  void runner.getBoundingClientRect();runner.style.transition='transform .65s cubic-bezier(.2,.8,.25,1)';
+  genioSetPop('');genioProgress(0);
+  $('#genioRole').textContent=attacker==='you'?`${G.nick} ataca · Compu defiende`:`Compu ataca · ${G.nick} defiende`;
+  $('#genioHint').textContent='Elegí izquierda o derecha. La misma dirección implica que el defensor recupera la pelota.';
+}
+function genioDirName(dir){return dir==='L'?'IZQUIERDA':'DERECHA';}
+async function genioPickHuman(attacker,step){
+  const keeper=step===5;
+  const prompt=attacker=== 'you'?
+    `Gambeta ${step+1}/6 · ${keeper?'¡Último obstáculo: el arquero!':'Defensor '+(step+1)}. ¿Por dónde gambeteás?`:
+    `Defendés el cruce ${step+1}/6 ${keeper?'ante el arco':'contra Compu'}. ¿Qué lado cubrís?`;
+  const r=await ask({msg:prompt,buttons:[{id:'L',label:'← IZQUIERDA',cls:'primary'},{id:'R',label:'DERECHA →',cls:'primary'}]});
+  return r.id;
+}
+async function genioStep(attacker,step){
+  const atkSide=attacker==='you'?await genioPickHuman(attacker,step):(fairRandomInt(2)===0?'L':'R');
+  const defSide=attacker==='you'?(fairRandomInt(2)===0?'L':'R'):await genioPickHuman(attacker,step);
+  const match=atkSide===defSide,keeper=step===5;
+  log(`${Who(attacker)} gambeta ${step+1}/6 a ${genioDirName(atkSide)}; ${Who(other(attacker))} cubre ${genioDirName(defSide)}. ${match?'Recupera la pelota.':'Avanza.'}`);
+  const location=GENIO_X[step],runner=$('#genioRunner'),opponent=$('#genioOpponent'+step);
+  genioSetPop(`⚽ ${genioDirName(atkSide)} · 🛡️ ${genioDirName(defSide)}`);
+  await sleep(600);
+  if(match){
+    runner.style.transform=`translate(${location-60}px,266px)`;
+    genioSetPop(keeper?'¡EL ARQUERO SE QUEDA CON LA PELOTA!':'¡RECUPERA LA PELOTA EL DEFENSOR!','bad');
+    opponent.style.filter='drop-shadow(0 0 14px #ff5149)';
+    SFX.save();bigText('¡LO FRENARON!','bad');
+    genioProgress(step,step);
+    await sleep(1350);
+    return false;
+  }
+  const y=atkSide==='L'?176:355;
+  runner.style.transform=`translate(${location+25}px,${y}px)`;
+  genioSetPop(keeper?'¡ESQUIVÓ AL ARQUERO!':`¡GAMBETA ${step+1} SUPERADA!`,'good');
+  SFX.point();
+  await sleep(700);
+  opponent.style.opacity='.3';
+  genioProgress(step+1);
+  runner.style.transform=`translate(${location+45}px,266px)`;
+  await sleep(410);
+  return true;
+}
+async function playGenioAttack(attacker){
+  showView('genio');genioBuild(attacker);
+  narrate(`¡Arranca el genio! ${Who(attacker)} tiene que superar cinco defensores y al arquero.`);
+  await sleep(850);
+  for(let step=0;step<6;step++){
+    $('#genioHint').textContent=`${step<5?'Defensor '+(step+1)+' de 5':'¡Cara a cara con el arquero!'} · Elegí un lado sin que el rival lo adivine.`;
+    const survived=await genioStep(attacker,step);
+    if(!survived){
+      narrate(`${Who(attacker)} fue frenado ${step===5?'por el arquero':`en la gambeta ${step+1}`} y no suma puntos.`);
+      await sleep(500);
+      setMsg('');return;
+    }
+  }
+  const runner=$('#genioRunner');runner.style.transform='translate(721px,266px)';
+  genioSetPop('¡GOLAZO! ¡EL GENIO DEL FÚTBOL MUNDIAL!','good');
+  SFX.goal();bigText('¡GOLAZO!');crowdCheer();if(attacker==='you')confetti(90);
+  addPoints(attacker,6,'genio','Gol del Genio, seis gambetas');
+  narrate(`¡GOLAZO de ${Who(attacker)}! Superó a cinco defensores y al arquero: +6 puntos.`);
+  $('#genioHint').textContent='¡Superó los seis cruces y marcó el gol!';
+  await sleep(1700);setMsg('');
+}
+
 /* ============ Rondas y partido ============ */
 function waitButton(id){return new Promise(r=>{$(id).onclick=()=>{SFX.click();r();};});}
-const CAT_ROWS=[['Penales','pen'],['Tiros libres','libres'],['Truco','truco'],['Envido','envido']];
+const CAT_ROWS=[['Penales','pen'],['Tiros libres','libres'],['El Genio','genio'],['Truco','truco'],['Envido','envido']];
 
 async function recap(){
   const rs=G.rs,t=p=>sum(Object.values(rs[p]));
@@ -2291,6 +2548,9 @@ async function playRound(){
   setPhase('fk');
   await introTirosLibres();
   for(let i=0;i<order.length;i++)await playRoundFreeKick(i,order[i]);
+  setPhase('genio');
+  await introGenio();
+  for(const attacker of [G.kickFirst, other(G.kickFirst)])await playGenioAttack(attacker);
   setPhase('truco');
   await trucoPhase();
   setPhase('rep');showView('pen');sceneReset(G.kickFirst==='you'?'cpu':'you');setRole(null);
