@@ -208,6 +208,10 @@ h1,h2,h3,h4{font-family:var(--disp);font-weight:400;letter-spacing:.01em}
 .sp.empty{border-style:dashed;background:transparent;opacity:.3;animation:none}
 @keyframes pulse{50%{box-shadow:0 0 0 3px var(--sol),0 0 32px rgba(246,180,14,.85)}}
 @keyframes spin-in{from{transform:translateY(24px) scale(.9);opacity:0}}
+/* Una carta gastada es sustituida por otra, con una entrada visual breve. */
+.sp.fresh{animation:spFresh .7s cubic-bezier(.18,.85,.28,1.2) both!important;outline:2px solid rgba(246,180,14,.7);outline-offset:2px}
+@keyframes spFresh{0%{transform:translateY(-24px) rotate(-7deg) scale(.82);opacity:0}65%{transform:translateY(4px) rotate(2deg) scale(1.04);opacity:1}100%{transform:translateY(0) rotate(0) scale(1);opacity:1}}
+.cpubox .card.fresh{animation:spFresh .7s cubic-bezier(.18,.85,.28,1.2) both}
 .cpubox{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
 .cpubox .sprow{gap:6px}
 .cpubox .card{--cw:36px}
@@ -500,7 +504,7 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
       <button class="btn big" id="btnRules" type="button">Cómo se juega</button>
       <button class="btn big ghost" type="button" disabled>Jugar online <small>(próximamente)</small></button>
     </div>
-    <p class="ver">Versión 1.6 · Gambetas del genio · 6 cartas especiales · Tiros Libres mejorados.</p>
+    <p class="ver">Versión 1.7 · Las cartas usadas se reemplazan automáticamente.</p>
   </div>
 </section>
 
@@ -857,12 +861,12 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
       <li><b>Penal Vale Doble:</b> si convertís uno de tus dos penales, sumás 2 en lugar de 1.</li>
       <li><b>Arquero Pulpo:</b> defendés dos direcciones en un penal.</li>
       <li><b>El Peso de la Hinchada:</b> pateador y arquero solo pueden elegir izquierda o derecha.</li>
-      <li><b>Chequeo VAR:</b> tras un gol, el arquero perjudicado puede intentar anularlo (50%). Tras una atajada, el pateador perjudicado puede solicitar que se repita (50%). Si el VAR no favorece al reclamante, la decisión inicial queda firme. Solo aplica a penales y tiros libres. <b>Máximo 2 revisiones VAR por jugador y por ronda</b>; la carta se conserva, y el cupo se renueva en la siguiente ronda.</li>
+      <li><b>Chequeo VAR:</b> tras un gol, el arquero perjudicado puede intentar anularlo (50%). Tras una atajada, el pateador perjudicado puede solicitar que se repita (50%). Si el VAR no favorece al reclamante, la decisión inicial queda firme. Solo aplica a penales y tiros libres. <b>Máximo 2 revisiones VAR por jugador y por ronda</b>; al jugarla se cambia por otra carta aleatoria y el cupo se renueva en la siguiente ronda.</li>
       <li><b>Tiro Colocado:</b> el pateador elige 3 números en un tiro libre en lugar de 2.</li>
       <li><b>Barrera Reforzada:</b> el arquero elige 3 números para atajar un tiro libre en lugar de 2.</li>
       <li>Si ambos activan Tiro Colocado y Barrera Reforzada en el mismo tiro libre, <b>se neutralizan</b>: 2 números por cada uno y 2 para afuera.</li>
-      <li>Las cartas especiales no se gastan: podés volver a utilizar la misma carta en tu siguiente penal o tiro libre. No hay límite por ronda. Una misma ejecución no se revisa dos veces con VAR. Las cartas no se utilizan en El Genio ni en Truco.</li>
-      <li>Siempre tenés tres cartas especiales distintas, sin duplicados. Podés cambiar una al finalizar cada ronda. Las cartas utilizadas permanecen en tu mano.</li>
+      <li><b>Las cartas especiales se consumen al usarse:</b> desaparecen de la mano y se reemplazan inmediatamente por una carta aleatoria diferente. Si recibís una nueva copia de un tipo en otro momento, podés volver a usarla. Una misma ejecución no se revisa dos veces con VAR. Las cartas no se utilizan en El Genio ni en Truco.</li>
+      <li><b>Siempre tenés tres cartas especiales distintas, sin duplicados.</b> La nueva carta nunca es igual a la que acabás de usar. Podés cambiar una voluntariamente al finalizar cada ronda.</li>
     </ul>
     <div class="row"><button class="btn primary" id="rulesOk" type="button">Entendido</button></div>
   </div>
@@ -1177,25 +1181,30 @@ function pickDirs({count,avail,msg,role}){
 }
 
 /* Cartas especiales en pantalla */
-function renderSpecials(newType){
+function renderSpecials(newIndex=-1,freshFor='you'){
   const my=$('#mySpecials');my.innerHTML='';
   G.hand.you.forEach((t,i)=>{
     const e=spEl(t);
-    if(newType===i)e.style.animationDelay='.05s';else e.style.animation='none';
+    if(freshFor==='you'&&newIndex===i)e.classList.add('fresh');
+    else e.style.animation='none';
     e.onclick=()=>{if(waiter&&waiter.o.specials&&waiter.o.specials.includes(t)&&e.classList.contains('playable'))waiter.finish({special:t,idx:i});};
     e.onkeydown=ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();e.click();}};
     my.appendChild(e);
   });
   for(let i=G.hand.you.length;i<3;i++)my.appendChild(el('div','sp empty'));
   const cp=$('#cpuSpecials');cp.innerHTML='';
-  G.hand.cpu.forEach(()=>cp.appendChild(backEl()));
+  G.hand.cpu.forEach((_,i)=>{
+    const card=backEl();
+    if(freshFor==='cpu'&&newIndex===i)card.classList.add('fresh');
+    cp.appendChild(card);
+  });
   renderLimits();
 }
 function renderLimits(){
   ['you','cpu'].forEach(p=>{
     const name=p==='you'?'You':'Cpu';
     const varStatus=G.hand[p].includes('var')?` · VAR: ${G.varUsed[p]}/${MAX_VAR_PER_ROUND} revisiones` : '';
-    $('#lim'+name).innerHTML='<span>Cartas reutilizables'+varStatus+'</span>';
+    $('#lim'+name).innerHTML='<span>3 cartas · Reposición automática'+varStatus+'</span>';
   });
 }
 async function announceCard(who,type){
@@ -1207,34 +1216,53 @@ async function announceCard(who,type){
   await sleep(200);
 }
 async function useSpecial(who,type){
-  // Las cartas se mantienen en la mano y pueden volver a usarse.
-  // La excepción es VAR: el árbitro acepta hasta 2 revisiones por jugador y ronda.
-  if(!G.hand[who].includes(type))return false;
+  // Cada carta se consume al jugarla y se sustituye de inmediato.
+  // VAR conserva su tope de dos revisiones por jugador y ronda.
+  const hand=G.hand[who],index=hand.indexOf(type);
+  if(index<0)return false;
   if(type==='var'){
     if(G.varUsed[who]>=MAX_VAR_PER_ROUND)return false;
     G.varUsed[who]++;
   }
-  log(`${Who(who)} juega ${SP[type].name}.`);
-  renderSpecials();
+  // Primero retiramos la carta: el reemplazo no puede duplicar ninguna de las otras dos.
+  hand.splice(index,1);
+  G.spDiscard.push(type);
+  const replacement=drawSpFor(who,false,type);
+  if(!replacement){
+    // Protección: si no hubiera reemplazo legal, restauramos la carta y el cupo VAR.
+    const discarded=G.spDiscard.lastIndexOf(type);
+    if(discarded>=0)G.spDiscard.splice(discarded,1);
+    hand.splice(index,0,type);
+    if(type==='var')G.varUsed[who]--;
+    return false;
+  }
+  hand.splice(index,0,replacement);
+  log(`${Who(who)} juega ${SP[type].name}. Recibe ${SP[replacement].name} como reemplazo.`);
+  renderSpecials(index,who);
   await announceCard(who,type);
   return true;
 }
-function drawSpFor(who,initialUnique=false){
-  const hand=G.hand[who],limit=1;
-  const ok=t=>hand.filter(x=>x===t).length<limit;
+function drawSpFor(who,initialUnique=false,avoidType=null){
+  const hand=G.hand[who];
+  const allowed=t=>!hand.includes(t)&&t!==avoidType;
+  // Extraer una copia real del mazo restante, sin repetir cartas de la mano.
+  // Al agotarse las opciones admisibles, mezclar los descartes y reponer el mazo.
   if(!G.spDeck.length&&G.spDiscard.length)G.spDeck=shuffle(G.spDiscard.splice(0));
-  // Elegimos una copia real del mazo y las tres cartas de la mano siempre son distintas.
   let available=[];
-  for(let i=0;i<G.spDeck.length;i++)if(ok(G.spDeck[i]))available.push(i);
+  const collect=()=>{
+    available=[];
+    for(let i=0;i<G.spDeck.length;i++)if(allowed(G.spDeck[i]))available.push(i);
+  };
+  collect();
   if(!available.length&&G.spDiscard.length){
     G.spDeck.push(...shuffle(G.spDiscard.splice(0)));
-    for(let i=0;i<G.spDeck.length;i++)if(ok(G.spDeck[i]))available.push(i);
+    collect();
   }
-  if(!available.length){
-    // Último recurso para garantizar siempre tres cartas: restaurar una copia permitida.
-    const choices=Object.keys(SP).filter(ok);
-    return choices.length?choices[fairRandomInt(choices.length)]:null;
+  // Normalmente siempre hay una carta distinta disponible entre los seis tipos.
+  if(!available.length&&avoidType!==null){
+    for(let i=0;i<G.spDeck.length;i++)if(!hand.includes(G.spDeck[i]))available.push(i);
   }
+  if(!available.length)return null;
   const at=available[fairRandomInt(available.length)];
   return G.spDeck.splice(at,1)[0];
 }
@@ -1570,13 +1598,13 @@ async function playRoundFreeKick(i,kicker){
 
 /* ============ Reposición ============ */
 async function resupply(){
-  // Las tres cartas permanecen en la mano después de usarse.
-  narrate('Renovación de cartas: conservás tres cartas especiales.');
+  // Las cartas ya se repusieron automáticamente tras cada uso.
+  narrate('Tenés tres cartas especiales. Podés cambiar una de manera opcional.');
   renderSpecials();
   const r=await ask({msg:'Tenés tres cartas. ¿Querés cambiar una por otra del mazo para la próxima ronda?',buttons:[{id:'keep',label:'Conservar mis 3 cartas',cls:'primary'}],specials:[...new Set(G.hand.you)]});
   if(r.special){
     const i=G.hand.you.indexOf(r.special);
-    if(i>=0){G.spDiscard.push(G.hand.you.splice(i,1)[0]);const t=drawSpFor('you');if(t)G.hand.you.push(t);}
+    if(i>=0){const old=G.hand.you.splice(i,1)[0];G.spDiscard.push(old);const t=drawSpFor('you',false,old);if(t)G.hand.you.splice(i,0,t);else {G.hand.you.splice(i,0,old);const discard=G.spDiscard.lastIndexOf(old);if(discard>=0)G.spDiscard.splice(discard,1);}}
     narrate('Cambiaste una carta especial.');renderSpecials();
   }
   if(Math.random()<.65){
@@ -1584,8 +1612,10 @@ async function resupply(){
     const h=G.hand.cpu;
     const priorities=h.map((t,i)=>({i,score:val[t]-(h.filter(x=>x===t).length>1?2:0)+Math.random()}));
     priorities.sort((a,b)=>a.score-b.score);
-    G.spDiscard.push(h.splice(priorities[0].i,1)[0]);
-    const t=drawSpFor('cpu');if(t)h.push(t);
+    const i=priorities[0].i,old=h.splice(i,1)[0];G.spDiscard.push(old);
+    const t=drawSpFor('cpu',false,old);
+    if(t)h.splice(i,0,t);
+    else {h.splice(i,0,old);const discard=G.spDiscard.lastIndexOf(old);if(discard>=0)G.spDiscard.splice(discard,1);}
     log('Compu renovó una carta especial.');
   }
   renderSpecials();setMsg('');
