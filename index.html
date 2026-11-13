@@ -310,6 +310,19 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
 .coin{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 2s cubic-bezier(.2,.7,.3,1)}
 .ctoss .cf{border-width:3px}
 
+/* Carta VAR disponible para revisión: aviso discreto pero visible */
+.sp.var-ready{animation:varNudge 1.35s ease-in-out infinite!important;border-color:#a7e5ff!important;box-shadow:0 0 0 2px rgba(116,172,223,.45)!important}
+@keyframes varNudge{0%,100%{transform:translateY(0)}45%{transform:translateY(-5px)}70%{transform:translateY(-2px)}}
+.sp.var-ready::after{content:'REVISAR';font-size:10px;letter-spacing:.09em;font-weight:800;color:#c9f2ff}
+.fk-round-progress{text-align:center;font-size:15px;font-weight:700;color:var(--muted)}
+#ovFKIntro{background:rgba(4,15,23,.95)}
+.fk-intro{width:min(100%,760px);max-height:92svh;overflow-y:auto;display:flex;align-items:center;flex-direction:column;gap:12px;padding:14px 16px;background:#0f2b3a;border:2px solid rgba(255,255,255,.2);border-radius:18px}
+.fk-intro h2{text-align:center;font-size:clamp(20px,4vw,29px)}
+.fk-intro-scene{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#103b2d}
+#fkRefScene{display:block;width:100%;height:100%}
+.fk-ref-bubble{position:absolute;top:5%;left:50%;transform:translateX(-50%);background:#fff;color:#152532;border:2px solid #fff;border-radius:18px;padding:10px 15px;text-align:center;font-size:clamp(12px,2.5vw,19px);font-weight:800;max-width:82%;box-shadow:0 5px 18px rgba(0,0,0,.3)}
+.fk-ref-bubble::after{content:'';position:absolute;bottom:-11px;left:50%;border:11px solid transparent;border-top-color:#fff;border-bottom:0}
+.fk-intro-steps{text-align:center;line-height:1.3;font-size:16px}
 /* VAR */
 .varbox{width:min(100%,780px);display:flex;flex-direction:column;gap:10px}
 .varhead{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
@@ -432,13 +445,13 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
   <div class="title-wrap">
     <div class="fan" id="fan" aria-hidden="true"></div>
     <h1 class="logo">Penal &amp; Truco</h1>
-    <p class="tag">Penales, Truco y cartas especiales. Gana el primero que llega a 30 puntos.</p>
+    <p class="tag">Penales, tiros libres, Truco y cartas especiales. Gana quien llegue a 30 puntos al terminar una ronda.</p>
     <div class="menu">
       <button class="btn primary big" id="btnPlay" type="button">Jugar contra la compu</button>
       <button class="btn big" id="btnRules" type="button">Cómo se juega</button>
       <button class="btn big ghost" type="button" disabled>Jugar online <small>(próximamente)</small></button>
     </div>
-    <p class="ver">Versión 1.1 de prueba · Sorteo justo · 2 penales por jugador · Tiro libre con elecciones.</p>
+    <p class="ver">Versión 1.2 · Dos penales + dos tiros libres por jugador · VAR en goles y atajadas.</p>
   </div>
 </section>
 
@@ -507,8 +520,9 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
 
   <div class="phases">
     <span class="pchip" data-p="pen">Penales</span>
-    <span class="pchip" data-p="truco">Truco</span>
-    <span class="pchip" data-p="rep">Reposición</span>
+      <span class="pchip" data-p="fk">Tiros libres</span>
+      <span class="pchip" data-p="truco">Truco</span>
+      <span class="pchip" data-p="rep">Cartas</span>
   </div>
 
   <main class="stage">
@@ -664,9 +678,23 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
   </div>
 </div>
 
+<div class="ov" id="ovFKIntro">
+  <div class="fk-intro" role="dialog" aria-label="El árbitro explica los tiros libres">
+    <h2>¡Llegaron los tiros libres!</h2>
+    <div class="fk-intro-scene">
+      <svg id="fkRefScene" viewBox="0 0 640 360" role="img" aria-label="Árbitro dentro de una cancha"></svg>
+      <div id="fkRefBubble" class="fk-ref-bubble">¡Atención, jugadores! Ahora vienen los tiros libres.</div>
+    </div>
+    <p class="fk-intro-steps"><b>2 tiros libres por jugador</b> · Alternan patear y atajar · <b>4 tiros en total</b></p>
+    <p class="fk-intro-steps">El pateador elige <b>2 números del 1 al 6</b>. El arquero elige <b>otros 2</b> sin repetirlos. Se tira el dado: <b>gol +3</b>, <b>atajás +1</b> o <b>afuera 0</b>.</p>
+    <button class="btn primary big" type="button" id="fkIntroOk">¡Entendido! Jugar los tiros libres</button>
+  </div>
+</div>
+
 <div class="ov" id="ovFK">
   <div class="fkbox">
     <div class="fkhead" id="fkTitle">Tiro libre</div>
+    <div id="fkRoundProgress" class="fk-round-progress" aria-live="polite"></div>
     <div class="fkstage">
       <svg id="fkSvg" viewBox="0 0 640 360" role="img" aria-label="Tiro libre con barrera de jugadores">
         <defs>
@@ -711,30 +739,34 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
 <div class="ov" id="ovRules">
   <div class="modal" role="dialog" aria-label="Cómo se juega">
     <h2>Cómo se juega</h2>
-    <p>Dos jugadores. Cada ronda tiene tres fases y todos los puntos se suman en un mismo marcador. Cuando termina una ronda, si alguien tiene 30 o más y le lleva ventaja al otro, gana.</p>
-    <h3>1. Penales</h3>
+    <p>Se juega contra Compu hasta llegar a 30 puntos. Cada ronda tiene penales, tiros libres, Truco y renovación opcional de cartas. La victoria se decide al terminar la ronda.</p>
+    <h3>1. Penales: dos por jugador</h3>
     <ul>
-      <li>Cada uno patea <b>dos penales</b> y ataja dos, alternando: patear, atajar, patear, atajar (o viceversa). Son cuatro penales en total por ronda.</li>
-      <li>Pateador y arquero eligen en secreto izquierda, centro o derecha. Si coinciden, atajada. Si no, gol (+1).</li>
-      <li>Si patean varias veces al mismo lado, la compu se da cuenta.</li>
+      <li>En total son <b>cuatro penales</b>: pateás, atajás, pateás, atajás (o al revés).</li>
+      <li>Pateador y arquero eligen izquierda, centro o derecha. Si coinciden, hay atajada; si no, gol (+1).</li>
+      <li>No hay penales extra ni revancha. Una repetición solo puede surgir por un VAR favorable sobre una atajada.</li>
     </ul>
-    <h3>2. Truco</h3>
+    <h3>2. Tiros libres: dos por jugador</h3>
     <ul>
-      <li>Una mano de Truco argentino con baraja española de 40 cartas. Sin Flor y sin Falta Envido.</li>
-      <li>Truco 2, Retruco 3, Vale cuatro 4. Envido 2, Real Envido 3, Envido y Envido 4, Envido y Real 5, Envido, Envido y Real 7.</li>
-      <li>Si no hay canto, la mano vale 1. Quien se va al mazo o no quiere regala los puntos de la apuesta anterior.</li>
+      <li>El árbitro explica las reglas antes de esta fase. Son <b>cuatro tiros libres</b>, alternando pateador y arquero.</li>
+      <li>El pateador elige dos números del 1 al 6. El arquero elige otros dos distintos. Los dos restantes representan afuera.</li>
+      <li>El dado decide: si sale un número del pateador, <b>gol +3</b>; si sale uno del arquero, <b>atajados +1</b>; si no, <b>afuera</b>.</li>
+      <li>Cada resultado tiene una probabilidad de 2/6 (33,3%) cuando se usa un dado justo.</li>
+    </ul>
+    <h3>3. Truco Express</h3>
+    <ul>
+      <li>Una mano de Truco argentino de 40 cartas, sin Flor ni Falta Envido.</li>
+      <li>Truco 2, Retruco 3, Vale Cuatro 4. Envido 2, Real Envido 3, Envido + Envido 4, Envido + Real 5 y Envido + Envido + Real 7.</li>
       <li>El mano se alterna en cada ronda.</li>
     </ul>
-    <h3>3. Reposición</h3>
+    <h3>Cartas especiales: siempre tres</h3>
     <ul>
-      <li>Cada uno roba una carta especial. Podés guardar como máximo tres.</li>
-    </ul>
-    <h3>Cartas especiales</h3>
-    <ul>
-      <li><b>Ofensivas (una por ronda):</b> Penal Extra (+1), Tiro Libre (pateador y arquero eligen dos números distintos del 1 al 6), Penal Vale Doble (+2), Revancha (repite un penal atajado, +1).</li>
-      <li><b>Tiro Libre:</b> el pateador elige dos números (gol +3), el arquero elige otros dos sin repetir (atajados +1); si el dado muestra uno de los dos restantes, el disparo se va afuera. Cada resultado tiene una probabilidad de 2/6.</li>
-      <li><b>Defensivas (una por ronda):</b> Chequeo VAR (50% de anular un gol, lo decide el árbitro en la pantalla), Arquero Experto (cubre dos lados), El Peso de la Hinchada (el pateador pierde el centro).</li>
-      <li>Penal Extra y Tiro Libre se juegan antes de un penal tuyo o entre fases. No se pueden usar durante una mano de Truco.</li>
+      <li><b>Penal Vale Doble:</b> si convertís uno de tus dos penales, sumás 2 en lugar de 1.</li>
+      <li><b>Arquero Experto:</b> defendés dos direcciones en un penal.</li>
+      <li><b>El Peso de la Hinchada:</b> pateador y arquero solo pueden elegir izquierda o derecha.</li>
+      <li><b>Chequeo VAR:</b> tras un gol, el arquero perjudicado puede intentar anularlo (50%). Tras una atajada, el pateador perjudicado puede solicitar que se repita (50%). Si el VAR no favorece al reclamante, la decisión inicial queda firme.</li>
+      <li>Se puede usar una carta ofensiva y una defensiva de dirección por ronda. El VAR funciona como revisión reactiva y puede pedirse siempre que tengas esa carta; una misma ejecución no se revisa dos veces.</li>
+      <li>Cuando gastás una carta, recibís otra inmediatamente para mantener tres en mano. Al final de la ronda podés cambiar voluntariamente una carta.</li>
     </ul>
     <div class="row"><button class="btn primary" id="rulesOk" type="button">Entendido</button></div>
   </div>
@@ -918,31 +950,28 @@ function flyFrom(elm,fromRect,dur=450,delay=0,rot=0){
 
 /* ============ Cartas especiales ============ */
 const SP={
-  extra:{name:'Penal Extra',icon:'⚽',cat:'off',n:6,txt:'Un penal más, fuera de los dos de la ronda. Vale 1.'},
-  var:{name:'Chequeo VAR',icon:'📺',cat:'def',n:4,txt:'Después de un gol rival: 50% de anularlo.'},
-  libre:{name:'Tiro Libre',icon:'🎯',cat:'off',n:5,txt:'Pateador y arquero eligen 2 números diferentes del 1 al 6. El dado decide: gol +3, atajada rival +1 o afuera.'},
-  experto:{name:'Arquero Experto',icon:'🧤',cat:'def',n:4,txt:'En un penal rival cubrís dos direcciones.'},
-  doble:{name:'Penal Vale Doble',icon:'×2',cat:'off',n:4,txt:'Tu penal normal vale 2 si lo convertís.'},
-  revancha:{name:'Revancha',icon:'🔁',cat:'off',n:3,txt:'Repetís un penal normal que te atajaron. Vale 1.'},
-  hinchada:{name:'El Peso de la Hinchada',icon:'📣',cat:'def',n:4,txt:'El pateador pierde la opción centro en ese penal.'}
+  var:{name:'Chequeo VAR',icon:'📺',cat:'def',n:9,txt:'Revisá un gol o una atajada: 50% de cambiar la decisión.'},
+  experto:{name:'Arquero Experto',icon:'🧤',cat:'def',n:7,txt:'En un penal rival cubrís dos direcciones.'},
+  doble:{name:'Penal Vale Doble',icon:'×2',cat:'off',n:7,txt:'Uno de tus dos penales suma 2 si lo convertís.'},
+  hinchada:{name:'El Peso de la Hinchada',icon:'📣',cat:'def',n:7,txt:'El pateador pierde la opción centro en ese penal.'}
 };
 function spEl(type){
   const d=SP[type];
   const e=el('div','sp '+d.cat);
   e.dataset.type=type;
-  e.innerHTML=`<div class="spico">${d.icon}</div><div class="spname">${d.name}</div><div class="sptx">${d.txt}</div><div class="spcat">${d.cat==='off'?'Ofensiva':'Defensiva'}</div>`;
+  e.innerHTML=`<div class="spico">${d.icon}</div><div class="spname">${d.name}</div><div class="sptx">${d.txt}</div><div class="spcat">${d.cat==='off'?'Ofensiva':type==='var'?'Revisión reactiva':'Defensiva'}</div>`;
   return e;
 }
 
 /* ============ Estado ============ */
-const emptyCats=()=>({pen:0,cartas:0,truco:0,envido:0});
+const emptyCats=()=>({pen:0,libres:0,truco:0,envido:0});
 const G={
   score:{you:0,cpu:0},round:0,kick1:'you',mano1:'you',kickFirst:'you',mano:'you',
   spDeck:[],spDiscard:[],hand:{you:[],cpu:[]},
   used:{you:{off:false,def:false},cpu:{off:false,def:false}},
   hist:{kick:[],keep:[]},
   rs:{you:emptyCats(),cpu:emptyCats()},tot:{you:emptyCats(),cpu:emptyCats()},
-  log:[],kc:{you:0,cpu:0},nick:'Vos',kit:null,cpuKit:null
+  log:[],kc:{you:0,cpu:0},fkc:{you:0,cpu:0},nick:'Vos',kit:null,cpuKit:null
 };
 
 /* ============ UI ============ */
@@ -1015,8 +1044,9 @@ function markSpecials(types){
   $$('#mySpecials .sp[data-type]').forEach(e=>{
     const ok=types.includes(e.dataset.type);
     e.classList.toggle('playable',ok);
+    e.classList.toggle('var-ready',ok&&e.dataset.type==='var');
     e.classList.toggle('dim',types.length>0&&!ok);
-    if(ok){e.tabIndex=0;e.setAttribute('role','button');}else{e.removeAttribute('tabindex');e.removeAttribute('role');}
+    if(ok){e.tabIndex=0;e.setAttribute('role','button');e.setAttribute('aria-label',e.dataset.type==='var'?'Chequeo VAR disponible: tocá para revisar la jugada':SP[e.dataset.type].name);}else{e.removeAttribute('tabindex');e.removeAttribute('role');}
   });
 }
 function markHand(on){
@@ -1064,7 +1094,7 @@ function renderLimits(){
   ['you','cpu'].forEach(p=>{
     const u=G.used[p];
     $('#lim'+(p==='you'?'You':'Cpu')).innerHTML=
-      `<span class="o ${u.off?'used':''}">Ofensiva ${u.off?'usada':'libre'}</span><span class="d ${u.def?'used':''}">Defensiva ${u.def?'usada':'libre'}</span>`;
+      `<span class="o ${u.off?'used':''}">Ofensiva ${u.off?'usada':'libre'}</span><span class="d ${u.def?'used':''}">Arquero/Hinchada ${u.def?'usada':'libre'}</span>`;
   });
 }
 async function announceCard(who,type){
@@ -1077,8 +1107,12 @@ async function announceCard(who,type){
 }
 async function useSpecial(who,type){
   const i=G.hand[who].indexOf(type);if(i>=0)G.hand[who].splice(i,1);
-  G.used[who][SP[type].cat]=true;G.spDiscard.push(type);
+  // El VAR es una reacción por jugada: no consume el turno defensivo de Arquero Experto / Hinchada.
+  if(type!=='var')G.used[who][SP[type].cat]=true;
+  G.spDiscard.push(type);
   log(`${Who(who)} juega ${SP[type].name}.`);
+  const replacement=drawSp();
+  if(replacement)G.hand[who].push(replacement);
   renderSpecials();
   await announceCard(who,type);
 }
@@ -1270,23 +1304,34 @@ async function defenseWindow(defender,kicker,doubled){
   }
   return 'normal';
 }
-async function varWindow(defender,kicker,points){
-  if(G.used[defender].def||!G.hand[defender].includes('var'))return points;
+async function varWindow(defender,kicker,points,incident='gol'){
+  // En el gol es perjudicado el arquero; en la atajada, el pateador.
+  const affected=incident==='gol'?defender:kicker;
+  const isSave=incident==='atajada';
+  if(!G.hand[affected].includes('var'))return isSave?false:points;
   let use=false;
-  if(defender==='you'){
-    const r=await ask({msg:`Gol de Compu por ${points} ${points>1?'puntos':'punto'}. ¿Pedís el Chequeo VAR?`,buttons:[{id:'no',label:'Dejar el gol'}],specials:['var']});
-    use=!!r.special;
+  if(affected==='you'){
+    const question=isSave?'¡Te atajaron! ¿Querés usar Chequeo VAR para intentar repetir el tiro? (50%)':
+      `¡Gol de Compu por ${points} ${points===1?'punto':'puntos'}! ¿Pedís Chequeo VAR para intentar anularlo? (50%)`;
+    const r=await ask({msg:question+' Tocá la carta VAR iluminada para revisarlo.',buttons:[{id:'no',label:'Aceptar la jugada',cls:'primary'}],specials:['var']});
+    use=r.special==='var';
   }else{
-    let p=points>=3?.95:points===2?.85:.5;
-    if(G.hand.cpu.length>=3)p=Math.min(1,p+.2);
-    use=Math.random()<p;
+    const base=isSave?.7:points>=3?.95:points===2?.85:.6;
+    use=Math.random()<base;
   }
-  if(!use)return points;
-  await useSpecial(defender,'var');
-  const r=await varReview(kicker,defender);
-  if(r==='annul'){narrate('El VAR anuló el gol.');bigText('GOL ANULADO','bad');SFX.bad();await sleep(1500);return 0;}
-  narrate('El VAR confirmó el gol.');await sleep(500);
-  return points;
+  if(!use)return isSave?false:points;
+  await useSpecial(affected,'var');
+  const ruling=await varReview(kicker,defender,undefined,incident);
+  if(isSave){
+    if(ruling==='annul'){
+      narrate('¡VAR: atajada anulada! El tiro se repite.');bigText('¡SE REPITE!','info');SFX.point();await sleep(1100);return true;
+    }
+    narrate('El VAR confirmó la atajada.');await sleep(500);return false;
+  }
+  if(ruling==='annul'){
+    narrate('El VAR anuló el gol.');bigText('GOL ANULADO','bad');SFX.bad();await sleep(1100);return 0;
+  }
+  narrate('El VAR confirmó el gol.');await sleep(500);return points;
 }
 async function revealDirs(kicker,defender,kickDir,keepDirs){
   const sk=$('#slotKick'),sd=$('#slotKeep');sk.innerHTML='';sd.innerHTML='';
@@ -1299,12 +1344,12 @@ async function revealDirs(kicker,defender,kickDir,keepDirs){
   [kc,...kcs].forEach(c=>c.classList.remove('down'));SFX.flip();
   await sleep(1000);
 }
-async function kickAttempt({kicker,defender,value,label,kind,doubled}){
-  const cat=kind==='extra'?'cartas':'pen';
+async function kickAttempt({kicker,defender,value,label,kind,doubled,allowReview=true,allowDefense=true}){
+  const cat='pen';
   showView('pen');sceneReset(defender);setRole(kicker);
   narrate(`${label}. ${kicker==='you'?'Pateás vos y ataja Compu.':'Patea Compu y atajás vos.'}`);
   await sleep(500);
-  const mode=await defenseWindow(defender,kicker,doubled);
+  const mode=allowDefense?await defenseWindow(defender,kicker,doubled):'normal';
   const avail=mode==='hinchada'?['L','R']:['L','C','R'];
   if(mode==='hinchada'){sceneZones({blocked:['C']});sceneTag('El Peso de la Hinchada: sin tiro al centro');crowdShake();}
   if(mode==='experto')sceneTag('Arquero Experto: cubre dos lados');
@@ -1326,132 +1371,81 @@ async function kickAttempt({kicker,defender,value,label,kind,doubled}){
     narrate(`¡Gol de ${wh(kicker)}!`);
     SFX.goal();bigText('¡GOOOL!');crowdCheer();if(kicker==='you')confetti(60);
     await sleep(1500);
-    const pts=await varWindow(defender,kicker,value);
+    const pts=allowReview?await varWindow(defender,kicker,value):value;
     if(pts>0)addPoints(kicker,pts,cat,label);
     sceneTag('');
     return {goal:pts>0,saved:false,annulled:pts===0};
   }
   narrate(defender==='you'?'¡Atajaste el penal!':'Compu atajó el penal.');
   SFX.save();bigText('¡ATAJADO!','save');
-  await sleep(1500);sceneTag('');
-  return {goal:false,saved:true,annulled:false};
-}
-async function playExtra(pl){
-  await useSpecial(pl,'extra');
-  await kickAttempt({kicker:pl,defender:other(pl),value:1,label:'Penal Extra',kind:'extra'});
-}
-async function playLibre(pl){
-  const rival=other(pl);
-  await useSpecial(pl,'libre');
-  narrate(`Tiro libre ${pl==='you'?'para vos':'para Compu'}.`);
-  const r=await freeKickShow(pl);
-  if(r==='gol'){
-    narrate(`¡Golazo de tiro libre de ${wh(pl)}!`);
-    SFX.goal();bigText('¡GOLAZO!');if(pl==='you')confetti(70);
-    await sleep(1500);
-    const pts=await varWindow(rival,pl,3);
-    if(pts>0)addPoints(pl,pts,'cartas','Tiro libre');
-  }else if(r==='atajado'){
-    narrate(`${rival==='you'?'Atajaste':'Compu atajó'} el tiro libre y suma 1 punto.`);
-    SFX.save();bigText('¡ATAJADO!','save');
-    await sleep(1300);
-    addPoints(rival,1,'cartas','Atajó el tiro libre');
-  }else{
-    narrate('El tiro libre se fue afuera.');
-    SFX.miss();bigText('¡AFUERA!','bad');
-    await sleep(1400);
+  await sleep(1000);sceneTag('');
+  if(allowReview&&await varWindow(defender,kicker,0,'atajada')){
+    return await kickAttempt({kicker,defender,value,label:'Repetición por VAR',kind,doubled,allowReview:false,allowDefense:false});
   }
+  return {goal:false,saved:true,annulled:false};
 }
 async function normalPenalty(i,kicker){
   const defender=other(kicker);
   showView('pen');sceneReset(defender);setRole(kicker);trackerCur(kicker);
   narrate(`Penal ${i+1} de 4. ${kicker==='you'?'Pateás vos.':'Patea Compu.'}`);
-  await sleep(700);
+  await sleep(500);
   let doubled=false;
-  if(kicker==='you'){
-    if(!G.used.you.off){
-      const opts=['doble','extra','libre'].filter(t=>G.hand.you.includes(t));
-      if(opts.length){
-        const r=await ask({msg:'Vas a patear. ¿Querés jugar una carta ofensiva antes?',buttons:[{id:'go',label:'Patear sin carta',cls:'primary'}],specials:opts});
-        if(r.special==='doble'){await useSpecial('you','doble');doubled=true;}
-        else if(r.special==='extra'){await playExtra('you');}
-        else if(r.special==='libre'){await playLibre('you');}
-        showView('pen');sceneReset(defender);setRole(kicker);trackerCur(kicker);
-      }
-    }
-  }else if(!G.used.cpu.off){
-    const hand=G.hand.cpu,full=hand.length>=3;
-    if(hand.includes('doble')&&Math.random()<(full?.55:.35)){await useSpecial('cpu','doble');doubled=true;}
-    else{
-      const o=['extra','libre'].filter(t=>hand.includes(t));
-      if(o.length&&Math.random()<(full?.14:.07)){
-        const t=o[rnd(o.length)];
-        if(t==='extra')await playExtra('cpu');else await playLibre('cpu');
-        showView('pen');sceneReset(defender);setRole(kicker);trackerCur(kicker);
-      }
-    }
+  if(kicker==='you'&&!G.used.you.off&&G.hand.you.includes('doble')){
+    const r=await ask({msg:'¿Querés que este penal valga doble?',buttons:[{id:'go',label:'Patear normal',cls:'primary'}],specials:['doble']});
+    if(r.special==='doble'){await useSpecial('you','doble');doubled=true;}
+  }else if(kicker==='cpu'&&!G.used.cpu.off&&G.hand.cpu.includes('doble')&&Math.random()<.5){
+    await useSpecial('cpu','doble');doubled=true;
   }
-  const r1=await kickAttempt({kicker,defender,value:doubled?2:1,label:doubled?'Penal Vale Doble':'Penal',kind:'normal',doubled});
-  trackerSet(kicker,r1.goal?'gol':r1.annulled?'anu':'atj');
-  if(r1.saved&&!doubled&&!G.used[kicker].off&&G.hand[kicker].includes('revancha')){
-    let use=false;
-    if(kicker==='you'){
-      const r=await ask({msg:'Te lo atajaron. ¿Jugás Revancha para repetirlo?',buttons:[{id:'no',label:'No, seguir'}],specials:['revancha']});
-      use=!!r.special;
-    }else use=Math.random()<.85;
-    if(use){
-      await useSpecial(kicker,'revancha');
-      const r2=await kickAttempt({kicker,defender,value:1,label:'Revancha',kind:'revancha'});
-      if(r2.goal)trackerSet(kicker,'gol');
-    }
-  }
+  const result=await kickAttempt({kicker,defender,value:doubled?2:1,label:doubled?'Penal Vale Doble':'Penal',kind:'normal',doubled});
+  trackerSet(kicker,result.goal?'gol':result.annulled?'anu':'atj');
   G.kc[kicker]++;
 }
-/* Pausa entre fases: se pueden jugar Penal Extra y Tiro Libre */
-async function pauseWindow(){
-  if(!G.used.you.off){
-    const opts=['extra','libre'].filter(t=>G.hand.you.includes(t));
-    if(opts.length){
-      const r=await ask({msg:'Pausa entre jugadas. ¿Querés jugar una carta ofensiva?',buttons:[{id:'no',label:'Seguir sin jugar',cls:'primary'}],specials:opts});
-      if(r.special==='extra')await playExtra('you');
-      else if(r.special==='libre')await playLibre('you');
-    }
+
+/* Tiros libres: una segunda tanda obligatoria, sin cartas especiales de tiro libre. */
+async function playRoundFreeKick(i,kicker){
+  const defender=other(kicker);
+  G.fkc[kicker]++;
+  narrate(`Tiro libre ${i+1} de 4. ${kicker==='you'?'Pateás vos.':'Patea Compu.'}`);
+  let result=await freeKickShow(kicker,undefined,i+1);
+  if(result==='gol'){
+    const points=await varWindow(defender,kicker,3,'gol');
+    if(points)addPoints(kicker,points,'libres','Gol de tiro libre');
+  }else if(result==='atajado'){
+    const repeat=await varWindow(defender,kicker,0,'atajada');
+    if(repeat){
+      narrate('Se repite el tiro libre por decisión del VAR.');
+      result=await freeKickShow(kicker,undefined,i+1,true);
+      // Solo una revisión por ejecución: la repetición ya es definitiva.
+      if(result==='gol')addPoints(kicker,3,'libres','Gol de tiro libre repetido');
+      else if(result==='atajado')addPoints(defender,1,'libres','Atajó tiro libre repetido');
+    }else addPoints(defender,1,'libres','Atajó tiro libre');
   }
-  if(!G.used.cpu.off){
-    const opts=['extra','libre'].filter(t=>G.hand.cpu.includes(t));
-    if(opts.length&&Math.random()<(G.hand.cpu.length>=3?.7:.5)){
-      const t=opts[rnd(opts.length)];
-      if(t==='extra')await playExtra('cpu');else await playLibre('cpu');
-    }
-  }
+  // En resultado AFUERA nadie suma y no se ofrece VAR.
+  log(`Tiro libre ${i+1}/4: ${Who(kicker)} patea, ${Who(defender)} ataja. Resultado: ${result}.`);
+  renderSpecials();
 }
 
 /* ============ Reposición ============ */
 async function resupply(){
-  narrate('Reposición de cartas especiales.');
-  setMsg('');
-  for(const p of ['you','cpu']){
-    const t=drawSp();
-    if(t){G.hand[p].push(t);renderSpecials(p==='you'?G.hand.you.length-1:undefined);SFX.deal();await sleep(600);}
-  }
-  if(G.hand.you.length>3){
-    const r=await ask({msg:'Tenés cuatro cartas especiales. Tocá la que querés descartar.',buttons:[],specials:[...new Set(G.hand.you)]});
+  // Todas las manos siempre contienen tres cartas: cada uso repone instantáneamente.
+  narrate('Renovación de cartas: conservás tres cartas especiales.');
+  renderSpecials();
+  const r=await ask({msg:'Tenés tres cartas. ¿Querés cambiar una por otra del mazo para la próxima ronda?',buttons:[{id:'keep',label:'Conservar mis 3 cartas',cls:'primary'}],specials:[...new Set(G.hand.you)]});
+  if(r.special){
     const i=G.hand.you.indexOf(r.special);
-    G.spDiscard.push(G.hand.you.splice(i>=0?i:0,1)[0]);
-    renderSpecials();setMsg('');
+    if(i>=0){G.spDiscard.push(G.hand.you.splice(i,1)[0]);const t=drawSp();if(t)G.hand.you.push(t);}
+    narrate('Cambiaste una carta especial.');renderSpecials();
   }
-  if(G.hand.cpu.length>3){
-    const val={doble:5,experto:5,var:4,libre:4,revancha:3,hinchada:3,extra:2};
-    let worst=0;
-    G.hand.cpu.forEach((t,i)=>{
-      const dup=G.hand.cpu.filter(x=>x===t).length>1?-1.5:0;
-      if(val[t]+dup+Math.random()*.4<val[G.hand.cpu[worst]]+(G.hand.cpu.filter(x=>x===G.hand.cpu[worst]).length>1?-1.5:0))worst=i;
-    });
-    G.spDiscard.push(G.hand.cpu.splice(worst,1)[0]);
-    narrate('Compu descarta una carta especial.');
-    renderSpecials();
+  if(Math.random()<.65){
+    const val={doble:5,experto:5,var:5,hinchada:4};
+    const h=G.hand.cpu;
+    const priorities=h.map((t,i)=>({i,score:val[t]-(h.filter(x=>x===t).length>1?2:0)+Math.random()}));
+    priorities.sort((a,b)=>a.score-b.score);
+    G.spDiscard.push(h.splice(priorities[0].i,1)[0]);
+    const t=drawSp();if(t)h.push(t);
+    log('Compu renovó una carta especial.');
   }
-  await sleep(700);
+  renderSpecials();setMsg('');
 }
 /* ============ Truco ============ */
 const STAKE=[1,2,3,4];
@@ -1954,13 +1948,14 @@ function replayDouble(shirt){
     <text x="344" y="264" text-anchor="middle" fill="#fff" font-size="14" font-weight="700" font-family="'Barlow Semi Condensed',sans-serif">Toca la pelota dos veces</text>
   </g>${varCommon()}`;
 }
-async function varReview(kicker,defender,force){
-  const res=force||(Math.random()<.5?'valid':'annul');
+async function varReview(kicker,defender,force,incident='gol'){
+  const res=force||(fairRandomInt(2)===0?'valid':'annul');
+  const isSave=incident==='atajada';
   const ov=$('#ovVar'),scr=$('#varScr'),bub=$('#varBubble'),stamp=$('#varStamp'),head=$('#varHead');
   stamp.className='stamp';stamp.innerHTML='';bub.classList.remove('show');head.classList.remove('nod');
   scr.classList.remove('freeze','on');
   const kit=defender==='you'?G.kit:G.cpuKit;
-  scr.innerHTML=res==='valid'?replayAdvance(kit):replayDouble(kicker==='you'?'#74acdf':'#f6b40e');
+  scr.innerHTML=isSave||res==='valid'?replayAdvance(kit):replayDouble(kicker==='you'?'#74acdf':'#f6b40e');
   $('#varTitle').textContent='El árbitro revisa la jugada';
   ov.classList.add('show');
   const say=async(t,ms)=>{bub.textContent=t;bub.classList.add('show');await sleep(ms);};
@@ -1968,7 +1963,7 @@ async function varReview(kicker,defender,force){
   scr.classList.add('on');SFX.deal();
   await say('Vamos a revisar la jugada…',1500);
   bub.classList.remove('show');
-  if(res==='valid'){
+  if(isSave||res==='valid'){
     await sleep(500);
     $('#rKeeperW').style.transform='translateY(16px)';
     await sleep(1000);
@@ -1989,14 +1984,26 @@ async function varReview(kicker,defender,force){
     await sleep(1100);
   }
   scr.classList.add('freeze');SFX.click();
-  await say(res==='valid'?'Mmm… el arquero se adelantó.':'Mmm… ¡la toca dos veces!',1900);
-  head.classList.add('nod');
-  if(res==='valid'){
-    await say('Se adelantó, pero la pelota entró. ¡El gol vale!',1200);
-    stamp.className='stamp ok show';stamp.innerHTML='GOL VÁLIDO<small>El arquero se adelantó, pero el gol sigue en pie</small>';SFX.point();
+  if(isSave){
+    await say(res==='annul'?'El arquero se adelantó antes del disparo.':'El arquero atajó correctamente.',1700);
+    head.classList.add('nod');
+    if(res==='annul'){
+      await say('¡Atajada anulada! Se repite el tiro.',1000);
+      stamp.className='stamp bad show';stamp.innerHTML='ATAJADA ANULADA<small>Se repite el tiro</small>';SFX.point();
+    }else{
+      await say('La atajada se mantiene.',1000);
+      stamp.className='stamp ok show';stamp.innerHTML='ATAJADA VÁLIDA<small>Se mantiene el resultado</small>';SFX.save();
+    }
   }else{
-    await say('¡Doble toque! Se anula el gol.',1200);
-    stamp.className='stamp bad show';stamp.innerHTML='GOL ANULADO<small>Doble toque del pateador</small>';SFX.bad();
+    await say(res==='valid'?'El arquero se adelantó, pero fue gol.':'¡El pateador toca dos veces la pelota!',1700);
+    head.classList.add('nod');
+    if(res==='valid'){
+      await say('El gol es válido.',1000);
+      stamp.className='stamp ok show';stamp.innerHTML='GOL VÁLIDO<small>El gol sigue en pie</small>';SFX.point();
+    }else{
+      await say('Doble toque: ¡se anula el gol!',1000);
+      stamp.className='stamp bad show';stamp.innerHTML='GOL ANULADO<small>Doble toque del pateador</small>';SFX.bad();
+    }
   }
   await sleep(2400);
   ov.classList.remove('show');
@@ -2095,9 +2102,26 @@ function fkPickHumanNumbers(prompt,forbidden=[]){
     };
   });
 }
-async function freeKickShow(pl,forceDie){
+function buildFkIntroScene(){
+  const stadium='<rect width="640" height="360" fill="#102b3b"/><rect y="107" width="640" height="19" fill="#0b151a"/>'+
+    '<rect y="126" width="640" height="234" fill="#14663d"/><path d="M0 320 Q320 250 640 320" stroke="#fff" stroke-opacity=".45" stroke-width="3" fill="none"/>';
+  const ref=figure({x:320,y:335,s:1.23,shirt:'#14181c',shorts:'#14181c',socks:'#14181c',face:'c',hair:'#1b1b1b',arms:'ref',extra:'<rect x="-14" y="-108" width="8" height="12" fill="#f6b40e"/>'});
+  const player=figure({x:138,y:335,s:.95,shirt:'#74acdf',stripe:'#fff',shorts:'#14181c',socks:'#fff',face:'r'});
+  const goalie=figure({x:520,y:335,s:.95,shirt:G.cpuKit.jersey,cap:G.cpuKit.cap,glove:'#e8892b',shorts:'#14181c',socks:'#fff',face:'l'});
+  $('#fkRefScene').innerHTML=stadium+player+goalie+ref;
+}
+async function introTirosLibres(){
+  buildFkIntroScene();
+  $('#fkRefBubble').textContent='¡Atención! Ahora son 2 tiros libres para cada uno. Patean y atajan por turnos. Elegí 2 números para patear o atajar: ¡el dado decide!';
+  $('#ovFKIntro').classList.add('show');
+  SFX.whistle();
+  await waitButton('#fkIntroOk');
+  $('#ovFKIntro').classList.remove('show');
+}
+async function freeKickShow(pl,forceDie,shotNumber=1,isRepeat=false){
   const ov=$('#ovFK'),msg=$('#fkMsg'),btn=$('#fkRoll'),die=$('#fkDie');
   $('#fkTitle').textContent=pl==='you'?(G.nick==='Vos'?'Tu tiro libre':`Tiro libre de ${G.nick}`):'Tiro libre de Compu';
+  $('#fkRoundProgress').textContent=`${isRepeat?'REPETICIÓN POR VAR · ':''}Tiro libre ${shotNumber} de 4 · ${G.nick}: ${G.fkc.you}/2 · Compu: ${G.fkc.cpu}/2`;
   fkBuild(pl);buildDie(die);fkSetTag('');
   $('#fkChosen').innerHTML='';
   $('#fkChoice').style.display='none';
@@ -2135,7 +2159,7 @@ async function freeKickShow(pl,forceDie){
 
 /* ============ Rondas y partido ============ */
 function waitButton(id){return new Promise(r=>{$(id).onclick=()=>{SFX.click();r();};});}
-const CAT_ROWS=[['Penales','pen'],['Cartas especiales','cartas'],['Truco','truco'],['Envido','envido']];
+const CAT_ROWS=[['Penales','pen'],['Tiros libres','libres'],['Truco','truco'],['Envido','envido']];
 
 async function recap(){
   const rs=G.rs,t=p=>sum(Object.values(rs[p]));
@@ -2161,7 +2185,7 @@ async function playRound(){
   G.kickFirst=G.round===1?G.kick1:other(G.kickFirst);
   G.mano=G.round===1?G.mano1:other(G.mano);
   $('#roundLbl').textContent='Ronda '+G.round;
-  renderSpecials();trackerReset();
+  renderSpecials();trackerReset();G.fkc={you:0,cpu:0};
   setPhase('pen');showView('pen');sceneReset(G.kickFirst==='you'?'cpu':'you');setRole(null);
   bigText('Ronda '+G.round,'info');
   narrate(`Ronda ${G.round}. ${G.kickFirst==='you'?'Pateás primero vos':'Patea primero Compu'} y ${G.mano==='you'?'sos mano':'Compu es mano'} en el Truco.`);
@@ -2169,10 +2193,11 @@ async function playRound(){
   const F=G.kickFirst,order=[F,other(F),F,other(F)];
   for(let i=0;i<order.length;i++)await normalPenalty(i,order[i]);
   setMsg('');
-  await pauseWindow();
+  setPhase('fk');
+  await introTirosLibres();
+  for(let i=0;i<order.length;i++)await playRoundFreeKick(i,order[i]);
   setPhase('truco');
   await trucoPhase();
-  await pauseWindow();
   setPhase('rep');showView('pen');sceneReset(G.kickFirst==='you'?'cpu':'you');setRole(null);
   await resupply();
   await recap();
