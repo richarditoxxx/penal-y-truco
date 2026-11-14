@@ -338,6 +338,16 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
 .fk-ref-bubble{position:absolute;top:5%;left:50%;transform:translateX(-50%);background:#fff;color:#152532;border:2px solid #fff;border-radius:18px;padding:10px 15px;text-align:center;font-size:clamp(12px,2.5vw,19px);font-weight:800;max-width:82%;box-shadow:0 5px 18px rgba(0,0,0,.3)}
 .fk-ref-bubble::after{content:'';position:absolute;bottom:-11px;left:50%;border:11px solid transparent;border-top-color:#fff;border-bottom:0}
 .fk-intro-steps{text-align:center;line-height:1.3;font-size:16px}
+
+/* v2.1: el veredicto siempre usa verde para GOL y rojo para NO GOL. */
+.stamp.goal{color:#62ed91;border-color:#62ed91;text-shadow:0 2px 16px rgba(34,197,94,.42)}
+.stamp.no-goal{color:#ff6767;border-color:#ff6767;text-shadow:0 2px 16px rgba(239,68,68,.4)}
+.varstage .rbubble.varb{left:50%;right:auto;bottom:3%;width:92%;max-width:92%;padding:12px 16px;font-family:'Barlow Semi Condensed','Segoe UI',sans-serif;font-size:clamp(13px,2.1vw,18px);font-weight:700;line-height:1.25;text-align:center;white-space:normal;transform:translateX(-50%) scale(.95)}
+.varstage .rbubble.varb.show{transform:translateX(-50%) scale(1)}
+.varstage .rbubble.varb::after{display:none}
+.var-decision-gol{color:#0b7b36;font-weight:900;font-size:1.4em;white-space:nowrap}
+.var-decision-no-gol{color:#c41f2b;font-weight:900;font-size:1.4em;white-space:nowrap}
+
 /* VAR */
 .varbox{width:min(100%,780px);display:flex;flex-direction:column;gap:10px}
 .varhead{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
@@ -513,7 +523,7 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
       <button class="btn big" id="btnRules" type="button">Cómo se juega</button>
       <button class="btn big ghost" type="button" disabled>Jugar online <small>(próximamente)</small></button>
     </div>
-    <p class="ver">Versión 2.0 · Dos ataques del Genio y dos manos de Truco por jugador y ronda.</p>
+    <p class="ver">Versión 2.1 · Dos ataques del Genio y dos manos de Truco por jugador y ronda.</p>
   </div>
 </section>
 
@@ -843,7 +853,7 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
     <ul>
       <li>En total son <b>cuatro penales</b>: pateás, atajás, pateás, atajás (o al revés).</li>
       <li>Pateador y arquero eligen izquierda, centro o derecha. Si coinciden, hay atajada; si no, gol (+1).</li>
-      <li>No hay penales extra ni revancha. Una repetición solo puede surgir por un VAR favorable sobre una atajada.</li>
+      <li>No hay penales extra ni revancha. Si el VAR anula una atajada, concede el gol directamente, sin repetición.</li>
     </ul>
     <h3>2. Tiros libres: dos por jugador</h3>
     <ul>
@@ -872,7 +882,7 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
       <li><b>Penal Vale Doble:</b> si convertís uno de tus dos penales, sumás 2 en lugar de 1.</li>
       <li><b>Arquero Pulpo:</b> defendés dos direcciones en un penal.</li>
       <li><b>El Peso de la Hinchada:</b> pateador y arquero solo pueden elegir izquierda o derecha.</li>
-      <li><b>Chequeo VAR:</b> tras un gol, el arquero perjudicado puede intentar anularlo (50%). Tras una atajada, el pateador perjudicado puede solicitar que se repita (50%). Si el VAR no favorece al reclamante, la decisión inicial queda firme. Solo aplica a penales y tiros libres. <b>Máximo 2 revisiones VAR por jugador y por ronda</b>; al jugarla se cambia por otra carta aleatoria y el cupo se renueva en la siguiente ronda.</li>
+      <li><b>Chequeo VAR:</b> tras un gol, el arquero perjudicado puede intentar anularlo (50%). Tras una atajada, el pateador perjudicado puede solicitar que se conceda el gol directamente (50%), sin repetir el tiro. Si el VAR no favorece al reclamante, la decisión inicial queda firme. Solo aplica a penales y tiros libres. <b>Máximo 2 revisiones VAR por jugador y por ronda</b>; al jugarla se cambia por otra carta aleatoria y el cupo se renueva en la siguiente ronda.</li>
       <li><b>Tiro Colocado:</b> el pateador elige 3 números en un tiro libre en lugar de 2.</li>
       <li><b>Barrera Reforzada:</b> el arquero elige 3 números para atajar un tiro libre en lugar de 2.</li>
       <li>Si ambos activan Tiro Colocado y Barrera Reforzada en el mismo tiro libre, <b>se neutralizan</b>: 2 números por cada uno y 2 para afuera.</li>
@@ -1502,7 +1512,7 @@ async function varWindow(defender,kicker,points,incident='gol'){
   if(!G.hand[affected].includes('var')||G.varUsed[affected]>=MAX_VAR_PER_ROUND)return isSave?false:points;
   let use=false;
   if(affected==='you'){
-    const question=isSave?'¡Te atajaron! ¿Querés usar Chequeo VAR para intentar repetir el tiro? (50%)':
+    const question=isSave?'¡Te atajaron! ¿Querés usar Chequeo VAR? Si la atajada se anula, será GOL directo (50%).':
       `¡Gol de Compu por ${points} ${points===1?'punto':'puntos'}! ¿Pedís Chequeo VAR para intentar anularlo? (50%)`;
     const available=MAX_VAR_PER_ROUND-G.varUsed.you;
     const r=await ask({msg:question+` Te quedan ${available} ${available===1?'revisión':'revisiones'} esta ronda. Tocá la carta VAR iluminada para revisarlo.`,buttons:[{id:'no',label:'Aceptar la jugada',cls:'primary'}],specials:['var']});
@@ -1519,7 +1529,7 @@ async function varWindow(defender,kicker,points,incident='gol'){
   const ruling=await varReview(kicker,defender,undefined,incident);
   if(isSave){
     if(ruling==='annul'){
-      narrate('¡VAR: atajada anulada! El tiro se repite.');bigText('¡SE REPITE!','info');SFX.point();await sleep(1100);return true;
+      narrate('¡VAR: atajada anulada! La decisión final es GOL.');bigText('¡GOL POR VAR!');SFX.point();await sleep(1100);return true;
     }
     narrate('El VAR confirmó la atajada.');await sleep(500);return false;
   }
@@ -1575,7 +1585,10 @@ async function kickAttempt({kicker,defender,value,label,kind,doubled,allowReview
   SFX.save();bigText('¡ATAJADO!','save');
   await sleep(1000);sceneTag('');
   if(allowReview&&await varWindow(defender,kicker,0,'atajada')){
-    return await kickAttempt({kicker,defender,value,label:'Repetición por VAR',kind,doubled,allowReview:false,allowDefense:false});
+    // VAR resolvió GOL: se concede el valor original (1 o 2), sin nueva ejecución.
+    addPoints(kicker,value,cat,`Gol concedido por VAR · ${label}`);
+    sceneTag('¡GOL CONCEDIDO POR VAR!');
+    return {goal:true,saved:false,annulled:false,viaVAR:true};
   }
   return {goal:false,saved:true,annulled:false};
 }
@@ -1606,13 +1619,11 @@ async function playRoundFreeKick(i,kicker){
     const points=await varWindow(defender,kicker,3,'gol');
     if(points)addPoints(kicker,points,'libres','Gol de tiro libre');
   }else if(result==='atajado'){
-    const repeat=await varWindow(defender,kicker,0,'atajada');
-    if(repeat){
-      narrate('Se repite el tiro libre por decisión del VAR.');
-      result=await freeKickShow(kicker,undefined,i+1,true);
-      // Solo una revisión por ejecución: la repetición ya es definitiva.
-      if(result==='gol')addPoints(kicker,3,'libres','Gol de tiro libre repetido');
-      else if(result==='atajado')addPoints(defender,1,'libres','Atajó tiro libre repetido');
+    const awardedGoal=await varWindow(defender,kicker,0,'atajada');
+    if(awardedGoal){
+      // VAR determina gol: el tiro libre vale +3 directamente; nada de repetir el dado.
+      result='gol';
+      addPoints(kicker,3,'libres','Gol de tiro libre concedido por VAR');
     }else addPoints(defender,1,'libres','Atajó tiro libre');
   }
   // En resultado AFUERA nadie suma y no se ofrece VAR.
@@ -1992,7 +2003,15 @@ function figure(o){
     for(let i=0;i<6;i++)s+=`<rect x="${-19+i*7}" y="-132" width="7" height="58" fill="${i%2?o.stripe:o.shirt}"/>`;
     s+='</g>';
   }else if(o.stripe)s+=`<g clip-path="url(#${id})" fill="${o.stripe}"><rect x="-12" y="-132" width="7" height="58"/><rect x="5" y="-132" width="7" height="58"/></g>`;
-  if(o.back)s+='<text x="0" y="-96" text-anchor="middle" font-size="26" fill="#fff" stroke="#000" stroke-opacity=".35" stroke-width="2" paint-order="stroke" font-family="\'Alfa Slab One\',Georgia,serif">10</text>';
+  if(o.back&&o.name){
+    const name=String(o.name).slice(0,12);
+    const fontSize=name.length>9?10.5:name.length>6?12:14;
+    const widthAttr=name.length>7?' textLength="56" lengthAdjust="spacingAndGlyphs"':'';
+    // Etiqueta de alto contraste encima del 10, visible incluso en camisetas blancas.
+    s+=`<rect x="-34" y="-129" width="68" height="19" rx="5" fill="#101b24" stroke="#f7f4e9" stroke-width="1.3" opacity=".98"/>`;
+    s+=`<text x="0" y="-114" text-anchor="middle" font-size="${fontSize}" font-weight="900" fill="#fff" stroke="#000" stroke-opacity=".45" stroke-width="1.2" paint-order="stroke" font-family="'Barlow Semi Condensed','Arial Narrow',sans-serif"${widthAttr}>${escapeXml(name)}</text>`;
+  }
+  if(o.back)s+='<text x="0" y="-84" text-anchor="middle" font-size="26" fill="#fff" stroke="#000" stroke-opacity=".35" stroke-width="2" paint-order="stroke" font-family="\'Alfa Slab One\',Georgia,serif">10</text>';
   const arm=(d)=>`<path d="${d}" stroke="${o.shirt}" stroke-width="11" stroke-linecap="round" fill="none"/>`;
   if(o.arms==='wall'){
     s+=arm('M-19 -124 Q-25 -96 -5 -80')+arm('M19 -124 Q25 -96 5 -80');
@@ -2160,36 +2179,43 @@ async function varReview(kicker,defender,force,incident='gol'){
   setVarScene(varImg(VARIMG.decision,'Árbitro comunicando la decisión final del VAR'));
   await sleep(180);
 
-  let finalMsg='',stampLabel='',stampCls='ok';
+  let finalMsg='',stampLabel='',stampCls='goal';
   if(!isSave){
     if(res==='valid'){
       finalMsg=`Luego de una revisión en campo noto que la pelota traspasa el 100% de la línea de gol. El gol de ${kickerName} es válido. Decisión final: GOL.`;
       stampLabel='GOL<small>Pelota dentro del arco</small>';
-      stampCls='ok';
+      stampCls='goal';
       SFX.point();
     }else{
       finalMsg=`Luego de una revisión en campo noto que la pelota no traspasa el 100% de la línea de gol. El gol de ${kickerName} no es válido. Decisión final: NO GOL.`;
       stampLabel='NO GOL<small>La pelota no cruzó toda la línea</small>';
-      stampCls='bad';
+      stampCls='no-goal';
       SFX.bad();
     }
   }else{
     if(res==='valid'){
       finalMsg=`Luego de una revisión en campo noto que la pelota no traspasa el 100% de la línea de gol. La atajada de ${keeperName} es válida. Decisión final: NO GOL.`;
       stampLabel='NO GOL<small>Atajada válida</small>';
-      stampCls='ok';
+      stampCls='no-goal';
       SFX.save();
     }else{
       finalMsg=`Luego de una revisión en campo noto que la pelota traspasa el 100% de la línea de gol antes de la intervención del arquero ${keeperName}. La atajada no es válida. Decisión final: GOL.`;
       stampLabel='GOL<small>La pelota cruzó toda la línea</small>';
-      stampCls='bad';
+      stampCls='goal';
       SFX.point();
     }
   }
-  await say(finalMsg,3200);
+  // Nunca convertir texto de nicknames en HTML: el mensaje se construye con nodos de texto.
+  const split=finalMsg.split('Decisión final:');
+  bub.replaceChildren(document.createTextNode(split[0]),document.createTextNode('Decisión final: '));
+  const verdict=document.createElement('strong');
+  verdict.className=stampCls==='goal'?'var-decision-gol':'var-decision-no-gol';
+  verdict.textContent=stampCls==='goal'?'GOL':'NO GOL';
+  bub.appendChild(verdict);
+  bub.classList.add('show');
   stamp.className='stamp '+stampCls+' show';
   stamp.innerHTML=stampLabel;
-  await sleep(2350);
+  await sleep(4900);
   ov.classList.remove('show');
   await sleep(180);
   return res;
@@ -2347,7 +2373,7 @@ async function fkSpecialWindow(pl){
 async function freeKickShow(pl,forceDie,shotNumber=1,isRepeat=false){
   const ov=$('#ovFK'),msg=$('#fkMsg'),btn=$('#fkRoll'),die=$('#fkDie');
   $('#fkTitle').textContent=pl==='you'?(G.nick==='Vos'?'Tu tiro libre':`Tiro libre de ${G.nick}`):'Tiro libre de Compu';
-  $('#fkRoundProgress').textContent=`${isRepeat?'REPETICIÓN POR VAR · ':''}Tiro libre ${shotNumber} de 4 · ${G.nick}: ${G.fkc.you}/2 · Compu: ${G.fkc.cpu}/2`;
+  $('#fkRoundProgress').textContent=`${isRepeat?'REVISIÓN VAR · ':''}Tiro libre ${shotNumber} de 4 · ${G.nick}: ${G.fkc.you}/2 · Compu: ${G.fkc.cpu}/2`;
   fkBuild(pl);buildDie(die);fkSetTag('');
   $('#fkChosen').innerHTML='';
   $('#fkChoice').style.display='none';
