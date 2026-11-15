@@ -339,7 +339,7 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
 .fk-ref-bubble::after{content:'';position:absolute;bottom:-11px;left:50%;border:11px solid transparent;border-top-color:#fff;border-bottom:0}
 .fk-intro-steps{text-align:center;line-height:1.3;font-size:16px}
 
-/* v2.1: el veredicto siempre usa verde para GOL y rojo para NO GOL. */
+/* v2.2: el veredicto siempre usa verde para GOL y rojo para NO GOL. */
 .stamp.goal{color:#62ed91;border-color:#62ed91;text-shadow:0 2px 16px rgba(34,197,94,.42)}
 .stamp.no-goal{color:#ff6767;border-color:#ff6767;text-shadow:0 2px 16px rgba(239,68,68,.4)}
 .varstage .rbubble.varb{left:50%;right:auto;bottom:3%;width:92%;max-width:92%;padding:12px 16px;font-family:'Barlow Semi Condensed','Segoe UI',sans-serif;font-size:clamp(13px,2.1vw,18px);font-weight:700;line-height:1.25;text-align:center;white-space:normal;transform:translateX(-50%) scale(.95)}
@@ -507,6 +507,44 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
+
+/* ============ ¡A correr! Carrera a la línea ============ */
+#v-run{background:linear-gradient(180deg,#0a1c27,#123b2c);align-items:center;justify-content:center}
+.run-wrap{width:100%;max-width:910px;padding:10px 13px;display:flex;flex-direction:column;gap:10px;margin:auto}
+.run-header{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.run-header h2{font-family:var(--disp);font-size:clamp(20px,3vw,29px);color:#f9d677}
+.run-turn-badge{background:#18354b;border:1px solid #ffffff55;border-radius:999px;padding:6px 13px;font-size:14px;font-weight:800}
+.run-pitch{position:relative;border:3px solid #cde9d9;border-radius:13px;overflow:hidden;background:#0d5132}
+#runScene{width:100%;height:auto;display:block}
+.run-pop{position:absolute;top:4%;left:50%;transform:translateX(-50%);background:#09212fe8;color:white;border:2px solid #f6b40e;border-radius:11px;padding:8px 14px;text-align:center;font-size:clamp(13px,2vw,21px);font-weight:800;max-width:90%;transition:opacity .2s;opacity:0;pointer-events:none;z-index:5}
+.run-pop.on{opacity:1}.run-pop.good{color:#c8f8d5;border-color:#90e7a9}.run-pop.bad{color:#ffd3d3;border-color:#ff8989}
+.run-meta{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
+.run-side{background:#071d2bdc;padding:9px 12px;border:1px solid #ffffff33;border-radius:12px;min-width:0}
+.run-side b{font-size:clamp(12px,2vw,17px)}
+.run-side small{display:block;color:#c4d4df;font-size:12px;margin-top:2px}
+.run-steps{font-size:20px;line-height:1.2;letter-spacing:3px;font-family:system-ui,sans-serif;color:#718b90;white-space:nowrap}
+.run-steps .done{color:#f6b40e;text-shadow:0 0 12px #f6b40e88}
+.run-side.def .run-steps .done{color:#81d8ff;text-shadow:0 0 12px #81d8ff88}
+.run-die-box{display:flex;align-items:center;flex-direction:column;justify-content:center;gap:5px;min-width:90px}
+.run-die-box>span{font-weight:800;color:#f9d677;font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+#runDie{transition-duration:1.15s}
+.run-number-row{display:flex;justify-content:center;gap:6px;flex-wrap:wrap}
+.run-number-chip{font-family:var(--disp);width:clamp(35px,5.3vw,48px);height:clamp(39px,5.6vw,51px);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:2px solid #ffffff45;font-size:20px;background:#17394b;color:#b8c8d0}
+.run-number-chip.attack{background:#f6b40e;color:#362400;border-color:#ffe49b}
+.run-number-chip.defend{background:#64b5e3;color:#061c2e;border-color:#bbecff}
+.run-number-chip small{font-family:'Barlow Semi Condensed',sans-serif;font-size:10px;font-weight:800}
+.run-hint{text-align:center;font-weight:700;color:#d5e8ea;font-size:14px;min-height:20px}
+#ovRunIntro{background:rgba(2,14,22,.96)}
+.run-intro{width:min(700px,100%);padding:22px;border:2px solid #d9c475;border-radius:18px;background:linear-gradient(150deg,#183b49,#0d2632);display:flex;flex-direction:column;gap:12px;text-align:center;max-height:90svh;overflow-y:auto}
+.run-intro h2{font-family:var(--disp);color:#f6b40e;font-size:clamp(24px,4vw,36px)}
+.run-intro p{line-height:1.35;font-size:clamp(15px,2vw,18px)}
+.run-intro-pitch{height:140px;position:relative;border-radius:12px;overflow:hidden;background:linear-gradient(90deg,#165c3c,#2c8856);border:2px solid #ffffff50;display:flex;align-items:center;justify-content:space-evenly}
+.run-intro-pitch .racer-icon{font-size:52px;filter:drop-shadow(0 3px 4px #0008)}
+.run-intro-pitch .finish-ball{font-size:45px;position:relative}
+.run-intro-roles{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.run-intro-roles div{background:#ffffff10;border-radius:10px;padding:10px;font-size:15px}
+@media(max-width:640px){.run-wrap{padding:5px;gap:6px}.run-meta{gap:5px}.run-side{padding:6px}.run-steps{font-size:14px;letter-spacing:1px}.run-die-box{min-width:65px}.run-die-box .die-scene{transform:scale(.77);margin:-7px}.run-die-box>span{font-size:9px}.run-header h2{font-size:19px}.run-turn-badge{font-size:11px}.run-number-chip{font-size:16px}.run-hint{font-size:12px}}
+
 </style>
 </head>
 <body>
@@ -523,7 +561,7 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
       <button class="btn big" id="btnRules" type="button">Cómo se juega</button>
       <button class="btn big ghost" type="button" disabled>Jugar online <small>(próximamente)</small></button>
     </div>
-    <p class="ver">Versión 2.1 · Dos ataques del Genio y dos manos de Truco por jugador y ronda.</p>
+    <p class="ver">Versión 2.2 · Dos ataques del Genio y dos manos de Truco por jugador y ronda.</p>
   </div>
 </section>
 
@@ -596,6 +634,7 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
     <span class="pchip" data-p="pen">Penales</span>
       <span class="pchip" data-p="fk">Tiros libres</span>
       <span class="pchip" data-p="genio">El Genio</span>
+      <span class="pchip" data-p="run">¡A correr!</span>
       <span class="pchip" data-p="truco">Truco</span>
       <span class="pchip" data-p="rep">Cartas</span>
   </div>
@@ -707,6 +746,52 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
         </div>
         <div class="genio-progress" id="genioProgress" aria-label="Avance del jugador"></div>
         <p class="genio-hint" id="genioHint" aria-live="polite">Gambeteá a los cinco defensores y al arquero.</p>
+      </div>
+    </div>
+
+
+    <!-- ¡A correr! Carreras entre el atacante y el defensor hasta la línea del gol -->
+    <div class="view" id="v-run">
+      <div class="run-wrap">
+        <div class="run-header"><h2>¡A CORRER!</h2><span class="run-turn-badge" id="runTurn">Carrera 1 de 2</span></div>
+        <div class="run-pitch">
+          <svg id="runScene" viewBox="0 0 860 450" role="img" aria-label="Dos futbolistas corren desde la mitad de la cancha hacia una pelota sobre la línea de gol">
+            <defs>
+              <linearGradient id="runGrass" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#258150"/><stop offset="1" stop-color="#0c5030"/></linearGradient>
+              <pattern id="runNet" width="12" height="12" patternUnits="userSpaceOnUse"><path d="M0 0 H12 M0 0 V12" fill="none" stroke="#e6fff2" stroke-opacity=".62" stroke-width="1.1"/></pattern>
+              <linearGradient id="runSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#081e30"/><stop offset="1" stop-color="#134052"/></linearGradient>
+            </defs>
+            <rect width="860" height="124" fill="url(#runSky)"/>
+            <g id="runCrowd"></g>
+            <rect y="116" width="860" height="14" fill="#03141b"/>
+            <rect y="130" width="860" height="320" fill="url(#runGrass)"/>
+            <g opacity=".085" fill="#fff"><rect y="130" width="860" height="42"/><rect y="217" width="860" height="42"/><rect y="304" width="860" height="42"/><rect y="392" width="860" height="42"/></g>
+            <path d="M92 130V444" fill="none" stroke="white" stroke-width="4" opacity=".8"/>
+            <path d="M755 138V445" fill="none" stroke="white" stroke-width="5" opacity=".92"/>
+            <path d="M755 173H831V294H755" stroke="#fff" stroke-width="6" fill="url(#runNet)"/>
+            <path d="M745 165H834V298H745" fill="none" stroke="#fff" stroke-width="4" opacity=".85"/>
+            <path d="M94 316H720 M94 405H720" fill="none" stroke="#e4ffe9" stroke-opacity=".32" stroke-width="2.5" stroke-dasharray="9 10"/>
+            <g id="runTrackMarks" opacity=".6" fill="#fff"></g>
+            <text x="106" y="156" fill="#fff" font-size="17" font-weight="800">MITAD DE CANCHA</text>
+            <text x="736" y="157" text-anchor="end" fill="#fff" font-size="18" font-weight="800">LÍNEA DE GOL</text>
+            <g id="runAtk" style="transform:translate(92px,304px);transition:transform .65s cubic-bezier(.2,.8,.25,1)"></g>
+            <g id="runDef" style="transform:translate(92px,408px);transition:transform .65s cubic-bezier(.2,.8,.25,1)"></g>
+            <g id="runBall" style="transform:translate(754px,305px);transition:transform .65s ease-out">
+              <circle r="14" fill="#fff" stroke="#152f36" stroke-width="2"/>
+              <polygon points="0,-7 7,-2 4,6 -4,6 -7,-2" fill="#182b34"/>
+              <path d="M0 -7V-14 M7 -2L13 -5 M4 6L9 12 M-4 6L-9 12 M-7 -2L-13 -5" fill="none" stroke="#182b34" stroke-width="1.4"/>
+            </g>
+            <g id="runEffects"></g>
+          </svg>
+          <div class="run-pop" id="runPop" aria-live="polite"></div>
+        </div>
+        <div class="run-meta">
+          <div class="run-side attack"><b id="runAtkName">Atacante</b><small>⚽ Llega y hace gol: +3</small><div class="run-steps" id="runAtkSteps">○ ○ ○ ○</div></div>
+          <div class="run-die-box"><span id="runRollLbl">Dado automático</span><div class="die-scene"><div class="die" id="runDie"></div></div></div>
+          <div class="run-side def"><b id="runDefName">Defensor</b><small>🛡️ Llega y barre: +1</small><div class="run-steps" id="runDefSteps">○ ○ ○ ○</div></div>
+        </div>
+        <div class="run-number-row" id="runNumbers" aria-label="Números elegidos por ambos jugadores"></div>
+        <p class="run-hint" id="runHint" aria-live="polite">Se eligen tres números para cada jugador.</p>
       </div>
     </div>
 
@@ -845,10 +930,24 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
   </div>
 </div>
 
+
+<div class="ov" id="ovRunIntro">
+  <div class="run-intro" role="dialog" aria-label="Reglas del minijuego A correr">
+    <h2>¡A CORRER!</h2>
+    <p>La pelota quedó <b>justo en la línea del arco</b>. ¡Hay una carrera desde la mitad de cancha!</p>
+    <div class="run-intro-pitch" aria-hidden="true"><span class="racer-icon">🏃⚽</span><span style="font-size:35px">VS.</span><span class="racer-icon">🛝🛡️</span><span class="finish-ball">⚽🥅</span></div>
+    <div class="run-intro-roles"><div>⚽ <b>Atacante</b><p>Llegá primero para empujar la pelota y sumar <b>3 puntos</b>.</p></div><div>🛡️ <b>Defensor</b><p>Llegá primero y tirate a barrer para salvar el gol: <b>1 punto</b>.</p></div></div>
+    <p>Primero elige un número el <b>jugador mano</b>, después el rival, alternando hasta repartirse los números del <b>1 al 6</b> (3 cada uno).</p>
+    <p>Después, el dado se tira <b>solo</b>. En cada tirada avanza un lugar el jugador dueño de ese número. Gana quien complete <b>4 avances</b>; si siguen 3–3 después de 6 tiradas, una séptima decide.</p>
+    <p><b>Dos carreras por ronda:</b> primero ataca el jugador mano y luego cambian los roles. Los puntos indicados son provisorios.</p>
+    <button id="runIntroOk" class="btn primary big" type="button">¡Entendido! A correr</button>
+  </div>
+</div>
+
 <div class="ov" id="ovRules">
   <div class="modal" role="dialog" aria-label="Cómo se juega">
     <h2>Cómo se juega</h2>
-    <p>Se juega contra Compu hasta llegar a 30 puntos. Cada ronda tiene penales, tiros libres, El Genio, Truco y renovación opcional de cartas. La victoria se decide al terminar la ronda.</p>
+    <p>Se juega contra Compu hasta llegar a 30 puntos. Cada ronda tiene penales, tiros libres, El Genio, ¡A correr!, Truco y renovación opcional de cartas. La victoria se decide al terminar la ronda.</p>
     <h3>1. Penales: dos por jugador</h3>
     <ul>
       <li>En total son <b>cuatro penales</b>: pateás, atajás, pateás, atajás (o al revés).</li>
@@ -871,7 +970,15 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
       <li>Si eligen lados distintos, el atacante gambetea y pasa al siguiente rival.</li>
       <li>Después de esquivar también al arquero, convierte automáticamente y recibe <b>6 puntos</b> (puntuación provisoria).</li>
     </ul>
-    <h3>4. Truco Express</h3>
+    <h3>4. ¡A correr!</h3>
+    <ul>
+      <li>Dos carreras: en la primera ataca quien ganó el sorteo inicial (jugador mano) y defiende el otro; en la segunda se invierten los roles.</li>
+      <li>Hay seis números de un dado. El jugador mano elige primero un número, el otro elige el segundo, y así se alternan hasta tener <b>3 números cada uno</b>, sin repetir.</li>
+      <li>El dado se tira automáticamente. Cada resultado hace avanzar una posición al jugador que eligió ese número.</li>
+      <li>El primero que alcanza <b>4 avances</b> gana la carrera. Si las primeras seis tiradas terminan 3 a 3, una séptima define.</li>
+      <li>Si llega el atacante, empuja la pelota sobre la línea y hace <b>GOL (+3 puntos)</b>. Si llega el defensor, la saca de una barrida y suma <b>+1 punto</b>. Puntos provisorios hasta las pruebas.</li>
+    </ul>
+    <h3>5. Truco Express</h3>
     <ul>
       <li>Dos manos independientes de Truco argentino por ronda, con tres cartas nuevas por jugador en cada una. Se utiliza la baraja de 40 cartas, sin Flor ni Falta Envido.</li>
       <li>Truco 2, Retruco 3, Vale Cuatro 4. Envido 2, Real Envido 3, Envido + Envido 4, Envido + Real 5 y Envido + Envido + Real 7.</li>
@@ -886,7 +993,7 @@ fieldset.kits legend{font-weight:700;font-size:17px;margin-bottom:8px}
       <li><b>Tiro Colocado:</b> el pateador elige 3 números en un tiro libre en lugar de 2.</li>
       <li><b>Barrera Reforzada:</b> el arquero elige 3 números para atajar un tiro libre en lugar de 2.</li>
       <li>Si ambos activan Tiro Colocado y Barrera Reforzada en el mismo tiro libre, <b>se neutralizan</b>: 2 números por cada uno y 2 para afuera.</li>
-      <li><b>Las cartas especiales se consumen al usarse:</b> desaparecen de la mano y se reemplazan inmediatamente por una carta aleatoria diferente. Si recibís una nueva copia de un tipo en otro momento, podés volver a usarla. Una misma ejecución no se revisa dos veces con VAR. Las cartas no se utilizan en El Genio ni en Truco.</li>
+      <li><b>Las cartas especiales se consumen al usarse:</b> desaparecen de la mano y se reemplazan inmediatamente por una carta aleatoria diferente. Si recibís una nueva copia de un tipo en otro momento, podés volver a usarla. Una misma ejecución no se revisa dos veces con VAR. Las cartas no se utilizan en El Genio, ¡A correr! ni en Truco.</li>
       <li><b>Siempre tenés tres cartas especiales distintas, sin duplicados.</b> La nueva carta nunca es igual a la que acabás de usar. Podés cambiar una voluntariamente al finalizar cada ronda.</li>
     </ul>
     <div class="row"><button class="btn primary" id="rulesOk" type="button">Entendido</button></div>
@@ -1087,7 +1194,7 @@ function spEl(type){
 }
 
 /* ============ Estado ============ */
-const emptyCats=()=>({pen:0,libres:0,genio:0,truco:0,envido:0});
+const emptyCats=()=>({pen:0,libres:0,genio:0,correr:0,truco:0,envido:0});
 const MAX_VAR_PER_ROUND=2;
 const G={
   score:{you:0,cpu:0},round:0,kick1:'you',mano1:'you',kickFirst:'you',mano:'you',
@@ -1108,6 +1215,7 @@ function showView(v){
   $('#v-pen').classList.toggle('on',v==='pen');
   $('#v-truco').classList.toggle('on',v==='truco');
   $('#v-genio').classList.toggle('on',v==='genio');
+  $('#v-run').classList.toggle('on',v==='run');
 }
 function setPhase(p){$$('.pchip').forEach(c=>c.classList.toggle('on',c.dataset.p===p));}
 function log(t){G.log.push(t);}
@@ -2524,9 +2632,148 @@ async function playGenioAttack(attacker,turn=1){
   await sleep(1700);setMsg('');
 }
 
+
+/* ============ ¡A correr! Dos carreras desde mitad de cancha ============ */
+const RUN_FINISH=4;
+const RUN_X=[92,248,404,556,712];
+function runPop(text,cls=''){
+  const p=$('#runPop');p.textContent=text||'';
+  p.className='run-pop'+(text?' on':'')+(cls?' '+cls:'');
+}
+function runProgress(a,d){
+  const fmt=(count)=>[0,1,2,3].map(i=>`<span class="${i<count?'done':''}">${i<count?'●':'○'}</span>`).join(' ');
+  $('#runAtkSteps').innerHTML=fmt(a);
+  $('#runDefSteps').innerHTML=fmt(d);
+}
+function runNumberUI(chosen,turnName=''){
+  $('#runNumbers').innerHTML=[1,2,3,4,5,6].map(n=>{
+    const owner=chosen.attack.includes(n)?'attack':chosen.defend.includes(n)?'defend':'';
+    return `<div class="run-number-chip ${owner}">${n}<small>${owner==='attack'?'GOL':owner==='defend'?'BARRIDA':'LIBRE'}</small></div>`;
+  }).join('');
+  if(turnName)$('#runHint').textContent=turnName;
+}
+function runBuild(attacker,turn){
+  const defender=other(attacker);
+  const outfitA=attacker==='you'?playerOutfit(G.playerKit):playerOutfit(G.cpuPlayerKit);
+  const outfitD=defender==='you'?playerOutfit(G.playerKit):playerOutfit(G.cpuPlayerKit);
+  $('#runAtk').innerHTML=figure({x:0,y:0,s:.92,...outfitA,back:true,name:Who(attacker)});
+  $('#runDef').innerHTML=figure({x:0,y:0,s:.88,...outfitD,back:true,name:Who(defender)});
+  $('#runAtk').style.transition='none';$('#runDef').style.transition='none';
+  $('#runAtk').style.transform=`translate(${RUN_X[0]}px,304px)`;
+  $('#runDef').style.transform=`translate(${RUN_X[0]}px,408px)`;
+  $('#runBall').style.transition='none';$('#runBall').style.transform='translate(754px,305px)';
+  $('#runEffects').innerHTML='';
+  const crowd=$('#runCrowd');crowd.innerHTML=crowdMarkup(110);
+  $('#runTrackMarks').innerHTML=RUN_X.slice(1).map(x=>`<circle cx="${x}" cy="316" r="5"/><circle cx="${x}" cy="405" r="5"/>`).join('');
+  $('#runAtkName').textContent='⚽ '+Who(attacker);
+  $('#runDefName').textContent='🛡️ '+Who(defender);
+  $('#runTurn').textContent=`Carrera ${turn} de 2 · ${Who(attacker)} ataca`;
+  runProgress(0,0);
+  runPop('');
+  buildDie($('#runDie'));
+  $('#runRollLbl').textContent='Dado automático';
+  $('#runHint').textContent='El jugador mano elige primero; se alternan hasta repartir los 6 números.';
+  runNumberUI({attack:[],defend:[]});
+  void $('#runScene').getBoundingClientRect();
+  $('#runAtk').style.transition='transform .65s cubic-bezier(.2,.8,.25,1)';
+  $('#runDef').style.transition='transform .65s cubic-bezier(.2,.8,.25,1)';
+  $('#runBall').style.transition='transform .65s ease-out';
+}
+async function introRun(){
+  $('#ovRunIntro').classList.add('show');
+  await waitButton('#runIntroOk');
+  $('#ovRunIntro').classList.remove('show');
+}
+async function runChooseNumbers(attacker){
+  const defender=other(attacker), chosen={attack:[],defend:[]};
+  const available=[1,2,3,4,5,6];
+  // El jugador mano tiene la primera elección, aunque sea defensor en la segunda carrera.
+  for(let i=0;i<6;i++){
+    const who=i%2===0?G.mano:other(G.mano);
+    const role=who===attacker?'attack':'defend';
+    const prompt=`Selección ${i+1}/6 · ${Who(who)} (${role==='attack'?'ataca':'defiende'}) elige un número.`;
+    runNumberUI(chosen,prompt);
+    let chosenNum;
+    if(who==='you'){
+      const r=await ask({msg:`Elegí un número libre (${i+1} de 6). ${role==='attack'?'Tu número hará avanzar al atacante.':'Tu número hará avanzar al defensor.'}`,buttons:available.map(n=>({id:String(n),label:'🎲 '+n,cls:'primary'}))});
+      chosenNum=Number(r.id);
+    }else{
+      chosenNum=available[fairRandomInt(available.length)];
+      await sleep(480);
+      SFX.click();
+    }
+    if(!available.includes(chosenNum))throw Error('Número repetido en ¡A correr!');
+    chosen[role].push(chosenNum);
+    available.splice(available.indexOf(chosenNum),1);
+    runNumberUI(chosen,`${Who(who)} eligió el ${chosenNum} · ${i+1} de 6 seleccionados`);
+    await sleep(350);
+  }
+  setMsg('');
+  return chosen;
+}
+async function runAutoRace(attacker,chosen){
+  const defender=other(attacker);
+  let a=0,d=0,roll=0;
+  $('#runHint').textContent=`Ataque: ${chosen.attack.join(', ')} · Defensa: ${chosen.defend.join(', ')}. ¡Sale el dado!`;
+  await sleep(800);
+  while(a<RUN_FINISH && d<RUN_FINISH){
+    roll++;
+    const v=fairRandomInt(6)+1;
+    const atkWinsRoll=chosen.attack.includes(v);
+    $('#runRollLbl').textContent=roll>6?'¡Desempate!':`Tirada ${roll} de 6`;
+    runPop(roll>6?'¡DESEMPATE! ¡ÚLTIMA TIRADA!':`¡TIRADA ${roll}!`);
+    SFX.click();rollDie($('#runDie'),v);
+    await sleep(1320);
+    if(atkWinsRoll){
+      a++;
+      $('#runAtk').style.transform=`translate(${RUN_X[a]}px,304px)`;
+      runPop(`Dado ${v}: ¡AVANZA ${Who(attacker)}!`,'good');
+      SFX.point();
+    }else{
+      d++;
+      $('#runDef').style.transform=`translate(${RUN_X[d]}px,408px)`;
+      runPop(`Dado ${v}: ¡AVANZA ${Who(defender)}!`,'bad');
+      SFX.save();
+    }
+    runProgress(a,d);
+    $('#runHint').textContent=`${roll} ${roll===1?'tirada':'tiradas'} · Atacante ${a}/4 avances · Defensor ${d}/4 avances`;
+    log(`¡A correr! Tirada ${roll}: dado ${v}; ${Who(atkWinsRoll?attacker:defender)} avanza. Atacante ${a}, defensor ${d}.`);
+    await sleep(710);
+  }
+  if(a===4){
+    $('#runAtk').style.transform='translate(733px,304px)';
+    $('#runBall').style.transform='translate(787px,286px) scale(.7)';
+    runPop(`¡GOL DE ${Who(attacker)}! ¡LLEGÓ PRIMERO!`,'good');
+    bigText('¡GOOOL!');SFX.goal();
+    if(attacker==='you')confetti(60);
+    addPoints(attacker,3,'correr','¡A correr!: gol en la línea');
+    narrate(`${Who(attacker)} ganó ¡A correr!: llegó a la pelota y empujó el gol. +3 puntos.`);
+    $('#runHint').textContent=`GOL · ${Who(attacker)} llegó primero · +3 puntos`;
+  }else{
+    $('#runDef').style.transform='translate(742px,338px) rotate(-68deg)';
+    $('#runBall').style.transform='translate(698px,286px)';
+    runPop(`¡BARRIDA SALVADORA DE ${Who(defender)}!`,'good');
+    bigText('¡SALVADA!','save');SFX.save();
+    addPoints(defender,1,'correr','¡A correr!: barrida sobre la línea');
+    narrate(`${Who(defender)} ganó ¡A correr!: se barrió y evitó el gol. +1 punto.`);
+    $('#runHint').textContent=`SALVADA · ${Who(defender)} llegó primero · +1 punto`;
+  }
+  await sleep(1800);
+  setMsg('');
+  return a===4?'gol':'salvada';
+}
+async function playRunRace(attacker,turn){
+  showView('run');
+  runBuild(attacker,turn);
+  narrate(`¡A correr! Carrera ${turn} de 2. Ataca ${Who(attacker)} y defiende ${Who(other(attacker))}. El jugador mano elige el primer número.`);
+  await sleep(550);
+  const chosen=await runChooseNumbers(attacker);
+  await runAutoRace(attacker,chosen);
+}
+
 /* ============ Rondas y partido ============ */
 function waitButton(id){return new Promise(r=>{$(id).onclick=()=>{SFX.click();r();};});}
-const CAT_ROWS=[['Penales','pen'],['Tiros libres','libres'],['El Genio','genio'],['Truco','truco'],['Envido','envido']];
+const CAT_ROWS=[['Penales','pen'],['Tiros libres','libres'],['El Genio','genio'],['¡A correr!','correr'],['Truco','truco'],['Envido','envido']];
 
 async function recap(){
   const rs=G.rs,t=p=>sum(Object.values(rs[p]));
@@ -2568,6 +2815,10 @@ async function playRound(){
   setPhase('genio');
   await introGenio();
   for(let i=0;i<order.length;i++)await playGenioAttack(order[i],i+1);
+  setPhase('run');
+  await introRun();
+  await playRunRace(G.mano,1);
+  await playRunRace(other(G.mano),2);
   setPhase('truco');
   for(let handNo=1;handNo<=2;handNo++)await trucoPhase(handNo);
   setPhase('rep');showView('pen');sceneReset(G.kickFirst==='you'?'cpu':'you');setRole(null);
